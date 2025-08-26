@@ -7,21 +7,21 @@
 # Configuration for the main API server.
 apiServer:
   port: 8080
-  publicHost: 20.191.146.21
+  publicHost: 20.196.136.90
   publicPort: 443
   publicScheme: https
 
 # Configuration for the Insights server.
 insightsServer:
   port: 8081
-  publicHost: 20.191.146.21
+  publicHost: 20.196.136.90
   publicPort: 443
   publicScheme: https
 
 # Configuration for the web server.
 webServer:
   port: 8082
-  publicHost: 20.191.146.21
+  publicHost: 20.196.136.90
   publicPort: 443
   publicScheme: https
 
@@ -30,7 +30,7 @@ webServer:
 # If you are connecting on a public IP (e.g. on AWS or Google Cloud Run), you
 # connect on the public IP of the database e.g. database.examplepod.com.
 database:
-  host: 20.191.146.21
+  host: 20.196.136.90
   port: 5432
   name: serverpod
   user: postgres
@@ -43,7 +43,7 @@ database:
 # connect on the public IP of the database e.g. redis.examplepod.com.
 redis:
   enabled: false
-  host: 20.191.146.21
+  host: 20.196.136.90
   port: 6379
   #user: # defaults to empty
   #requireSsl: true # defaults to false
