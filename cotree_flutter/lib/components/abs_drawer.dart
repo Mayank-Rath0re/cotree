@@ -109,8 +109,8 @@ class _AbsDrawerState extends State<AbsDrawer> {
                 fontSize: 16,
               ),
               onTap: () async {
-                await Constants().clearUserView(context);
                 await sessionManager.signOutDevice();
+                await Constants().clearUserView(context);
               },
             ),
             const SizedBox(height: 25)

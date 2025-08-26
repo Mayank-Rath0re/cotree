@@ -7,7 +7,7 @@ services:
     environment:
       POSTGRES_USER: postgres
       POSTGRES_DB: cotree
-      POSTGRES_PASSWORD: "wOO2lIdBe7sStwvYst0k32jk3b7cIh21"
+      POSTGRES_PASSWORD: "tG4RmdPicceHc8kLttwx1oodf74BSnP-"
     volumes:
       - cotree_data:/var/lib/postgresql/data
 
