@@ -1,0 +1,11 @@
+class: Member
+table: member
+
+fields:
+    userId: int, relation(parent=user)
+    workspaceId: int, relation(parent=space)
+    name: String
+    designation: String
+    globalRole: String
+    avatar: String
+    joinedAt: DateTime

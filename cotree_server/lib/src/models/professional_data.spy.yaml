@@ -1,0 +1,11 @@
+class: ProfessionalData
+table: professional_data
+fields:
+    accountId: int, relation(parent=user)
+    type: String
+    title: String
+    institute: String
+    startDate: DateTime
+    endData: DateTime?
+    supportingLink: String
+    images: List<String>

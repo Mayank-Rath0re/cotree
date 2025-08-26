@@ -1,0 +1,16 @@
+version: 0.0
+os: linux
+files:
+  - source: /vendor/
+    destination: /home/ec2-user/serverpod/upload/vendor/
+  - source: /cotree_server/
+    destination: /home/ec2-user/serverpod/upload/cotree_server/
+hooks:
+  BeforeInstall:
+    - location: cotree_server/deploy/aws/scripts/install_dependencies
+      timeout: 300
+      runas: root
+  ApplicationStart:
+    - location: cotree_server/deploy/aws/scripts/start_server
+      timeout: 300
+      runas: root

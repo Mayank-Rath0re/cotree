@@ -1,0 +1,6 @@
+class: ChatParticipant
+table: chat_participant
+fields:
+    chatId: int, relation(parent=chat)
+    participant: int,
+    deletedAt: DateTime?

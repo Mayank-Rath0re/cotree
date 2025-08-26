@@ -1,0 +1,9 @@
+class: Connect
+table: connect
+
+fields:
+    accountId: int?, relation(parent=user)
+    activeConnections: List<int>
+    receivedPending: List<Invitation>?
+    sentPending: List<Invitation>?
+    

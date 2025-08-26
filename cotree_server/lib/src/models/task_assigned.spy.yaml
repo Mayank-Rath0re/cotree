@@ -1,0 +1,7 @@
+# task_assigned.spy.yaml
+class: TaskAssigned
+table: task_assigned
+
+fields:
+  taskId: int, relation(name=task_assigned_tasks, parent=task, onDelete=cascade)
+  memberId: int

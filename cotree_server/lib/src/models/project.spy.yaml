@@ -1,0 +1,8 @@
+class: Project
+table: project
+
+fields:
+    spaceId: int, relation(parent=space)
+    projectTitle: String
+    projectOverview: String
+    status: String

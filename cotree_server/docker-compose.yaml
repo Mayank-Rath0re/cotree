@@ -1,0 +1,44 @@
+services:
+  # Development services
+  postgres:
+    image: pgvector/pgvector:pg16
+    ports:
+      - "8090:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_DB: cotree
+      POSTGRES_PASSWORD: "wOO2lIdBe7sStwvYst0k32jk3b7cIh21"
+    volumes:
+      - cotree_data:/var/lib/postgresql/data
+
+  redis:
+    image: redis:6.2.6
+    ports:
+      - "8091:6379"
+    command: redis-server --requirepass "WW1Poys7wMeOcn45zMB7v6xOw_GlWloP"
+    environment:
+      - REDIS_REPLICATION_MODE=master
+
+  # Test services
+  postgres_test:
+    image: pgvector/pgvector:pg16
+    ports:
+      - "9090:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_DB: cotree_test
+      POSTGRES_PASSWORD: "ANe-h_HW_KcPef1mVZ2ZRkWv8bd4gQNi"
+    volumes:
+      - cotree_test_data:/var/lib/postgresql/data
+
+  redis_test:
+    image: redis:6.2.6
+    ports:
+      - "9091:6379"
+    command: redis-server --requirepass "0BEm3LbPfttsjxphQg4DiKYBd2KMTVEt"
+    environment:
+      - REDIS_REPLICATION_MODE=master
+
+volumes:
+  cotree_data:
+  cotree_test_data:

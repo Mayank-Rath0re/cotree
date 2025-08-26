@@ -1,0 +1,7 @@
+class: Message
+table: message
+fields:
+    chatId: int, relation(parent=chat)
+    senderId: int, relation(parent=user)
+    content: String
+    sentAt: DateTime

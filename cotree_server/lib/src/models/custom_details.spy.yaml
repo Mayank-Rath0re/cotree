@@ -1,0 +1,6 @@
+class: CustomDetails
+table: customdetails
+fields:
+    title: String
+    description: String
+    images: List<String>

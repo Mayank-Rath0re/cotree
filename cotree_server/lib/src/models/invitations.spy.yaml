@@ -1,0 +1,6 @@
+class: Invitation
+table: invitation
+fields:
+    user: int, relation(parent=user)
+    personalText: String?
+    type: String

@@ -1,0 +1,7 @@
+class: TeamMember
+table: team_member
+
+fields:
+    teamId: int
+    memberId: int
+    role: String

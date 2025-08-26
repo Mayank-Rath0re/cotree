@@ -1,0 +1,8 @@
+class: Reaction
+table: reaction
+
+fields:
+  userId: int, relation(parent=user)
+  reactableId: int # ID of the post or comment
+  reactableType: String # "post" or "comment"
+  type: int # Reaction type like 👍 = 1, ❤️ = 2, etc.

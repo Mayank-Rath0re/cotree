@@ -1,0 +1,13 @@
+class: SpaceInvite
+table: space_invite
+
+fields:
+    spaceId: int, relation(parent=space)
+    userId: int, relation(parent=user)
+    designation: String
+    globalRole: String
+    teams: List<List<String>>
+    sentOn: DateTime
+    sentBy: int, relation(parent=user)
+    status: String
+    unread: bool

@@ -1,0 +1,8 @@
+class: UserView
+table: userview
+fields:
+    userId: int
+    name: String
+    headline: String
+    avatar: String
+    accountType: String

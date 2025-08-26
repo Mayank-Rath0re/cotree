@@ -1,0 +1,8 @@
+class: Comment
+table: comment
+fields:
+    responseToPost: int, relation(parent=post)
+    author: int, relation(parent=user)
+    text: String
+    time: DateTime
+    replies: List<Reply>?, relation

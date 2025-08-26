@@ -1,0 +1,6 @@
+class: Chat
+table: chat
+
+fields:
+    isGroup: bool
+    name: String?

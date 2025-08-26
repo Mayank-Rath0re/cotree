@@ -1,0 +1,11 @@
+class: Notification
+table: notification
+
+fields:
+    forUser: int, relation(parent=user),
+    content: String,
+    referencedUser: int, relation(parent=user)
+    triggeredAt: DateTime
+    unread: bool
+    objectId: int?
+    objectType: String?

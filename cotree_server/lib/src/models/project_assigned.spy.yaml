@@ -1,0 +1,6 @@
+class: ProjectAssigned
+table: project_assigned
+
+fields:
+    projectId: int
+    teamId: int

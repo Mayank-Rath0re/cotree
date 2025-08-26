@@ -1,0 +1,12 @@
+class: Meetings
+table: meetings
+
+fields:
+    teamId: int, relation(parent=teams)
+    agenda: String
+    time: DateTime
+    duration: Duration
+    status: String
+    startedBy: int
+    url: String
+    members: List<int>

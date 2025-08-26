@@ -1,0 +1,10 @@
+class: Space
+table: space
+
+fields:
+    ownerId: int, relation(parent=user)
+    credentials: String?
+    avatar: String
+    title: String
+    description: String
+    memberLimit: int

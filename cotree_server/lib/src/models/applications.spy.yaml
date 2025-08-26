@@ -1,0 +1,8 @@
+class: Applications
+table: applications
+fields:
+    individualId: int, relation(parent=individual)
+    offerId: int
+    shortDescription: String
+    qualifyIndices: List<int>
+    status: String

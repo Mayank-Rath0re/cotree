@@ -1,0 +1,5 @@
+class: Follow
+table: follow
+fields:
+    orgId: int, relation(parent=user)
+    followedBy: int, relation(parent=user)

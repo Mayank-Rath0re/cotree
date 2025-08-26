@@ -1,0 +1,6 @@
+class: Reply
+table: reply
+fields:
+    author: int, relation(parent=user)
+    text: String
+    react: int

@@ -1,0 +1,7 @@
+class: Teams
+table: teams
+
+fields:
+    spaceId: int, relation(parent=space)
+    teamTitle: String
+    chatId: int, relation(parent=chat)

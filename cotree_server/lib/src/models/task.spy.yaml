@@ -1,0 +1,10 @@
+# task.spy.yaml
+class: Task
+table: task
+
+fields:
+  projectId: int, relation(parent=project)
+  taskName: String
+  status: String
+  deadline: DateTime?
+  assigned: List<TaskAssigned>?, relation(name=task_assigned_tasks)

@@ -1,0 +1,9 @@
+class: Documents
+table: documents
+
+fields:
+    projectId: int, relation(parent=project)
+    title: String
+    url: String
+    uploadedBy: int, relation(parent=member)
+    uploadedAt: DateTime

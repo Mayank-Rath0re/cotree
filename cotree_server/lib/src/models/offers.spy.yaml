@@ -1,0 +1,14 @@
+class: Offers
+table: offers
+fields:
+    author: int, relation(parent=user)
+    authorName: String
+    title: String
+    acceptingApplications: bool
+    isActive: bool
+    pay: String
+    offerType: String
+    location: String
+    description: String
+    duration: int
+    qualifications: List<String>

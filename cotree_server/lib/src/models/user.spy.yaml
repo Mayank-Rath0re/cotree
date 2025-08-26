@@ -1,0 +1,14 @@
+class: User
+table: user
+fields:
+  userInfoId: int?
+  name: String
+  accountType: String
+  password: String
+  email: String
+  spaceLimit: int
+
+indexes:
+  user_idx:
+    fields: email
+    unique: true

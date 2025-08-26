@@ -1,0 +1,9 @@
+class: Organization
+table: organization
+fields:
+  accountId: int, relation(parent=user)
+  founded: DateTime
+  about: String
+  events: List<int>
+  jobOpenings: List<int>
+  customFields: List<CustomDetails>

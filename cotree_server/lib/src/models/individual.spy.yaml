@@ -1,0 +1,9 @@
+class: Individual
+table: individual
+fields:
+  bio: String
+  accountId: int
+  gender: String,
+  residence: String?
+  dob: DateTime?
+  contact: String
