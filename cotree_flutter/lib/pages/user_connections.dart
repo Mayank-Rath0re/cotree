@@ -103,7 +103,10 @@ class _UserConnectionsPageState extends State<UserConnectionsPage> {
                           fontSize: 16,
                           bold: true)
                     ] else ...[
-                      for (int i = 0; i < connections.length; i++) ...[]
+                      for (int i = 0; i < connections.length; i++) ...[
+                        connectionBuild(connections[i]),
+                        const SizedBox(height: 8),
+                      ]
                     ]
                   ],
                 ),

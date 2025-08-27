@@ -132,8 +132,10 @@ class AccountEndpoint extends Endpoint {
       DateTime? dob,
       String contact) async {
     // Get user id
-    var userView =
-        await UserView.db.find(session, where: (t) => t.userId.equals(userId));
+    print("In profile setup I:");
+    var userView = await UserView.db
+        .findFirstRow(session, where: (t) => t.userId.equals(userId));
+    print("Userview: $userView");
     // Update the profile data for that user id
     var individualObj = Individual(
         bio: bio!,
@@ -142,11 +144,12 @@ class AccountEndpoint extends Endpoint {
         residence: residence,
         dob: dob,
         contact: contact);
-    userView[0].headline = headline!;
+    userView!.headline = headline!;
     // ignore: unused_local_variable
-    await Individual.db.insert(session, [individualObj]);
+    var indiv = await Individual.db.insertRow(session, individualObj);
+    print("Individual: $indiv");
     // ignore: unused_local_variable
-    var updatedUserView = await UserView.db.updateRow(session, userView[0]);
+    var updatedUserView = await UserView.db.updateRow(session, userView);
     return updatedUserView;
   }
 
@@ -183,12 +186,14 @@ class AccountEndpoint extends Endpoint {
 
   // Receive Profile Data
   Future<Individual> getIndividualData(Session session, int? userId) async {
-    var user =
-        await User.db.find(session, where: (t) => t.userInfoId.equals(userId));
+    var user = await User.db
+        .findFirstRow(session, where: (t) => t.userInfoId.equals(userId));
+    print("user: $user");
     // Find account data
-    var individual = await Individual.db
-        .find(session, where: (t) => t.accountId.equals(user[0].id));
-    return individual[0];
+    var individual = await Individual.db.findFirstRow(session,
+        where: (t) => t.accountId.equals(user!.userInfoId));
+    print("Individual: $individual");
+    return individual!;
   }
 
   Future<Organization> getOrganizationData(Session session, int? userId) async {
