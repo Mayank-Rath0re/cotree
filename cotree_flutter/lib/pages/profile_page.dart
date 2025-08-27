@@ -13,6 +13,7 @@ import 'package:cotree_flutter/pages/dm_page.dart';
 import 'package:cotree_flutter/pages/invite_to_space.dart';
 import 'package:cotree_flutter/pages/profile_edit_page.dart';
 import 'package:cotree_flutter/pages/see_all_posts.dart';
+import 'package:cotree_flutter/pages/user_connections.dart';
 import 'package:cotree_flutter/themes/theme_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -184,18 +185,27 @@ class _ProfilePageState extends State<ProfilePage> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
-                          AbsMinimalBox(
-                              roundedBorder: true,
-                              child: Row(children: [
-                                AbsText(
-                                  displayString: "$connectionsCount",
-                                  fontSize: 16,
-                                  headColor: true,
-                                ),
-                                const AbsText(
-                                    displayString: "  Connections",
-                                    fontSize: 16)
-                              ])),
+                          GestureDetector(
+                              onTap: () {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            UserConnectionsPage(
+                                                userview: myUserview)));
+                              },
+                              child: AbsMinimalBox(
+                                  roundedBorder: true,
+                                  child: Row(children: [
+                                    AbsText(
+                                      displayString: "$connectionsCount",
+                                      fontSize: 16,
+                                      headColor: true,
+                                    ),
+                                    const AbsText(
+                                        displayString: "  Connections",
+                                        fontSize: 16)
+                                  ]))),
                           AbsMinimalBox(
                               roundedBorder: true,
                               child: Row(children: [

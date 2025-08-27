@@ -32,25 +32,24 @@ class AbsBottomNav extends StatelessWidget {
       ),
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       child: SafeArea(
-        child: GNav(
-          selectedIndex: selectedIndex,
-          onTabChange: (index) => onTabChange?.call(index),
-          backgroundColor: theme.mainColor,
-          color: theme.contrastColor, // color for inactive icons/text
-          activeColor: theme.headColor, // color for active icons/text
-          tabBackgroundColor: theme.secondaryColor,
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-          gap: 8, // gap between icon and text
-          iconSize: 24,
-          duration: const Duration(milliseconds: 400),
-          tabs: const [
-            GButton(icon: Icons.home_outlined, text: 'Home'),
-            GButton(icon: Icons.people_outline, text: 'Users'),
-            GButton(icon: Icons.work_outline_rounded, text: 'Work'),
-            GButton(icon: Icons.chat_bubble_outline, text: 'Chat'),
-          ],
-        ),
-      ),
+          child: GNav(
+        selectedIndex: selectedIndex,
+        onTabChange: (index) => onTabChange?.call(index),
+        backgroundColor: theme.mainColor, // whole bar background
+        color: theme.contrastColor, // inactive icon/text
+        activeColor: theme.contrastColor, // active icon/text
+        tabBackgroundColor: theme.headColor, // active tab background
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+        gap: 8,
+        iconSize: 24,
+        duration: const Duration(milliseconds: 400),
+        tabs: const [
+          GButton(icon: Icons.home_outlined, text: 'Home'),
+          GButton(icon: Icons.people_outline, text: 'Users'),
+          GButton(icon: Icons.work_outline_rounded, text: 'Work'),
+          GButton(icon: Icons.chat_bubble_outline, text: 'Chat'),
+        ],
+      )),
     );
   }
 }

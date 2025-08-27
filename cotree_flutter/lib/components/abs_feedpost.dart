@@ -82,7 +82,6 @@ class _AbsFeedpostState extends State<AbsFeedpost> {
                       MaterialPageRoute(
                           builder: (context) => PostDetailedPage(
                               postId: widget.postData.id!,
-                              isLiked: isLiked,
                               userData: widget.myUserView,
                               onLiked: (val) {
                                 setState(() {
@@ -199,8 +198,12 @@ class _AbsFeedpostState extends State<AbsFeedpost> {
             children: [
               IconButton(
                   onPressed: () {
-                    client.post.updateReaction(widget.postData.id!,
-                        widget.postData.authorId, "P", widget.myUserView.userId,
+                    client.post.updateReaction(
+                        widget.postData.id!,
+                        widget.postData.authorId,
+                        "P",
+                        widget.myUserView.userId,
+                        widget.postData.id,
                         type: 1);
                     setState(() {
                       isLiked = !isLiked;
@@ -230,7 +233,6 @@ class _AbsFeedpostState extends State<AbsFeedpost> {
                       MaterialPageRoute(
                           builder: (context) => PostDetailedPage(
                                 postId: widget.postData.id!,
-                                isLiked: isLiked,
                                 userData: userData,
                                 onLiked: (val) {
                                   setState(() {

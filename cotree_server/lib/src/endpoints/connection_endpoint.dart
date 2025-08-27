@@ -109,7 +109,7 @@ class ConnectionEndpoint extends Endpoint {
     var updateDB =
         await Connect.db.update(session, [firstUserData[0], secondUserData[0]]);
     await NotificationEndpoint().createNotification(session, invite.user,
-        "accepted your invite", receiverId, receiverId, "Request");
+        "accepted your invite", receiverId, receiverId, "request");
   }
 
   // Withdraw Connection Request
@@ -220,5 +220,17 @@ class ConnectionEndpoint extends Endpoint {
               return follow.orgId;
             }).toSet()));
     return orgs;
+  }
+
+  Future<List<UserView>> fetchConnectedUsers(
+      Session session, int userId) async {
+    var connData = await Connect.db
+        .findFirstRow(session, where: (t) => t.accountId.equals(userId));
+    if (connData != null) {
+      var views = await UserView.db.find(session,
+          where: (t) => t.userId.inSet(connData.activeConnections.toSet()));
+      return views;
+    }
+    return [];
   }
 }

@@ -70,6 +70,7 @@ class HiveBoxProvider extends ChangeNotifier {
       }
     }
     await box.put(key, value);
+    notifyListeners();
   }
 
   Future<void> deleteValue(String key) async => box.delete(key);

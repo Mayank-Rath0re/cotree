@@ -120,7 +120,7 @@ class PostEndpoint extends Endpoint {
   }
 
   Future<void> updateReaction(Session session, int objectId, int authorId,
-      String reactablTtype, int? userId,
+      String reactablTtype, int? userId, int? postId,
       {int type = 0}) async {
     var reactionType = reactablTtype == "P" ? "post" : "comment";
     var reactionObj =
@@ -134,7 +134,7 @@ class PostEndpoint extends Endpoint {
       // ignore: unused_local_variable
       var reactionIns = await Reaction.db.insertRow(session, reactionObj);
       await notifyObj.createNotification(session, authorId,
-          "Liked your $reactionType.", userId, objectId, reactionType);
+          "Liked your $reactionType.", userId, postId, reactionType);
     } else {
       // ignore: unused_local_variable
       var delReaction = Reaction.db.deleteRow(session, reactionObj);

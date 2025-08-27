@@ -48,6 +48,7 @@ connection:
   - followerCount:
   - isFollowingOrg:
   - fetchFollowedOrgs:
+  - fetchConnectedUsers:
 example:
   - hello:
 file:

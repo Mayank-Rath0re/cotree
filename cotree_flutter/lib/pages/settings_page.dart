@@ -1,5 +1,4 @@
 import 'package:cotree_client/cotree_client.dart';
-import 'package:cotree_flutter/components/abs_button_primary.dart';
 import 'package:cotree_flutter/components/abs_minimal_box.dart';
 import 'package:cotree_flutter/components/abs_text.dart';
 import 'package:cotree_flutter/pages/profile_edit_page.dart';
@@ -50,6 +49,14 @@ class _SettingsPageState extends State<SettingsPage> {
     );
   }
 
+  void devMessage() {
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: const AbsText(
+            displayString: "Current in Development",
+            fontSize: 16,
+            bold: true)));
+  }
+
   @override
   Widget build(BuildContext context) {
     int _selectedIndex = Provider.of<ThemeProvider>(context).isDarkMode ? 0 : 1;
@@ -90,6 +97,7 @@ class _SettingsPageState extends State<SettingsPage> {
               const SizedBox(height: 5),
               settingsTile(() {
                 // Navigate to privacy settings
+                devMessage();
               },
                   Icon(
                     Icons.privacy_tip_outlined,
@@ -105,6 +113,7 @@ class _SettingsPageState extends State<SettingsPage> {
               const SizedBox(height: 8),
               settingsTile(() {
                 // Navigate to change password page
+                devMessage();
               },
                   Icon(
                     Icons.lock_outline,
@@ -114,6 +123,7 @@ class _SettingsPageState extends State<SettingsPage> {
               const SizedBox(height: 5),
               settingsTile(() {
                 // Navigate to change email page
+                devMessage();
               },
                   Icon(
                     Icons.email_outlined,
@@ -123,6 +133,7 @@ class _SettingsPageState extends State<SettingsPage> {
               const SizedBox(height: 5),
               settingsTile(() {
                 // Navigate to two-factor authentication
+                devMessage();
               },
                   Icon(
                     Icons.security_outlined,
@@ -179,6 +190,7 @@ class _SettingsPageState extends State<SettingsPage> {
               const SizedBox(height: 8),
               settingsTile(() {
                 // Navigate to push notification settings
+                devMessage();
               },
                   Icon(
                     Icons.notifications_outlined,
@@ -188,6 +200,7 @@ class _SettingsPageState extends State<SettingsPage> {
               const SizedBox(height: 5),
               settingsTile(() {
                 // Navigate to email notification settings
+                devMessage();
               },
                   Icon(
                     Icons.mail_outline,
@@ -197,6 +210,7 @@ class _SettingsPageState extends State<SettingsPage> {
               const SizedBox(height: 5),
               settingsTile(() {
                 // Navigate to notification preferences
+                devMessage();
               },
                   Icon(
                     Icons.settings_outlined,
@@ -281,6 +295,7 @@ class _SettingsPageState extends State<SettingsPage> {
               const SizedBox(height: 8),
               settingsTile(() {
                 // Navigate to help center
+                devMessage();
               },
                   Icon(
                     Icons.help_outline,
@@ -290,6 +305,7 @@ class _SettingsPageState extends State<SettingsPage> {
               const SizedBox(height: 5),
               settingsTile(() {
                 // Navigate to contact support
+                devMessage();
               },
                   Icon(
                     Icons.support_agent_outlined,
@@ -299,6 +315,7 @@ class _SettingsPageState extends State<SettingsPage> {
               const SizedBox(height: 5),
               settingsTile(() {
                 // Navigate to feedback page
+                devMessage();
               },
                   Icon(
                     Icons.feedback_outlined,
@@ -308,6 +325,7 @@ class _SettingsPageState extends State<SettingsPage> {
               const SizedBox(height: 5),
               settingsTile(() {
                 // Navigate to about page
+                devMessage();
               },
                   Icon(
                     Icons.info_outline,
@@ -323,6 +341,7 @@ class _SettingsPageState extends State<SettingsPage> {
               const SizedBox(height: 8),
               settingsTile(() {
                 // Navigate to terms of service
+                devMessage();
               },
                   Icon(
                     Icons.description_outlined,
@@ -332,6 +351,7 @@ class _SettingsPageState extends State<SettingsPage> {
               const SizedBox(height: 5),
               settingsTile(() {
                 // Navigate to privacy policy
+                devMessage();
               },
                   Icon(
                     Icons.privacy_tip_outlined,
@@ -349,6 +369,12 @@ class _SettingsPageState extends State<SettingsPage> {
               settingsTile(
                 () {
                   // Navigate to delete account
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                      content: const AbsText(
+                    displayString: "Why do you want to leave🥺?",
+                    fontSize: 16,
+                    bold: true,
+                  )));
                 },
                 const Icon(
                   Icons.delete_forever_outlined,
@@ -357,18 +383,6 @@ class _SettingsPageState extends State<SettingsPage> {
                 "Delete Account",
                 isDestructive: true,
               ),
-              const SizedBox(height: 20),
-
-              // Logout Button
-              Row(children: [
-                Expanded(
-                    child: AbsButtonPrimary(
-                        onPressed: () {
-                          // Handle logout
-                        },
-                        fontSize: 18,
-                        text: "Logout"))
-              ]),
               const SizedBox(height: 30),
             ],
           ),

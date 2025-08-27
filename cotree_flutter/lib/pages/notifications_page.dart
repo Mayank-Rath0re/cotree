@@ -3,6 +3,8 @@ import 'package:cotree_flutter/components/abs_avatar.dart';
 import 'package:cotree_flutter/components/abs_minimal_box.dart';
 import 'package:cotree_flutter/components/abs_text.dart';
 import 'package:cotree_flutter/main.dart';
+import 'package:cotree_flutter/pages/post_detailed_page.dart';
+import 'package:cotree_flutter/pages/profile_page.dart';
 import 'package:cotree_flutter/themes/theme_provider.dart';
 import 'package:flutter/material.dart' hide Notification;
 import 'package:get_time_ago/get_time_ago.dart';
@@ -25,6 +27,16 @@ class _NotifItem {
 class _NotificationsPageState extends State<NotificationsPage> {
   List<_NotifItem> items = [];
   bool isLoading = true;
+
+  Widget? notifPage(String tag, int id) {
+    if (tag == "request" || tag == "profile") {
+      return ProfilePage(profileId: id);
+    } else if (tag == "post" || tag == "comment") {
+      return PostDetailedPage(
+          postId: id, userData: widget.userview, onLiked: (val) {});
+    }
+    return null;
+  }
 
   @override
   void initState() {
@@ -70,13 +82,6 @@ class _NotificationsPageState extends State<NotificationsPage> {
   List<_NotifItem> get readItems =>
       items.where((i) => i.notif.unread == false).toList();
 
-  Future<void> _markAsRead(_NotifItem item) async {
-    try {
-      await client.notification.markRead([item.notif]);
-      setState(() => item.notif.unread = false);
-    } catch (_) {}
-  }
-
   Widget _buildEmptyState() {
     return Center(
       child: Padding(
@@ -94,7 +99,20 @@ class _NotificationsPageState extends State<NotificationsPage> {
     return AbsMinimalBox(
       layer: notif.unread ? 3 : 1,
       child: InkWell(
-        onTap: () => _markAsRead(item),
+        onTap: () {
+          if (notif.unread) {
+            setState(() {
+              notif.unread = false;
+            });
+          }
+          if (notif.objectType != null && notif.objectId != null) {
+            var page = notifPage(notif.objectType!, notif.objectId!);
+            if (page != null) {
+              Navigator.push(
+                  context, MaterialPageRoute(builder: (context) => page));
+            }
+          }
+        },
         child: Padding(
           padding: const EdgeInsets.all(12),
           child: Row(

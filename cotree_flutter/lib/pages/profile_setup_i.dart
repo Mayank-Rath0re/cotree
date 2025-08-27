@@ -5,7 +5,6 @@ import 'package:cotree_flutter/components/abs_multiline_textfield.dart';
 import 'package:cotree_flutter/components/abs_text.dart';
 import 'package:cotree_flutter/components/abs_textfield.dart';
 import 'package:cotree_flutter/main.dart';
-import 'package:cotree_flutter/models/constants.dart';
 import 'package:cotree_flutter/models/file_handling.dart';
 import 'package:cotree_flutter/pages/authgate.dart';
 import 'package:cotree_flutter/themes/theme_provider.dart';
@@ -344,7 +343,6 @@ class _ProfileSetupIState extends State<ProfileSetupI> {
       }
 
       if (mounted) {
-        await Constants().getOrSetUserView(context);
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (context) => AuthGate()),

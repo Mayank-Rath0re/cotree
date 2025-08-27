@@ -592,6 +592,13 @@ class EndpointConnection extends _i1.EndpointRef {
         'fetchFollowedOrgs',
         {'profileId': profileId},
       );
+
+  _i2.Future<List<_i4.UserView>> fetchConnectedUsers(int userId) =>
+      caller.callServerEndpoint<List<_i4.UserView>>(
+        'connection',
+        'fetchConnectedUsers',
+        {'userId': userId},
+      );
 }
 
 /// {@category Endpoint}
@@ -806,7 +813,8 @@ class EndpointPost extends _i1.EndpointRef {
     int objectId,
     int authorId,
     String reactablTtype,
-    int? userId, {
+    int? userId,
+    int? postId, {
     required int type,
   }) =>
       caller.callServerEndpoint<void>(
@@ -817,6 +825,7 @@ class EndpointPost extends _i1.EndpointRef {
           'authorId': authorId,
           'reactablTtype': reactablTtype,
           'userId': userId,
+          'postId': postId,
           'type': type,
         },
       );

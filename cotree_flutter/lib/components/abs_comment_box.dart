@@ -8,12 +8,14 @@ import 'package:get_time_ago/get_time_ago.dart';
 import 'package:provider/provider.dart';
 
 class AbsCommentBox extends StatefulWidget {
+  final int postId;
   final Comment comment;
   final UserView commentUser;
   final int myUserId;
   final Function()? onLike;
   const AbsCommentBox(
       {super.key,
+      required this.postId,
       required this.comment,
       required this.commentUser,
       required this.myUserId,
@@ -60,8 +62,8 @@ class _AbsCommentBoxState extends State<AbsCommentBox>
 
     try {
       // Keep same API call as original code (type: 1). Backend controls idempotency.
-      await client.post.updateReaction(
-          widget.comment.id!, widget.comment.author, "C", widget.myUserId,
+      await client.post.updateReaction(widget.comment.id!,
+          widget.comment.author, "C", widget.myUserId, widget.postId,
           type: 1);
 
       // refresh liked state from server
@@ -227,6 +229,7 @@ class _AbsCommentBoxState extends State<AbsCommentBox>
                     const Spacer(),
 
                     // Overflow menu (edit/delete when current user's comment)
+                    /*
                     PopupMenuButton<int>(
                       padding: EdgeInsets.zero,
                       itemBuilder: (context) {
@@ -258,7 +261,7 @@ class _AbsCommentBoxState extends State<AbsCommentBox>
                         padding: EdgeInsets.all(6.0),
                         child: Icon(Icons.more_horiz, size: 18),
                       ),
-                    )
+                    )*/
                   ],
                 )
               ],

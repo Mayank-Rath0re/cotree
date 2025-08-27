@@ -3,7 +3,9 @@ import 'package:cotree_flutter/components/abs_feedpost.dart';
 import 'package:cotree_flutter/components/abs_text.dart';
 import 'package:cotree_flutter/main.dart';
 import 'package:cotree_flutter/models/constants.dart';
+import 'package:cotree_flutter/themes/theme_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class FeedPage extends StatefulWidget {
   const FeedPage({super.key});
@@ -52,27 +54,33 @@ class _FeedPageState extends State<FeedPage> {
       );
     }
 
-    return ListView.builder(
-      key: const PageStorageKey("feed-list"), // ✅ preserves scroll position
-      itemCount: feed.length,
-      itemBuilder: (context, index) {
-        final post = feed[index];
-        return Column(
-          children: [
-            AbsFeedpost(
-              key: ValueKey(post.id), // ✅ stable key prevents rebuild jitter
-              postData: post,
-              myUserView: myUserView,
-              onRemoved: () {
-                setState(() {
-                  feed.removeAt(index);
-                });
-              },
-            ),
-            const SizedBox(height: 2),
-          ],
-        );
+    return RefreshIndicator(
+      color: Provider.of<ThemeProvider>(context).headColor,
+      onRefresh: () async {
+        getFeed();
       },
+      child: ListView.builder(
+        key: const PageStorageKey("feed-list"), // ✅ preserves scroll position
+        itemCount: feed.length,
+        itemBuilder: (context, index) {
+          final post = feed[index];
+          return Column(
+            children: [
+              AbsFeedpost(
+                key: ValueKey(post.id), // ✅ stable key prevents rebuild jitter
+                postData: post,
+                myUserView: myUserView,
+                onRemoved: () {
+                  setState(() {
+                    feed.removeAt(index);
+                  });
+                },
+              ),
+              const SizedBox(height: 2),
+            ],
+          );
+        },
+      ),
     );
   }
 }

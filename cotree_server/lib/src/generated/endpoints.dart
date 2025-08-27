@@ -1276,6 +1276,25 @@ class Endpoints extends _i1.EndpointDispatch {
             params['profileId'],
           ),
         ),
+        'fetchConnectedUsers': _i1.MethodConnector(
+          name: 'fetchConnectedUsers',
+          params: {
+            'userId': _i1.ParameterDescription(
+              name: 'userId',
+              type: _i1.getType<int>(),
+              nullable: false,
+            )
+          },
+          call: (
+            _i1.Session session,
+            Map<String, dynamic> params,
+          ) async =>
+              (endpoints['connection'] as _i4.ConnectionEndpoint)
+                  .fetchConnectedUsers(
+            session,
+            params['userId'],
+          ),
+        ),
       },
     );
     connectors['example'] = _i1.EndpointConnector(
@@ -1732,6 +1751,11 @@ class Endpoints extends _i1.EndpointDispatch {
               type: _i1.getType<int?>(),
               nullable: true,
             ),
+            'postId': _i1.ParameterDescription(
+              name: 'postId',
+              type: _i1.getType<int?>(),
+              nullable: true,
+            ),
             'type': _i1.ParameterDescription(
               name: 'type',
               type: _i1.getType<int>(),
@@ -1748,6 +1772,7 @@ class Endpoints extends _i1.EndpointDispatch {
             params['authorId'],
             params['reactablTtype'],
             params['userId'],
+            params['postId'],
             type: params['type'],
           ),
         ),

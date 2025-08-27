@@ -28,17 +28,11 @@ class _ProfileEditPageState extends State<ProfileEditPage> {
   String avatarUrl = "";
   bool isLoading = true;
 
-  Future<void> updateProfile() async {
-    if (_selectedImage == null) return;
+  Future<String?> _uploadAvatarIfNeeded() async {
+    if (_selectedImage == null) return null;
     String url = await FileHandling()
         .uploadFile("avatar/${widget.userView.userId}.png", _selectedImage!);
-    await client.account.updateAvatar(widget.userView, url);
-    setState(() {
-      widget.userView.avatar = url;
-      avatarUrl = url;
-      // After upload, clear the local file so network image is shown
-      _selectedImage = null;
-    });
+    return url;
   }
 
   void getBuildData() async {
@@ -47,7 +41,7 @@ class _ProfileEditPageState extends State<ProfileEditPage> {
       nameController.text = widget.userView.name;
       headlineController.text = widget.userView.headline;
       aboutController.text = indiv.bio;
-      avatarUrl = widget.userView.avatar;
+      avatarUrl = widget.userView.avatar; // always work with local avatarUrl
       if (indiv.residence != null) {
         residenceController.text = indiv.residence!;
       }
@@ -79,24 +73,24 @@ class _ProfileEditPageState extends State<ProfileEditPage> {
                         bold: true,
                         headColor: true),
                     const SizedBox(height: 20),
-                    const SizedBox(height: 20),
+
+                    // Avatar section
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Column(
                           children: [
-                            // Show local image if selected, else show network image
                             CircleAvatar(
                               radius: 40,
                               backgroundImage: _selectedImage != null
                                   ? FileImage(_selectedImage!)
-                                  : (widget.userView.avatar.isNotEmpty
-                                      ? NetworkImage(widget.userView.avatar)
+                                  : (avatarUrl.isNotEmpty
+                                      ? NetworkImage(avatarUrl)
                                       : null) as ImageProvider<Object>?,
-                              child: (_selectedImage == null &&
-                                      widget.userView.avatar.isEmpty)
-                                  ? const Icon(Icons.person, size: 40)
-                                  : null,
+                              child:
+                                  (_selectedImage == null && avatarUrl.isEmpty)
+                                      ? const Icon(Icons.person, size: 40)
+                                      : null,
                             ),
                             const SizedBox(height: 10),
                             Row(
@@ -107,29 +101,24 @@ class _ProfileEditPageState extends State<ProfileEditPage> {
                                       FilePickerResult? result =
                                           await FilePicker.platform
                                               .pickFiles(type: FileType.image);
-                                      if (result != null) {
-                                        String? filePath =
-                                            result.files.single.path;
-                                        if (filePath != null) {
-                                          setState(() {
-                                            _selectedImage = File(filePath);
-                                          });
-                                          // Start upload in background
-                                          await updateProfile();
-                                        }
+                                      if (result != null &&
+                                          result.files.single.path != null) {
+                                        setState(() {
+                                          _selectedImage =
+                                              File(result.files.single.path!);
+                                        });
                                       }
                                     },
                                     icon: const Icon(Icons.change_circle),
                                     text: "Change Profile"),
-                                if (widget.userView.avatar.isNotEmpty) ...[
+                                if (avatarUrl.isNotEmpty ||
+                                    _selectedImage != null) ...[
                                   const SizedBox(width: 10),
                                   AbsButtonSecondary(
                                       roundedBorder: true,
-                                      onPressed: () async {
-                                        await client.account
-                                            .removeAvatar(widget.userView);
+                                      onPressed: () {
                                         setState(() {
-                                          widget.userView.avatar = "";
+                                          avatarUrl = "";
                                           _selectedImage = null;
                                         });
                                       },
@@ -142,66 +131,85 @@ class _ProfileEditPageState extends State<ProfileEditPage> {
                         ),
                       ],
                     ),
+
+                    const SizedBox(height: 20),
+
+                    // Form fields
                     const AbsText(
                         displayString: "Name", fontSize: 16, headColor: true),
-                    const SizedBox(height: 6),
                     AbsTextfield(hintText: "name", controller: nameController),
                     const SizedBox(height: 10),
+
                     const AbsText(
                         displayString: "Headline",
                         fontSize: 16,
                         headColor: true),
-                    const SizedBox(height: 6),
                     AbsMultilineTextfield(
                         hintText: "headline",
                         controller: headlineController,
                         minLines: 2,
                         maxLines: 4),
                     const SizedBox(height: 10),
+
                     const AbsText(
                         displayString: "About", fontSize: 16, headColor: true),
-                    const SizedBox(height: 6),
                     AbsMultilineTextfield(
                         hintText: "about",
                         controller: aboutController,
                         minLines: 3,
                         maxLines: 7),
                     const SizedBox(height: 10),
+
                     const AbsText(
                         displayString: "Residence",
                         fontSize: 16,
                         headColor: true),
-                    const SizedBox(height: 6),
                     AbsMultilineTextfield(
                         hintText: "residence",
                         controller: residenceController,
                         minLines: 3,
                         maxLines: 7),
                     const SizedBox(height: 20),
+
+                    // Save button
                     Row(
                       children: [
                         Expanded(
-                            child: AbsButtonPrimary(
-                                onPressed: () {
-                                  UserView updated = UserView(
-                                      id: widget.userView.id,
-                                      userId: widget.userView.userId,
-                                      name: nameController.text,
-                                      headline: headlineController.text,
-                                      avatar: widget.userView.avatar,
-                                      accountType: widget.userView.accountType);
+                          child: AbsButtonPrimary(
+                            onPressed: () async {
+                              // upload avatar if needed
+                              String? newAvatarUrl =
+                                  await _uploadAvatarIfNeeded();
+                              if (newAvatarUrl != null) {
+                                avatarUrl = newAvatarUrl;
+                              }
 
-                                  client.account.updateIndivAccount(
-                                      updated,
-                                      aboutController.text,
-                                      residenceController.text);
-                                  Constants().updateUserView(context, updated);
-                                  Navigator.pop(context, 'saved');
-                                },
-                                text: "Save Changes")),
+                              UserView updated = UserView(
+                                id: widget.userView.id,
+                                userId: widget.userView.userId,
+                                name: nameController.text,
+                                headline: headlineController.text,
+                                avatar: avatarUrl,
+                                accountType: widget.userView.accountType,
+                              );
+
+                              // Update server
+                              await client.account.updateIndivAccount(
+                                  updated,
+                                  aboutController.text,
+                                  residenceController.text);
+
+                              // Save locally
+                              await Constants()
+                                  .updateUserView(context, updated);
+
+                              Navigator.pop(context, 'saved');
+                            },
+                            text: "Save Changes",
+                          ),
+                        ),
                       ],
                     ),
-                    const SizedBox(height: 20),
                   ],
                 ),
               ),
