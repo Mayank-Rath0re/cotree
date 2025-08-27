@@ -93,11 +93,19 @@ class EndpointAccount extends _i1.EndpointRef {
         {'id': id},
       );
 
-  _i2.Future<int> updateIndivAccount(_i4.UserView userview) =>
+  _i2.Future<int> updateIndivAccount(
+    _i4.UserView userview,
+    String bio,
+    String residence,
+  ) =>
       caller.callServerEndpoint<int>(
         'account',
         'updateIndivAccount',
-        {'userview': userview},
+        {
+          'userview': userview,
+          'bio': bio,
+          'residence': residence,
+        },
       );
 
   _i2.Future<List<_i4.UserView>> getAllUser() =>

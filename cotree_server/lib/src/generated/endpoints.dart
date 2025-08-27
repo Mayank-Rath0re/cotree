@@ -235,7 +235,17 @@ class Endpoints extends _i1.EndpointDispatch {
               name: 'userview',
               type: _i1.getType<_i15.UserView>(),
               nullable: false,
-            )
+            ),
+            'bio': _i1.ParameterDescription(
+              name: 'bio',
+              type: _i1.getType<String>(),
+              nullable: false,
+            ),
+            'residence': _i1.ParameterDescription(
+              name: 'residence',
+              type: _i1.getType<String>(),
+              nullable: false,
+            ),
           },
           call: (
             _i1.Session session,
@@ -244,6 +254,8 @@ class Endpoints extends _i1.EndpointDispatch {
               (endpoints['account'] as _i2.AccountEndpoint).updateIndivAccount(
             session,
             params['userview'],
+            params['bio'],
+            params['residence'],
           ),
         ),
         'getAllUser': _i1.MethodConnector(

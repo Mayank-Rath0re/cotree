@@ -34,7 +34,7 @@ class AccountEndpoint extends Endpoint {
     // ignore: unused_local_variable
     try {
       var userInsert = await User.db.insertRow(session, userObj);
-      createUserView(session, userInsert.id, name, "", "", accountType);
+      createUserView(session, id, name, "", "", accountType);
       // Initialize empty connections list
       var connectObj = Connect(
           accountId: userInsert.id,
@@ -72,14 +72,20 @@ class AccountEndpoint extends Endpoint {
 
   // Delete Account
   // Update Account
-  Future<int> updateIndivAccount(Session session, UserView userview) async {
+  Future<int> updateIndivAccount(
+      Session session, UserView userview, String bio, String residence) async {
     try {
       var userData = await User.db.findById(session, userview.userId);
+      var indivAccount = await Individual.db.findFirstRow(session,
+          where: (t) => t.accountId.equals(userview.userId));
       userData!.name = userview.name;
+      indivAccount!.bio = bio;
+      indivAccount.residence = residence;
       // update userView
       await UserView.db.updateRow(session, userview);
       // update user
       await User.db.updateRow(session, userData);
+      await Individual.db.updateRow(session, indivAccount);
       return 0;
     } catch (err) {
       print(err);
@@ -138,7 +144,7 @@ class AccountEndpoint extends Endpoint {
         contact: contact);
     userView[0].headline = headline!;
     // ignore: unused_local_variable
-    Individual.db.insert(session, [individualObj]);
+    await Individual.db.insert(session, [individualObj]);
     // ignore: unused_local_variable
     var updatedUserView = await UserView.db.updateRow(session, userView[0]);
     return updatedUserView;

@@ -1,12 +1,15 @@
+import 'package:cotree_client/cotree_client.dart';
 import 'package:cotree_flutter/components/abs_button_primary.dart';
 import 'package:cotree_flutter/components/abs_minimal_box.dart';
 import 'package:cotree_flutter/components/abs_text.dart';
+import 'package:cotree_flutter/pages/profile_edit_page.dart';
 import 'package:cotree_flutter/themes/theme_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class SettingsPage extends StatefulWidget {
-  const SettingsPage({super.key});
+  final UserView userview;
+  const SettingsPage({super.key, required this.userview});
 
   @override
   State<SettingsPage> createState() => _SettingsPageState();
@@ -73,6 +76,11 @@ class _SettingsPageState extends State<SettingsPage> {
               const SizedBox(height: 8),
               settingsTile(() {
                 // Navigate to profile edit page
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) =>
+                            ProfileEditPage(userView: widget.userview)));
               },
                   Icon(
                     Icons.person_outline,

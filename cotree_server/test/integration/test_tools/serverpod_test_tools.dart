@@ -336,6 +336,8 @@ class _AccountEndpoint {
   _i3.Future<int> updateIndivAccount(
     _i1.TestSessionBuilder sessionBuilder,
     _i5.UserView userview,
+    String bio,
+    String residence,
   ) async {
     return _i1.callAwaitableFunctionAndHandleExceptions(() async {
       var _localUniqueSession =
@@ -348,7 +350,11 @@ class _AccountEndpoint {
           createSessionCallback: (_) => _localUniqueSession,
           endpointPath: 'account',
           methodName: 'updateIndivAccount',
-          parameters: _i1.testObjectToJson({'userview': userview}),
+          parameters: _i1.testObjectToJson({
+            'userview': userview,
+            'bio': bio,
+            'residence': residence,
+          }),
           serializationManager: _serializationManager,
         );
         var _localReturnValue = await (_localCallContext.method.call(

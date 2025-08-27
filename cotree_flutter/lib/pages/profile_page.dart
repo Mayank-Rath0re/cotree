@@ -106,8 +106,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                   context,
                                   MaterialPageRoute(
                                       builder: (context) => ProfileEditPage(
-                                          userView: myUserview,
-                                          individualData: profileData)));
+                                          userView: myUserview)));
                               if (result == "saved") {
                                 setState(() {
                                   isLoading = true;

@@ -132,16 +132,6 @@ class _LoginPageState extends State<LoginPage> {
                   // If attempts returns a value, then account exists
                   // redirect the user to home page
                   if (logCheck != null) {
-                    // One way route to ensure user cannot come back to login page
-                    // unless they log out
-                    /*
-                    Navigator.pushAndRemoveUntil(
-                      // ignore: use_build_context_synchronously
-                      context,
-                      MaterialPageRoute(builder: (context) => HomePage()),
-                      (Route<dynamic> route) => true,
-                    );
-                    */
                   }
                   // If account doesn't exist, return wrong credentials popup
                   else {
