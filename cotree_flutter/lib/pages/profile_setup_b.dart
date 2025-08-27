@@ -8,7 +8,7 @@ import 'package:cotree_flutter/components/abs_text.dart';
 import 'package:cotree_flutter/components/abs_textfield.dart';
 import 'package:cotree_flutter/main.dart';
 import 'package:cotree_flutter/models/constants.dart';
-import 'package:cotree_flutter/pages/home_page.dart';
+import 'package:cotree_flutter/pages/authgate.dart';
 import 'package:cotree_flutter/themes/theme_provider.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
@@ -463,7 +463,7 @@ class _ProfileSetupBState extends State<ProfileSetupB> {
               await Constants().getOrSetUserView(context);
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => HomePage()),
+                MaterialPageRoute(builder: (context) => AuthGate()),
               );
             },
             child: const AbsText(
@@ -499,7 +499,7 @@ class _ProfileSetupBState extends State<ProfileSetupB> {
               await Constants().getOrSetUserView(context);
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => HomePage()),
+                MaterialPageRoute(builder: (context) => AuthGate()),
               );
             },
             text: "Finish Setup",

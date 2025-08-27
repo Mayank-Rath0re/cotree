@@ -5,7 +5,6 @@ import 'package:cotree_flutter/components/abs_passfield.dart';
 import 'package:cotree_flutter/components/abs_text.dart';
 import 'package:cotree_flutter/components/abs_textfield.dart';
 import 'package:cotree_flutter/main.dart';
-import 'package:cotree_flutter/pages/home_page.dart';
 import 'package:cotree_flutter/pages/reset_pass.dart';
 import 'package:cotree_flutter/pages/signup_page.dart';
 import 'package:cotree_flutter/themes/theme_provider.dart';
@@ -135,12 +134,14 @@ class _LoginPageState extends State<LoginPage> {
                   if (logCheck != null) {
                     // One way route to ensure user cannot come back to login page
                     // unless they log out
+                    /*
                     Navigator.pushAndRemoveUntil(
                       // ignore: use_build_context_synchronously
                       context,
                       MaterialPageRoute(builder: (context) => HomePage()),
                       (Route<dynamic> route) => true,
                     );
+                    */
                   }
                   // If account doesn't exist, return wrong credentials popup
                   else {
@@ -173,6 +174,11 @@ class _LoginPageState extends State<LoginPage> {
             Column(
               children: [
                 SignInWithGoogleButton(
+                  style: ButtonStyle(
+                      backgroundColor: WidgetStatePropertyAll(
+                          Provider.of<ThemeProvider>(context).mainColor),
+                      foregroundColor: WidgetStatePropertyAll(
+                          Provider.of<ThemeProvider>(context).contrastColor)),
                   caller: client.modules.auth,
                   onFailure: () {
                     ScaffoldMessenger.of(context).showSnackBar(
@@ -191,7 +197,7 @@ class _LoginPageState extends State<LoginPage> {
                       "46034047722-ng36snguce49qig7u5j3jog4l22hbk56.apps.googleusercontent.com", // (Android/iOS)
                   serverClientId:
                       "46034047722-81omi8rmahdt66ph8jd8q4lenkvaeaj6.apps.googleusercontent.com", // (Web/required)
-                  redirectUri: Uri.parse('http://localhost:8082/googlesignin'),
+                  redirectUri: Uri.parse('http://$ipAddress:8082/googlesignin'),
                 ),
               ],
             ),

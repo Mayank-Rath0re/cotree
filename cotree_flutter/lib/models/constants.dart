@@ -30,5 +30,6 @@ class Constants {
   Future<void> clearUserView(BuildContext context) async {
     final appCache = context.read<HiveBoxProvider>();
     appCache.deleteValue('userview');
+    print("cleared user view");
   }
 }

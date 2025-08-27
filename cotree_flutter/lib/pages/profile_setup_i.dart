@@ -7,7 +7,7 @@ import 'package:cotree_flutter/components/abs_textfield.dart';
 import 'package:cotree_flutter/main.dart';
 import 'package:cotree_flutter/models/constants.dart';
 import 'package:cotree_flutter/models/file_handling.dart';
-import 'package:cotree_flutter/pages/home_page.dart';
+import 'package:cotree_flutter/pages/authgate.dart';
 import 'package:cotree_flutter/themes/theme_provider.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
@@ -347,7 +347,7 @@ class _ProfileSetupIState extends State<ProfileSetupI> {
         await Constants().getOrSetUserView(context);
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => HomePage()),
+          MaterialPageRoute(builder: (context) => AuthGate()),
         );
       }
     } catch (e) {
@@ -460,7 +460,7 @@ class _ProfileSetupIState extends State<ProfileSetupI> {
                         if (mounted) {
                           Navigator.pushReplacement(
                             context,
-                            MaterialPageRoute(builder: (context) => HomePage()),
+                            MaterialPageRoute(builder: (context) => AuthGate()),
                           );
                         }
                       },
