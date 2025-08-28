@@ -169,7 +169,7 @@ class _NetworkPageState extends State<NetworkPage> {
                     for (int i = 0; i < userData.length; i++) ...[
                       AbsAccountBox(
                         key: ValueKey(userData[i].userId),
-                        accountId: userData[i].userId,
+                        profileUserView: userData[i],
                         myUserView: myUserView,
                         buttonText: "Connect",
                         onPress: () async {
@@ -195,15 +195,22 @@ class _NetworkPageState extends State<NetworkPage> {
               bold: true,
             ),
             SizedBox(
-              height: 200,
+              height: 230,
               child: ListView(
                 scrollDirection: Axis.horizontal,
                 children: [
                   for (int i = 0; i < orgsData.length; i++) ...[
                     AbsAccountBox(
-                      accountId: orgsData[i].userId,
+                      profileUserView: orgsData[i],
                       myUserView: myUserView,
                       buttonText: "Follow",
+                      onPress: () async {
+                        await client.connection.followOrg(
+                          myUserView.userId,
+                          orgsData[i].userId,
+                        );
+                        await getConnectData();
+                      },
                     ),
                     const SizedBox(width: 10),
                   ],

@@ -92,6 +92,16 @@ class _AddProfileInfoState extends State<AddProfileInfo> {
     );
   }
 
+  void clearControllers() {
+    setState(() {
+      titleController.text = "";
+      instituteController.text = "";
+      startDate = null;
+      endDate = null;
+      urlController.text = "";
+    });
+  }
+
   void onSubmit(BuildContext context) async {
     if (titleController.text.isNotEmpty &&
         instituteController.text.isNotEmpty &&
@@ -141,6 +151,7 @@ class _AddProfileInfoState extends State<AddProfileInfo> {
         setState(() {
           activeIndex = 0;
         });
+        clearControllers();
       }
     } else {
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(

@@ -12,6 +12,7 @@ import 'package:cotree_flutter/pages/home_page.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:reorderables/reorderables.dart';
 
 class CreatePostPage extends StatefulWidget {
   const CreatePostPage({super.key});
@@ -200,12 +201,6 @@ class _CreatePostPageState extends State<CreatePostPage> {
                           Column(
                             children: [
                               IconButton(
-                                onPressed: () {
-                                  // Future: add emoji picker
-                                },
-                                icon: const Icon(Icons.emoji_emotions_outlined),
-                              ),
-                              IconButton(
                                 onPressed: () async {
                                   final ImagePicker picker = ImagePicker();
                                   final List<XFile> images =
@@ -238,17 +233,27 @@ class _CreatePostPageState extends State<CreatePostPage> {
                               bold: true,
                             ),
                             const SizedBox(height: 8),
-                            Wrap(
+                            ReorderableWrap(
                               spacing: 8.0,
                               runSpacing: 8.0,
+                              needsLongPressDraggable:
+                                  true, // drag on long press
+                              onReorder: (oldIndex, newIndex) {
+                                setState(() {
+                                  final file = filePaths.removeAt(oldIndex);
+                                  final selFile =
+                                      _selectedFile.removeAt(oldIndex);
+
+                                  filePaths.insert(newIndex, file);
+                                  _selectedFile.insert(newIndex, selFile);
+                                });
+                              },
                               children: List.generate(
                                 filePaths.length,
                                 (index) => _buildImageWithRemoveButton(
-                                  filePaths[index],
-                                  index,
-                                ),
+                                    filePaths[index], index),
                               ),
-                            ),
+                            )
                           ],
                         ),
                       ),

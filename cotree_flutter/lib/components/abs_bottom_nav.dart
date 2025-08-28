@@ -1,3 +1,4 @@
+import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:provider/provider.dart';
@@ -43,11 +44,27 @@ class AbsBottomNav extends StatelessWidget {
         gap: 8,
         iconSize: 24,
         duration: const Duration(milliseconds: 400),
-        tabs: const [
-          GButton(icon: Icons.home_outlined, text: 'Home'),
-          GButton(icon: Icons.people_outline, text: 'Users'),
-          GButton(icon: Icons.work_outline_rounded, text: 'Work'),
-          GButton(icon: Icons.chat_bubble_outline, text: 'Chat'),
+        tabs: [
+          GButton(
+              icon: selectedIndex == 0
+                  ? FluentIcons.home_20_filled
+                  : FluentIcons.home_20_regular,
+              text: 'Home'),
+          GButton(
+              icon: selectedIndex == 1
+                  ? FluentIcons.people_20_filled
+                  : FluentIcons.people_20_regular,
+              text: 'Users'),
+          GButton(
+              icon: selectedIndex == 2
+                  ? FluentIcons.briefcase_20_filled
+                  : FluentIcons.briefcase_20_regular,
+              text: 'Work'),
+          GButton(
+              icon: selectedIndex == 3
+                  ? FluentIcons.chat_multiple_20_filled
+                  : FluentIcons.chat_multiple_20_regular,
+              text: 'Chat'),
         ],
       )),
     );

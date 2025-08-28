@@ -7,6 +7,7 @@ import 'package:cotree_flutter/pages/profile_page.dart';
 import 'package:cotree_flutter/pages/profile_page_org.dart';
 import 'package:cotree_flutter/pages/settings_page.dart';
 import 'package:cotree_flutter/pages/space_land_page.dart';
+import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 
 class AbsDrawer extends StatefulWidget {
@@ -64,7 +65,7 @@ class _AbsDrawerState extends State<AbsDrawer> {
             ),
             const Divider(),
             ListTile(
-              leading: const Icon(Icons.workspace_premium_outlined),
+              leading: const Icon(FluentIcons.cube_20_filled),
               title: const AbsText(
                 displayString: "Switch to Workspace",
                 fontSize: 16,
@@ -77,7 +78,7 @@ class _AbsDrawerState extends State<AbsDrawer> {
               },
             ),
             ListTile(
-              leading: const Icon(Icons.settings),
+              leading: const Icon(FluentIcons.settings_20_filled),
               title: const AbsText(
                 displayString: "Settings",
                 fontSize: 16,
@@ -105,7 +106,7 @@ class _AbsDrawerState extends State<AbsDrawer> {
             ),*/
             const Spacer(),
             ListTile(
-              leading: const Icon(Icons.logout),
+              leading: const Icon(FluentIcons.arrow_exit_20_regular),
               title: const AbsText(
                 displayString: "Logout",
                 fontSize: 16,

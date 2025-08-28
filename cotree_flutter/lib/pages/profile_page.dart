@@ -15,6 +15,7 @@ import 'package:cotree_flutter/pages/profile_edit_page.dart';
 import 'package:cotree_flutter/pages/see_all_posts.dart';
 import 'package:cotree_flutter/pages/user_connections.dart';
 import 'package:cotree_flutter/themes/theme_provider.dart';
+import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -482,11 +483,22 @@ class _ProfilePageState extends State<ProfilePage> {
                         ),
                         const SizedBox(height: 20),
                       ],
-                      const AbsText(
-                          displayString: "Experience",
-                          fontSize: 16,
-                          bold: true,
-                          headColor: true),
+                      Row(
+                        children: [
+                          Icon(
+                            FluentIcons.briefcase_24_filled,
+                            size: 30,
+                            color:
+                                Provider.of<ThemeProvider>(context).headColor,
+                          ),
+                          const SizedBox(width: 10),
+                          const AbsText(
+                              displayString: "Experience",
+                              fontSize: 16,
+                              bold: true),
+                        ],
+                      ),
+                      const Divider(),
                       const SizedBox(height: 10),
                       for (int i = 0; i < experience.length; i++) ...[
                         AbsProfileTile(
@@ -497,11 +509,22 @@ class _ProfilePageState extends State<ProfilePage> {
                         const SizedBox(height: 5),
                       ],
                       const SizedBox(height: 20),
-                      const AbsText(
-                          displayString: "Education",
-                          fontSize: 16,
-                          bold: true,
-                          headColor: true),
+                      Row(
+                        children: [
+                          Icon(
+                            FluentIcons.hat_graduation_24_filled,
+                            size: 30,
+                            color:
+                                Provider.of<ThemeProvider>(context).headColor,
+                          ),
+                          const SizedBox(width: 10),
+                          const AbsText(
+                              displayString: "Education",
+                              fontSize: 16,
+                              bold: true),
+                        ],
+                      ),
+                      const Divider(),
                       const SizedBox(height: 10),
                       for (int i = 0; i < academics.length; i++) ...[
                         AbsProfileTile(
@@ -512,11 +535,22 @@ class _ProfilePageState extends State<ProfilePage> {
                         const SizedBox(height: 5),
                       ],
                       const SizedBox(height: 20),
-                      const AbsText(
-                          displayString: "Projects",
-                          fontSize: 16,
-                          bold: true,
-                          headColor: true),
+                      Row(
+                        children: [
+                          Icon(
+                            FluentIcons.board_24_filled,
+                            size: 30,
+                            color:
+                                Provider.of<ThemeProvider>(context).headColor,
+                          ),
+                          const SizedBox(width: 10),
+                          const AbsText(
+                              displayString: "Projects",
+                              fontSize: 16,
+                              bold: true),
+                        ],
+                      ),
+                      const Divider(),
                       const SizedBox(height: 10),
                       for (int i = 0; i < projects.length; i++) ...[
                         AbsProfileTile(
@@ -527,11 +561,22 @@ class _ProfilePageState extends State<ProfilePage> {
                         const SizedBox(height: 5),
                       ],
                       const SizedBox(height: 20),
-                      const AbsText(
-                          displayString: "Certifications",
-                          fontSize: 16,
-                          bold: true,
-                          headColor: true),
+                      Row(
+                        children: [
+                          Icon(
+                            FluentIcons.certificate_24_filled,
+                            size: 30,
+                            color:
+                                Provider.of<ThemeProvider>(context).headColor,
+                          ),
+                          const SizedBox(width: 10),
+                          const AbsText(
+                              displayString: "Certifications",
+                              fontSize: 16,
+                              bold: true),
+                        ],
+                      ),
+                      const Divider(),
                       const SizedBox(height: 10),
                       for (int i = 0; i < certifications.length; i++) ...[
                         AbsProfileTile(

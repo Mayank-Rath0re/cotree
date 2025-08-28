@@ -24,6 +24,7 @@ class Constants {
 
   Future<void> updateUserView(BuildContext context, UserView userview) async {
     final appCache = context.read<HiveBoxProvider>();
+    print("updating user view in hive: $userview");
     appCache.setValue('userview', userview);
   }
 

@@ -1,5 +1,6 @@
 import 'package:cotree_flutter/components/abs_text.dart';
 import 'package:cotree_flutter/themes/theme_provider.dart';
+import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -27,7 +28,7 @@ class _AbsAlertDialogState extends State<AbsAlertDialog> {
                     Navigator.pop(context);
                   },
                   icon: Icon(
-                    Icons.close_rounded,
+                    FluentIcons.dismiss_16_filled,
                     color: Provider.of<ThemeProvider>(context).contrastColor,
                   )),
             ),

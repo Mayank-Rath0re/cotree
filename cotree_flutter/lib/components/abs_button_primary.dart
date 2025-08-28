@@ -42,9 +42,12 @@ class AbsButtonPrimary extends StatelessWidget {
                     fontSize: fontSize,
                     fontWeight: FontWeight.bold)),
           ] else ...[
-            const Center(
-              child: CircularProgressIndicator(
-                color: const Color(0xFFFDF8F4),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: const Center(
+                child: CircularProgressIndicator(
+                  color: const Color(0xFFFDF8F4),
+                ),
               ),
             )
           ],

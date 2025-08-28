@@ -4,52 +4,59 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class AbsButtonSecondary extends StatelessWidget {
-  final Function()? onPressed;
+  final VoidCallback? onPressed;
   final String text;
   final Widget? icon;
-  final bool roundedBorder;
   final double fontSize;
+  final bool roundedBorder;
+
   const AbsButtonSecondary({
     super.key,
     required this.onPressed,
     required this.text,
     this.icon,
-    this.roundedBorder = false,
     this.fontSize = 16,
+    this.roundedBorder = false,
   });
 
   @override
   Widget build(BuildContext context) {
-    final themeColor = Provider.of<ThemeProvider>(context).headColor;
+    final theme = Provider.of<ThemeProvider>(context);
 
     return ElevatedButton(
       onPressed: onPressed,
       style: ElevatedButton.styleFrom(
-        elevation: 1,
-        foregroundColor: themeColor,
-        backgroundColor: Provider.of<ThemeProvider>(context).mainColor,
+        elevation: 0,
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        backgroundColor: theme.secondaryColor, // lighter brown for secondary
+        foregroundColor: theme.contrastColor, // off-white text/icons
         shape: RoundedRectangleBorder(
-            side: BorderSide(
-                width: 0.5,
-                color: Provider.of<ThemeProvider>(context).contrastColor),
-            borderRadius: roundedBorder
-                ? BorderRadiusGeometry.circular(24)
-                : BorderRadiusGeometry.circular(8)),
+          borderRadius: BorderRadius.circular(roundedBorder ? 24 : 8),
+          side: BorderSide(
+            width: 1,
+            color: theme.mainColor.withOpacity(0.5), // subtle outline
+          ),
+        ),
         textStyle: TextStyle(fontSize: fontSize),
       ),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
         mainAxisSize: MainAxisSize.min,
         children: [
           if (icon != null) ...[
-            icon!,
-            const SizedBox(width: 5),
+            IconTheme(
+              data: IconThemeData(
+                size: fontSize + 2,
+                color: theme.headColor, // golden accent for icons
+              ),
+              child: icon!,
+            ),
+            const SizedBox(width: 8),
           ],
           AbsText(
             displayString: text,
             fontSize: fontSize,
             bold: true,
-            headColor: true,
+            headColor: false, // let contrastColor handle text color
           ),
         ],
       ),

@@ -4,7 +4,10 @@ import 'package:cotree_flutter/components/abs_minimal_box.dart';
 import 'package:cotree_flutter/components/abs_org_avatar.dart';
 import 'package:cotree_flutter/components/abs_text.dart';
 import 'package:cotree_flutter/main.dart';
+import 'package:cotree_flutter/themes/theme_provider.dart';
+import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class ProfilePageOrg extends StatefulWidget {
   final int? profileId;
@@ -18,6 +21,8 @@ class ProfilePageOrg extends StatefulWidget {
 
 class _ProfilePageOrgState extends State<ProfilePageOrg> {
   bool isLoading = true;
+  late bool isFollowing = false;
+  late int followerCount = 0;
   late UserView userData;
   late Organization orgData;
 
@@ -25,9 +30,14 @@ class _ProfilePageOrgState extends State<ProfilePageOrg> {
     var userInfo = await client.account.getUserView(widget.profileId);
     var profileData =
         await client.account.getOrganizationData(widget.profileId);
+    var count = await client.connection.followerCount(widget.profileId!);
+    var isFollowed = await client.connection
+        .isFollowingOrg(widget.userview.userId, widget.profileId!);
     setState(() {
       userData = userInfo;
       orgData = profileData;
+      followerCount = count;
+      isFollowing = isFollowed;
       isLoading = false;
     });
   }
@@ -50,7 +60,7 @@ class _ProfilePageOrgState extends State<ProfilePageOrg> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    AbsOrgAvatar(radius: 45, avatarUrl: widget.userview.avatar),
+                    AbsOrgAvatar(radius: 45, avatarUrl: userData.avatar),
                     const SizedBox(height: 10),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -73,8 +83,8 @@ class _ProfilePageOrgState extends State<ProfilePageOrg> {
                                     roundedBorder: true,
                                     child: Row(
                                       children: [
-                                        const AbsText(
-                                          displayString: "30",
+                                        AbsText(
+                                          displayString: "$followerCount",
                                           fontSize: 15,
                                           headColor: true,
                                         ),
@@ -87,7 +97,24 @@ class _ProfilePageOrgState extends State<ProfilePageOrg> {
                             ),
                             const SizedBox(height: 10),
                             AbsButtonPrimary(
-                                onPressed: () {}, text: " + Follow")
+                                onPressed: () async {
+                                  await client.connection.followOrg(
+                                    widget.userview.userId,
+                                    widget.profileId!,
+                                  );
+                                  setState(() {
+                                    followerCount += 1;
+                                  });
+                                },
+                                icon: isFollowing
+                                    ? Icon(
+                                        FluentIcons.checkmark_16_filled,
+                                        color:
+                                            Provider.of<ThemeProvider>(context)
+                                                .headColor,
+                                      )
+                                    : null,
+                                text: isFollowing ? "Following" : " + Follow")
                           ],
                         ),
                       ],
