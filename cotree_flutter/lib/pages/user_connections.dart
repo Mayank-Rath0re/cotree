@@ -93,6 +93,7 @@ class _UserConnectionsPageState extends State<UserConnectionsPage> {
               child: Padding(
                 padding: const EdgeInsets.all(12.0),
                 child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     if (connections.isEmpty) ...[
                       const SizedBox(height: 200),

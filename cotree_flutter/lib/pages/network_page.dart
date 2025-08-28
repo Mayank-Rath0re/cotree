@@ -19,8 +19,8 @@ class NetworkPage extends StatefulWidget {
 class _NetworkPageState extends State<NetworkPage> {
   late Connect userConnectData;
   late UserView myUserView;
-  late List<UserView> userData;
-  late List<UserView> orgsData;
+  late List<UserView> userData = [];
+  late List<UserView> orgsData = [];
   bool isLoading = true;
 
   Future<void> getConnectData() async {
@@ -29,7 +29,9 @@ class _NetworkPageState extends State<NetworkPage> {
         .fetchConnectData(sessionManager.signedInUser!.id);
     List<UserView> listData =
         await client.recommendation.recommendUsers(user.userId, limit: 20);
+    print("${listData.length} ${userData.length}");
     List<UserView> listOrgData = await client.account.getOrgs();
+    if (!mounted) return; // safety against setState after dispose
     setState(() {
       myUserView = user;
       userConnectData = data;
@@ -41,21 +43,25 @@ class _NetworkPageState extends State<NetworkPage> {
 
   @override
   void initState() {
-    getConnectData();
     super.initState();
+    // Run after first frame to avoid dual-build issue
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      getConnectData();
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     return RefreshIndicator(
       color: Provider.of<ThemeProvider>(context).headColor,
-      onRefresh: () async {
-        await getConnectData();
-      },
+      onRefresh: getConnectData,
       child: ListView(
         children: [
           if (isLoading) ...[
-            const Center(child: CircularProgressIndicator())
+            Center(
+                child: CircularProgressIndicator(
+              color: Provider.of<ThemeProvider>(context).headColor,
+            ))
           ] else ...[
             const AbsText(
               displayString: "Invitations",
@@ -70,19 +76,27 @@ class _NetworkPageState extends State<NetworkPage> {
                   child: GestureDetector(
                     onTap: () {
                       Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => RequestsPage(
-                                    connectData: userConnectData,
-                                    index: 0,
-                                    userId: myUserView.userId,
-                                  )));
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => RequestsPage(
+                            connectData: userConnectData,
+                            index: 0,
+                            userId: myUserView.userId,
+                          ),
+                        ),
+                      ).then((_) async {
+                        setState(() {
+                          isLoading = true;
+                        });
+                        await getConnectData();
+                      });
                     },
                     child: AbsMinimalBox(
                       child: AbsText(
-                          displayString:
-                              "Sent (${userConnectData.sentPending!.length})",
-                          fontSize: 16),
+                        displayString:
+                            "Sent (${userConnectData.sentPending!.length})",
+                        fontSize: 16,
+                      ),
                     ),
                   ),
                 ),
@@ -91,45 +105,61 @@ class _NetworkPageState extends State<NetworkPage> {
                   child: GestureDetector(
                     onTap: () {
                       Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => RequestsPage(
-                                    connectData: userConnectData,
-                                    index: 1,
-                                    userId: myUserView.userId,
-                                  )));
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => RequestsPage(
+                            connectData: userConnectData,
+                            index: 1,
+                            userId: myUserView.userId,
+                          ),
+                        ),
+                      ).then((_) async {
+                        setState(() {
+                          isLoading = true;
+                        });
+                        await getConnectData();
+                      });
                     },
                     child: AbsMinimalBox(
-                        child: AbsText(
-                            displayString:
-                                "Received (${userConnectData.receivedPending!.length})",
-                            fontSize: 16)),
+                      child: AbsText(
+                        displayString:
+                            "Received (${userConnectData.receivedPending!.length})",
+                        fontSize: 16,
+                      ),
+                    ),
                   ),
-                )
+                ),
               ],
             ),
             const SizedBox(height: 15),
             const Divider(),
             const AbsText(
-                displayString: "Fellow Coteries", fontSize: 16, bold: true),
+              displayString: "Fellow Coteries",
+              fontSize: 16,
+              bold: true,
+            ),
             const SizedBox(height: 15),
             if (userData.isEmpty) ...[
               SizedBox(
-                  height: 200,
-                  child: AbsMinimalBox(
-                      child: Center(
-                          child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(Icons.new_label, size: 50),
-                      const SizedBox(height: 20),
-                      const AbsText(
+                height: 200,
+                child: AbsMinimalBox(
+                  child: Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(Icons.new_label, size: 50),
+                        const SizedBox(height: 20),
+                        const AbsText(
                           displayString: "No new users to show",
                           fontSize: 16,
                           bold: true,
-                          headColor: true)
-                    ],
-                  )))),
+                          headColor: true,
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
             ] else ...[
               SizedBox(
                 height: 230,
@@ -138,14 +168,17 @@ class _NetworkPageState extends State<NetworkPage> {
                   children: [
                     for (int i = 0; i < userData.length; i++) ...[
                       AbsAccountBox(
+                        key: ValueKey(userData[i].userId),
                         accountId: userData[i].userId,
                         myUserView: myUserView,
                         buttonText: "Connect",
-                        onPress: () {
-                          setState(() {
-                            userConnectData.sentPending!.add(Invitation(
-                                user: userData[i].userId, type: 'Sent'));
-                          });
+                        onPress: () async {
+                          await client.connection.sendConnectionRequest(
+                            myUserView.userId,
+                            userData[i].userId,
+                            "",
+                          );
+                          await getConnectData();
                         },
                       ),
                       const SizedBox(width: 10),
@@ -157,7 +190,10 @@ class _NetworkPageState extends State<NetworkPage> {
             const SizedBox(height: 15),
             const Divider(),
             const AbsText(
-                displayString: "Organizations", fontSize: 16, bold: true),
+              displayString: "Organizations",
+              fontSize: 16,
+              bold: true,
+            ),
             SizedBox(
               height: 200,
               child: ListView(
@@ -165,9 +201,10 @@ class _NetworkPageState extends State<NetworkPage> {
                 children: [
                   for (int i = 0; i < orgsData.length; i++) ...[
                     AbsAccountBox(
-                        accountId: orgsData[i].userId,
-                        myUserView: myUserView,
-                        buttonText: "Follow"),
+                      accountId: orgsData[i].userId,
+                      myUserView: myUserView,
+                      buttonText: "Follow",
+                    ),
                     const SizedBox(width: 10),
                   ],
                 ],

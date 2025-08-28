@@ -44,8 +44,17 @@ class _ProfilePageState extends State<ProfilePage> {
 
   Future<void> getProfileData() async {
     var user = await Constants().getOrSetUserView(context);
-    Individual accountData =
-        await client.account.getIndividualData(widget.profileId);
+    Individual? accountData;
+    try {
+      accountData = await client.account.getIndividualData(widget.profileId);
+    } catch (err) {
+      accountData = Individual(
+          bio: "Error marked profile",
+          accountId: widget.profileId!,
+          gender: "M",
+          contact: "9911");
+    }
+
     UserView userDetails = await client.account.getUserView(widget.profileId);
     var profData =
         await client.account.fetchUserProfessionalData(widget.profileId!);
@@ -60,7 +69,7 @@ class _ProfilePageState extends State<ProfilePage> {
     setState(() {
       myUserview = user;
       userData = userDetails;
-      profileData = accountData;
+      profileData = accountData!;
       profileViewType = viewType;
       userPosts = posts;
       connectionsCount = connectInfo;
