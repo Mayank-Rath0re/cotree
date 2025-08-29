@@ -69,53 +69,55 @@ class _ProfileSetupBState extends State<ProfileSetupB> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const AbsText(
-          displayString: "Profile Setup",
-          fontSize: 20,
-          headColor: true,
-          bold: true,
-        ),
-        centerTitle: true,
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            Expanded(
-              child: ListView(
-                children: [
-                  // Avatar and Organization Name Section
-                  _buildAvatarSection(),
-
-                  const SizedBox(height: 24),
-
-                  // Origin Date Section
-                  _buildOriginDateSection(),
-
-                  const SizedBox(height: 24),
-
-                  // Headline Section
-                  _buildHeadlineSection(),
-
-                  const SizedBox(height: 24),
-
-                  // About Section
-                  _buildAboutSection(),
-
-                  const SizedBox(height: 24),
-
-                  // Custom Information Section
-                  _buildCustomInformationSection(),
-                ],
-              ),
+    return PopScope(
+        canPop: false,
+        child: Scaffold(
+          appBar: AppBar(
+            title: const AbsText(
+              displayString: "Profile Setup",
+              fontSize: 20,
+              headColor: true,
+              bold: true,
             ),
-          ],
-        ),
-      ),
-      bottomNavigationBar: _buildBottomNavigationBar(),
-    );
+            centerTitle: true,
+          ),
+          body: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              children: [
+                Expanded(
+                  child: ListView(
+                    children: [
+                      // Avatar and Organization Name Section
+                      _buildAvatarSection(),
+
+                      const SizedBox(height: 24),
+
+                      // Origin Date Section
+                      _buildOriginDateSection(),
+
+                      const SizedBox(height: 24),
+
+                      // Headline Section
+                      _buildHeadlineSection(),
+
+                      const SizedBox(height: 24),
+
+                      // About Section
+                      _buildAboutSection(),
+
+                      const SizedBox(height: 24),
+
+                      // Custom Information Section
+                      _buildCustomInformationSection(),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+          bottomNavigationBar: _buildBottomNavigationBar(),
+        ));
   }
 
   Widget _buildAvatarSection() {

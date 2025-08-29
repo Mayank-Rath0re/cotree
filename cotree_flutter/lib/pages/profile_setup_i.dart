@@ -371,150 +371,159 @@ class _ProfileSetupIState extends State<ProfileSetupI> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        leading: IconButton(
-          icon: Icon(
-            Icons.arrow_back_ios,
-            color: Provider.of<ThemeProvider>(context).contrastColor,
-          ),
-          onPressed: () => Navigator.pop(context),
-        ),
-        title: Text(
-          'Complete Your Profile',
-          style: TextStyle(
-            color: Provider.of<ThemeProvider>(context).contrastColor,
-            fontSize: 20,
-            fontWeight: FontWeight.w600,
-          ),
-        ),
-        centerTitle: true,
-      ),
-      body: SafeArea(
-        child: Column(
-          children: [
-            Expanded(
-              child: SingleChildScrollView(
-                padding: const EdgeInsets.all(20),
-                child: Column(
-                  children: [
-                    _buildAvatarSection(),
-                    const SizedBox(height: 32),
-                    _buildGenderSelector(),
-                    const SizedBox(height: 20),
-                    _buildDatePicker(),
-                    const SizedBox(height: 20),
-                    _buildInputField(
-                      label: 'Phone Number',
-                      hint: 'Enter your phone number',
-                      controller: phoneController,
-                      keyboardType: TextInputType.phone,
-                    ),
-                    const SizedBox(height: 20),
-                    _buildInputField(
-                      label: 'Professional Headline',
-                      hint: 'e.g., Software Engineer, Marketing Manager',
-                      controller: headingController,
-                    ),
-                    const SizedBox(height: 20),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          "About You",
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w600,
-                            color: Provider.of<ThemeProvider>(context)
-                                .contrastColor,
-                          ),
-                        ),
-                        const SizedBox(height: 16),
-                        AbsMultilineTextfield(
-                          hintText:
-                              "Tell us about yourself, your experience, and what you're passionate about...",
-                          controller: bioController,
-                          minLines: 4,
-                          maxLines: 10,
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 20),
-                    _buildInputField(
-                      label: 'Location',
-                      hint: 'City, State, Country',
-                      controller: residenceController,
-                    ),
-                    const SizedBox(height: 40),
-                  ],
-                ),
+    return PopScope(
+        canPop: false,
+        child: Scaffold(
+          appBar: AppBar(
+            leading: IconButton(
+              icon: Icon(
+                Icons.arrow_back_ios,
+                color: Provider.of<ThemeProvider>(context).contrastColor,
+              ),
+              onPressed: () => Navigator.pop(context),
+            ),
+            title: Text(
+              'Complete Your Profile',
+              style: TextStyle(
+                color: Provider.of<ThemeProvider>(context).contrastColor,
+                fontSize: 20,
+                fontWeight: FontWeight.w600,
               ),
             ),
-            AbsMinimalBox(
-              child: Row(
-                children: [
-                  Expanded(
-                    child: TextButton(
-                      onPressed: () async {
-                        await client.account.setupProfileI("", "",
-                            sessionManager.signedInUser!.id, "", "", null, "");
-                        if (mounted) {
-                          Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(builder: (context) => AuthGate()),
-                          );
-                        }
-                      },
-                      style: TextButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(vertical: 16),
-                        foregroundColor: Colors.grey[600],
-                      ),
-                      child: const Text(
-                        'Skip for now',
-                        style: TextStyle(fontSize: 16),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: 16),
-                  Expanded(
-                    flex: 2,
-                    child: ElevatedButton(
-                      onPressed: isLoading ? null : _submitProfile,
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor:
-                            Provider.of<ThemeProvider>(context).headColor,
-                        foregroundColor: Colors.white,
-                        padding: const EdgeInsets.symmetric(vertical: 16),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
+            centerTitle: true,
+          ),
+          body: SafeArea(
+            child: Column(
+              children: [
+                Expanded(
+                  child: SingleChildScrollView(
+                    padding: const EdgeInsets.all(20),
+                    child: Column(
+                      children: [
+                        _buildAvatarSection(),
+                        const SizedBox(height: 32),
+                        _buildGenderSelector(),
+                        const SizedBox(height: 20),
+                        _buildDatePicker(),
+                        const SizedBox(height: 20),
+                        _buildInputField(
+                          label: 'Phone Number',
+                          hint: 'Enter your phone number',
+                          controller: phoneController,
+                          keyboardType: TextInputType.phone,
                         ),
-                        elevation: 0,
-                      ),
-                      child: isLoading
-                          ? const SizedBox(
-                              height: 20,
-                              width: 20,
-                              child: CircularProgressIndicator(
-                                strokeWidth: 2,
-                                valueColor:
-                                    AlwaysStoppedAnimation<Color>(Colors.white),
-                              ),
-                            )
-                          : const Text(
-                              'Complete Profile',
+                        const SizedBox(height: 20),
+                        _buildInputField(
+                          label: 'Professional Headline',
+                          hint: 'e.g., Software Engineer, Marketing Manager',
+                          controller: headingController,
+                        ),
+                        const SizedBox(height: 20),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              "About You",
                               style: TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.w600,
+                                color: Provider.of<ThemeProvider>(context)
+                                    .contrastColor,
                               ),
                             ),
+                            const SizedBox(height: 16),
+                            AbsMultilineTextfield(
+                              hintText:
+                                  "Tell us about yourself, your experience, and what you're passionate about...",
+                              controller: bioController,
+                              minLines: 4,
+                              maxLines: 10,
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 20),
+                        _buildInputField(
+                          label: 'Location',
+                          hint: 'City, State, Country',
+                          controller: residenceController,
+                        ),
+                        const SizedBox(height: 40),
+                      ],
                     ),
                   ),
-                ],
-              ),
+                ),
+                AbsMinimalBox(
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: TextButton(
+                          onPressed: () async {
+                            await client.account.setupProfileI(
+                                "",
+                                "",
+                                sessionManager.signedInUser!.id,
+                                "",
+                                "",
+                                null,
+                                "");
+                            if (mounted) {
+                              Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => AuthGate()),
+                              );
+                            }
+                          },
+                          style: TextButton.styleFrom(
+                            padding: const EdgeInsets.symmetric(vertical: 16),
+                            foregroundColor: Colors.grey[600],
+                          ),
+                          child: const Text(
+                            'Skip for now',
+                            style: TextStyle(fontSize: 16),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 16),
+                      Expanded(
+                        flex: 2,
+                        child: ElevatedButton(
+                          onPressed: isLoading ? null : _submitProfile,
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor:
+                                Provider.of<ThemeProvider>(context).headColor,
+                            foregroundColor: Colors.white,
+                            padding: const EdgeInsets.symmetric(vertical: 16),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            elevation: 0,
+                          ),
+                          child: isLoading
+                              ? const SizedBox(
+                                  height: 20,
+                                  width: 20,
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 2,
+                                    valueColor: AlwaysStoppedAnimation<Color>(
+                                        Colors.white),
+                                  ),
+                                )
+                              : const Text(
+                                  'Complete Profile',
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
             ),
-          ],
-        ),
-      ),
-    );
+          ),
+        ));
   }
 }

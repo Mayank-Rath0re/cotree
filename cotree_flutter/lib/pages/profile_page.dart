@@ -127,16 +127,6 @@ class _ProfilePageState extends State<ProfilePage> {
                             },
                             icon: const Icon(Icons.edit)),
                         const SizedBox(width: 15),
-                        IconButton(
-                            onPressed: () {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => AddProfileInfo(
-                                          profileId: widget.profileId!)));
-                            },
-                            icon: const Icon(Icons.add)),
-                        const SizedBox(width: 15),
                       ]
                     : [],
               ),
@@ -483,27 +473,42 @@ class _ProfilePageState extends State<ProfilePage> {
                         ),
                         const SizedBox(height: 20),
                       ],
-                      Row(
-                        children: [
-                          Icon(
-                            FluentIcons.briefcase_24_filled,
-                            size: 30,
-                            color:
-                                Provider.of<ThemeProvider>(context).headColor,
-                          ),
-                          const SizedBox(width: 10),
-                          const AbsText(
-                              displayString: "Experience",
-                              fontSize: 16,
-                              bold: true),
+                      Row(children: [
+                        Icon(
+                          FluentIcons.briefcase_24_filled,
+                          size: 30,
+                          color: Provider.of<ThemeProvider>(context).headColor,
+                        ),
+                        const SizedBox(width: 10),
+                        const AbsText(
+                            displayString: "Experience",
+                            fontSize: 16,
+                            bold: true),
+                        const Spacer(),
+                        if (isMyAccount) ...[
+                          IconButton(
+                              onPressed: () {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => AddProfileInfo(
+                                              profileId: widget.profileId!,
+                                              index: 0,
+                                            )));
+                              },
+                              icon: Icon(FluentIcons.add_16_regular,
+                                  size: 20,
+                                  color: Provider.of<ThemeProvider>(context)
+                                      .headColor))
                         ],
-                      ),
+                      ]),
                       const Divider(),
                       const SizedBox(height: 10),
                       for (int i = 0; i < experience.length; i++) ...[
                         AbsProfileTile(
                           profileId: widget.profileId!,
                           data: experience[i],
+                          categoryIndex: 0,
                           isMyAccount: isMyAccount,
                         ),
                         const SizedBox(height: 5),
@@ -522,6 +527,23 @@ class _ProfilePageState extends State<ProfilePage> {
                               displayString: "Education",
                               fontSize: 16,
                               bold: true),
+                          const Spacer(),
+                          if (isMyAccount) ...[
+                            IconButton(
+                                onPressed: () {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => AddProfileInfo(
+                                                profileId: widget.profileId!,
+                                                index: 1,
+                                              )));
+                                },
+                                icon: Icon(FluentIcons.add_16_regular,
+                                    size: 20,
+                                    color: Provider.of<ThemeProvider>(context)
+                                        .headColor))
+                          ],
                         ],
                       ),
                       const Divider(),
@@ -530,6 +552,7 @@ class _ProfilePageState extends State<ProfilePage> {
                         AbsProfileTile(
                           profileId: widget.profileId!,
                           data: academics[i],
+                          categoryIndex: 1,
                           isMyAccount: isMyAccount,
                         ),
                         const SizedBox(height: 5),
@@ -548,6 +571,23 @@ class _ProfilePageState extends State<ProfilePage> {
                               displayString: "Projects",
                               fontSize: 16,
                               bold: true),
+                          const Spacer(),
+                          if (isMyAccount) ...[
+                            IconButton(
+                                onPressed: () {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => AddProfileInfo(
+                                                profileId: widget.profileId!,
+                                                index: 2,
+                                              )));
+                                },
+                                icon: Icon(FluentIcons.add_16_regular,
+                                    size: 20,
+                                    color: Provider.of<ThemeProvider>(context)
+                                        .headColor))
+                          ],
                         ],
                       ),
                       const Divider(),
@@ -556,6 +596,7 @@ class _ProfilePageState extends State<ProfilePage> {
                         AbsProfileTile(
                           profileId: widget.profileId!,
                           data: projects[i],
+                          categoryIndex: 2,
                           isMyAccount: isMyAccount,
                         ),
                         const SizedBox(height: 5),
@@ -574,6 +615,23 @@ class _ProfilePageState extends State<ProfilePage> {
                               displayString: "Certifications",
                               fontSize: 16,
                               bold: true),
+                          const Spacer(),
+                          if (isMyAccount) ...[
+                            IconButton(
+                                onPressed: () {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => AddProfileInfo(
+                                                profileId: widget.profileId!,
+                                                index: 3,
+                                              )));
+                                },
+                                icon: Icon(FluentIcons.add_16_regular,
+                                    size: 20,
+                                    color: Provider.of<ThemeProvider>(context)
+                                        .headColor))
+                          ],
                         ],
                       ),
                       const Divider(),
@@ -582,6 +640,7 @@ class _ProfilePageState extends State<ProfilePage> {
                         AbsProfileTile(
                           profileId: widget.profileId!,
                           data: certifications[i],
+                          categoryIndex: 3,
                           isMyAccount: isMyAccount,
                         ),
                         const SizedBox(height: 5),

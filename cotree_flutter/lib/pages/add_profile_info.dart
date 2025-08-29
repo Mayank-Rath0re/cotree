@@ -16,8 +16,10 @@ import 'package:provider/provider.dart';
 
 class AddProfileInfo extends StatefulWidget {
   final int profileId;
+  final int index;
   final ProfessionalData? profData;
-  const AddProfileInfo({super.key, required this.profileId, this.profData});
+  const AddProfileInfo(
+      {super.key, required this.profileId, required this.index, this.profData});
 
   @override
   State<AddProfileInfo> createState() => _AddProfileInfoState();
@@ -36,7 +38,6 @@ class _AddProfileInfoState extends State<AddProfileInfo> {
     Icons.widgets,
     Icons.military_tech
   ];
-  int activeIndex = 0;
   int selectedCategoryIndex = 0;
   TextEditingController titleController = TextEditingController();
   TextEditingController instituteController = TextEditingController();
@@ -130,9 +131,7 @@ class _AddProfileInfoState extends State<AddProfileInfo> {
                     displayString: "Information Edited!",
                     fontSize: 16,
                     bold: true))));
-        setState(() {
-          activeIndex = 0;
-        });
+        Navigator.pop(context);
       } else {
         await client.account.addProfessionalInfo(
             widget.profileId,
@@ -148,10 +147,7 @@ class _AddProfileInfoState extends State<AddProfileInfo> {
                 displayString: "Information Added Successfully!",
                 fontSize: 16,
                 bold: true)));
-        setState(() {
-          activeIndex = 0;
-        });
-        clearControllers();
+        Navigator.pop(context);
       }
     } else {
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
@@ -170,8 +166,8 @@ class _AddProfileInfoState extends State<AddProfileInfo> {
 
   @override
   void initState() {
+    selectedCategoryIndex = widget.index;
     if (widget.profData != null) {
-      activeIndex = 1;
       titleController.text = widget.profData!.title;
       instituteController.text = widget.profData!.institute;
       startDate = widget.profData!.startDate;
@@ -185,17 +181,6 @@ class _AddProfileInfoState extends State<AddProfileInfo> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: IconButton(
-            onPressed: () {
-              if (activeIndex == 0) {
-                Navigator.pop(context);
-              } else {
-                setState(() {
-                  activeIndex = 0;
-                });
-              }
-            },
-            icon: const Icon(Icons.arrow_back)),
         centerTitle: true,
         title: const AbsText(
             displayString: "Add Profile Info", fontSize: 16, bold: true),
@@ -205,98 +190,73 @@ class _AddProfileInfoState extends State<AddProfileInfo> {
           padding: const EdgeInsets.all(12.0),
           child:
               Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            if (activeIndex == 0) ...[
-              const AbsText(
-                displayString: "Add Professional Details",
-                fontSize: 16,
-                headColor: true,
-                bold: true,
-              ),
-              const SizedBox(height: 20),
-              for (int i = 0; i < indivOptions.length; i++) ...[
-                buildOption(
-                    context,
-                    Icon(
-                      indivIcons[i],
-                      color: Provider.of<ThemeProvider>(context).headColor,
-                    ),
-                    indivOptions[i], () {
-                  setState(() {
-                    selectedCategoryIndex = i;
-                    activeIndex = 1;
-                  });
-                }),
-                const SizedBox(height: 10),
+            Row(
+              children: [
+                Icon(
+                  indivIcons[selectedCategoryIndex],
+                  color: Provider.of<ThemeProvider>(context).headColor,
+                ),
+                const SizedBox(width: 10),
+                AbsText(
+                  displayString: "Add ${indivOptions[selectedCategoryIndex]}",
+                  fontSize: 16,
+                  bold: true,
+                ),
               ],
-            ] else ...[
-              Row(
-                children: [
-                  Icon(
-                    indivIcons[selectedCategoryIndex],
-                    color: Provider.of<ThemeProvider>(context).headColor,
-                  ),
-                  const SizedBox(width: 10),
-                  AbsText(
-                    displayString: "Add ${indivOptions[selectedCategoryIndex]}",
+            ),
+            const SizedBox(height: 20),
+            const AbsText(displayString: "Title", fontSize: 14, bold: true),
+            const SizedBox(height: 8),
+            AbsTextfield(hintText: "title", controller: titleController),
+            const SizedBox(height: 20),
+            const AbsText(displayString: "Institute", fontSize: 14, bold: true),
+            const SizedBox(height: 8),
+            AbsTextfield(
+                hintText: "institute", controller: instituteController),
+            const SizedBox(height: 20),
+            const AbsText(
+                displayString: "Start Date", fontSize: 14, bold: true),
+            const SizedBox(height: 8),
+            AbsDatepicker(onDatePicked: (date) {
+              setState(() {
+                startDate = date;
+              });
+            }),
+            const SizedBox(height: 20),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const AbsText(
+                    displayString: "Currently Active",
                     fontSize: 16,
-                    bold: true,
-                  ),
-                ],
-              ),
-              const SizedBox(height: 20),
-              const AbsText(displayString: "Title", fontSize: 14, bold: true),
-              const SizedBox(height: 8),
-              AbsTextfield(hintText: "title", controller: titleController),
-              const SizedBox(height: 20),
+                    bold: true),
+                Switch(
+                    value: currentlyPursuing,
+                    onChanged: (val) {
+                      setState(() {
+                        currentlyPursuing = !currentlyPursuing;
+                        endDate = null;
+                      });
+                    })
+              ],
+            ),
+            const SizedBox(height: 10),
+            if (!currentlyPursuing) ...[
               const AbsText(
-                  displayString: "Institute", fontSize: 14, bold: true),
+                  displayString: "End Date", fontSize: 14, bold: true),
               const SizedBox(height: 8),
-              AbsTextfield(
-                  hintText: "institute", controller: instituteController),
-              const SizedBox(height: 20),
-              const AbsText(
-                  displayString: "Start Date", fontSize: 14, bold: true),
-              const SizedBox(height: 8),
-              AbsDatepicker(onDatePicked: (date) {
+              AbsDatepicker(onDatePicked: (value) {
                 setState(() {
-                  startDate = date;
+                  endDate = value;
                 });
               }),
               const SizedBox(height: 20),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  const AbsText(
-                      displayString: "Currently Active",
-                      fontSize: 16,
-                      bold: true),
-                  Switch(
-                      value: currentlyPursuing,
-                      onChanged: (val) {
-                        setState(() {
-                          currentlyPursuing = !currentlyPursuing;
-                          endDate = null;
-                        });
-                      })
-                ],
-              ),
-              const SizedBox(height: 10),
-              if (!currentlyPursuing) ...[
-                const AbsText(
-                    displayString: "End Date", fontSize: 14, bold: true),
-                const SizedBox(height: 8),
-                AbsDatepicker(onDatePicked: (value) {
-                  setState(() {
-                    endDate = value;
-                  });
-                }),
-                const SizedBox(height: 20),
-              ],
-              const AbsText(
-                  displayString: "Supporting URL", fontSize: 14, bold: true),
-              const SizedBox(height: 8),
-              AbsTextfield(hintText: "url", controller: urlController),
-              /*
+            ],
+            const AbsText(
+                displayString: "Supporting URL", fontSize: 14, bold: true),
+            const SizedBox(height: 8),
+            AbsTextfield(hintText: "url", controller: urlController),
+            /*
               const SizedBox(height: 20),
               const AbsText(displayString: "Images", fontSize: 14, bold: true),
               const SizedBox(height: 8),
@@ -313,19 +273,18 @@ class _AddProfileInfoState extends State<AddProfileInfo> {
                 },
               ),
               */
-              const SizedBox(height: 20),
-              Row(
-                children: [
-                  Expanded(
-                    child: AbsButtonPrimary(
-                        onPressed: () {
-                          onSubmit(context);
-                        },
-                        text: "Submit"),
-                  )
-                ],
-              )
-            ]
+            const SizedBox(height: 20),
+            Row(
+              children: [
+                Expanded(
+                  child: AbsButtonPrimary(
+                      onPressed: () {
+                        onSubmit(context);
+                      },
+                      text: "Submit"),
+                )
+              ],
+            )
           ]),
         ),
       ),

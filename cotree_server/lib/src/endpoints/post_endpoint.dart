@@ -84,6 +84,7 @@ class PostEndpoint extends Endpoint {
   // Comment on Post
   Future<Comment> uploadComment(Session session, int? postId, int? authorId,
       String text, String? media) async {
+    print("$postId, $authorId, $text, $media");
     // Create comment object
     var commentObj = Comment(
         responseToPost: postId!,

@@ -52,27 +52,36 @@ class _AbsCommentBoxState extends State<AbsCommentBox>
 
   Future<void> _handleLike() async {
     if (_processing) return;
+
     setState(() {
       _processing = true;
       _likeScale = 1.2; // quick pop animation
+      isLiked = !isLiked; // ✅ instant optimistic update
     });
 
     // small animation pause for UX
     await Future.delayed(const Duration(milliseconds: 120));
 
     try {
-      // Keep same API call as original code (type: 1). Backend controls idempotency.
-      await client.post.updateReaction(widget.comment.id!,
-          widget.comment.author, "C", widget.myUserId, widget.postId,
-          type: 1);
-
-      // refresh liked state from server
-      checkLiked();
+      // Call backend - let it handle idempotency
+      await client.post.updateReaction(
+        widget.comment.id!,
+        widget.comment.author,
+        "C",
+        widget.myUserId,
+        widget.postId,
+        type: 1,
+      );
 
       // optional callback to parent
       widget.onLike?.call();
     } catch (e) {
-      // swallow - you can add error handling / snackbar here
+      // if failed, you may want to roll back
+      if (mounted) {
+        setState(() {
+          isLiked = !isLiked; // rollback if needed
+        });
+      }
     }
 
     if (!mounted) return;

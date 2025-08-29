@@ -10,11 +10,13 @@ import 'package:intl/intl.dart';
 
 class AbsProfileTile extends StatefulWidget {
   final ProfessionalData data;
+  final int categoryIndex;
   final int profileId;
   final bool isMyAccount;
   const AbsProfileTile(
       {super.key,
       required this.data,
+      required this.categoryIndex,
       required this.profileId,
       required this.isMyAccount});
 
@@ -89,6 +91,7 @@ class _AbsProfileTileState extends State<AbsProfileTile> {
                               MaterialPageRoute(
                                   builder: (context) => AddProfileInfo(
                                         profileId: widget.profileId,
+                                        index: widget.categoryIndex,
                                         profData: widget.data,
                                       )));
                         },
