@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'dart:typed_data';
 import 'package:cotree_client/cotree_client.dart';
 import 'package:cotree_flutter/components/abs_button_primary.dart';
 import 'package:cotree_flutter/components/abs_multiline_textfield.dart';
@@ -8,6 +7,7 @@ import 'package:cotree_flutter/components/abs_text.dart';
 import 'package:cotree_flutter/components/abs_textfield.dart';
 import 'package:cotree_flutter/main.dart';
 import 'package:cotree_flutter/models/constants.dart';
+import 'package:cotree_flutter/models/file_handling.dart';
 import 'package:cotree_flutter/pages/authgate.dart';
 import 'package:cotree_flutter/themes/theme_provider.dart';
 import 'package:file_picker/file_picker.dart';
@@ -15,7 +15,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class ProfileSetupB extends StatefulWidget {
-  const ProfileSetupB({super.key});
+  final UserView user;
+  const ProfileSetupB({super.key, required this.user});
 
   @override
   State<ProfileSetupB> createState() => _ProfileSetupBState();
@@ -460,9 +461,11 @@ class _ProfileSetupBState extends State<ProfileSetupB> {
                 sessionManager.signedInUser!.id!,
                 originDate ?? DateTime.now(),
                 customDescription,
-                null,
+                "",
               );
-              await Constants().getOrSetUserView(context);
+              final userCache = context.read<UserCacheService>();
+              // Get or set user
+              await userCache.getOrSetUserView(context);
               Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context) => AuthGate()),
@@ -478,15 +481,23 @@ class _ProfileSetupBState extends State<ProfileSetupB> {
           AbsButtonPrimary(
             onPressed: () async {
               if (_selectedImage != null) {
-                var bytes = await _selectedImage!.readAsBytes();
-                ByteData byteData = ByteData.view(bytes.buffer);
+                String url = await FileHandling().uploadFile(
+                  'avatar/${widget.user.userId}.png',
+                  _selectedImage!,
+                );
+                await client.account.updateAvatar(widget.user, url);
+                widget.user.avatar = url;
+                final userCache = context.read<UserCacheService>();
+                // Get or set user
+                await userCache.getOrSetUserView(context);
+
                 await client.account.setupProfileB(
                   headlineController.text,
                   aboutController.text,
                   sessionManager.signedInUser!.id!,
                   originDate ?? DateTime.now(),
                   customDescription,
-                  byteData,
+                  url,
                 );
               } else {
                 await client.account.setupProfileB(
@@ -495,10 +506,12 @@ class _ProfileSetupBState extends State<ProfileSetupB> {
                   sessionManager.signedInUser!.id!,
                   originDate ?? DateTime.now(),
                   customDescription,
-                  null,
+                  "",
                 );
               }
-              await Constants().getOrSetUserView(context);
+              final userCache = context.read<UserCacheService>();
+              // Get or set user
+              await userCache.getOrSetUserView(context);
               Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context) => AuthGate()),

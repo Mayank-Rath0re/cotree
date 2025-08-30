@@ -32,6 +32,7 @@ class _PostDetailedPageState extends State<PostDetailedPage> {
   late Post postData;
   late List<Comment> comments;
   late List<UserView> commentUsers;
+  bool originallyLiked = false;
   late Reaction? reaction;
   late int reactionCount;
   bool isLoading = true;
@@ -41,6 +42,7 @@ class _PostDetailedPageState extends State<PostDetailedPage> {
     Post postInfo = await client.post.retrievePost(widget.postId);
     var reactionInfo = await client.post
         .fetchReaction("P", widget.postId, widget.userData.userId);
+
     var commentsInfo = await client.post.fetchComments(widget.postId);
     var totalReaction =
         await client.post.fetchReactionCount(widget.postId, "P");
@@ -54,6 +56,7 @@ class _PostDetailedPageState extends State<PostDetailedPage> {
       commentUsers = commenters;
       comments = commentsInfo;
       reactionCount = totalReaction;
+      originallyLiked = reactionInfo != null ? true : false;
       reaction = reactionInfo;
       isLiked = reactionInfo != null ? true : false;
       isLoading = false;
@@ -64,6 +67,17 @@ class _PostDetailedPageState extends State<PostDetailedPage> {
   void initState() {
     getPostData();
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    commentController.dispose();
+    if (isLiked != originallyLiked) {
+      client.post.updateReaction(widget.postId, postData.authorId, "P",
+          widget.userData.userId, widget.postId,
+          type: 1);
+    }
+    super.dispose();
   }
 
   @override
@@ -105,13 +119,6 @@ class _PostDetailedPageState extends State<PostDetailedPage> {
                   children: [
                     IconButton(
                         onPressed: () {
-                          client.post.updateReaction(
-                              postData.id!,
-                              postData.authorId,
-                              "P",
-                              widget.userData.userId,
-                              postData.id,
-                              type: 1);
                           setState(() {
                             isLiked = !isLiked;
                             if (isLiked) {
@@ -146,6 +153,9 @@ class _PostDetailedPageState extends State<PostDetailedPage> {
                   children: [
                     AbsButtonSecondary(
                       onPressed: () async {
+                        if (commentController.text.isEmpty) {
+                          return;
+                        }
                         var comment = await client.post.uploadComment(
                             postData.id,
                             widget.userData.userId,

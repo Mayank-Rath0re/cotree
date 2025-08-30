@@ -11,13 +11,13 @@
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod_client/serverpod_client.dart' as _i1;
 import 'dart:async' as _i2;
-import 'package:cotree_client/src/protocol/user.dart' as _i3;
-import 'package:cotree_client/src/protocol/userview.dart' as _i4;
+import 'package:cotree_client/src/protocol/userview.dart' as _i3;
+import 'package:cotree_client/src/protocol/user.dart' as _i4;
 import 'package:cotree_client/src/protocol/professional_data.dart' as _i5;
 import 'package:cotree_client/src/protocol/custom_details.dart' as _i6;
-import 'dart:typed_data' as _i7;
-import 'package:cotree_client/src/protocol/individual.dart' as _i8;
-import 'package:cotree_client/src/protocol/org.dart' as _i9;
+import 'package:cotree_client/src/protocol/individual.dart' as _i7;
+import 'package:cotree_client/src/protocol/org.dart' as _i8;
+import 'dart:typed_data' as _i9;
 import 'package:cotree_client/src/protocol/message.dart' as _i10;
 import 'package:cotree_client/src/protocol/chat.dart' as _i11;
 import 'package:cotree_client/src/protocol/connect.dart' as _i12;
@@ -48,14 +48,21 @@ class EndpointAccount extends _i1.EndpointRef {
   @override
   String get name => 'account';
 
-  _i2.Future<int> createAccount(
+  _i2.Future<bool> checkEmailExists(String email) =>
+      caller.callServerEndpoint<bool>(
+        'account',
+        'checkEmailExists',
+        {'email': email},
+      );
+
+  _i2.Future<_i3.UserView?> createAccount(
     int? id,
     String name,
     String email,
     String accountType,
     String password,
   ) =>
-      caller.callServerEndpoint<int>(
+      caller.callServerEndpoint<_i3.UserView?>(
         'account',
         'createAccount',
         {
@@ -67,14 +74,14 @@ class EndpointAccount extends _i1.EndpointRef {
         },
       );
 
-  _i2.Future<void> createUserView(
+  _i2.Future<_i3.UserView> createUserView(
     int? userId,
     String name,
     String headline,
     String avatar,
     String accountType,
   ) =>
-      caller.callServerEndpoint<void>(
+      caller.callServerEndpoint<_i3.UserView>(
         'account',
         'createUserView',
         {
@@ -86,44 +93,50 @@ class EndpointAccount extends _i1.EndpointRef {
         },
       );
 
-  _i2.Future<_i3.User> getUserData(int? id) =>
-      caller.callServerEndpoint<_i3.User>(
+  _i2.Future<_i4.User> getUserData(int? id) =>
+      caller.callServerEndpoint<_i4.User>(
         'account',
         'getUserData',
         {'id': id},
       );
 
-  _i2.Future<int> updateIndivAccount(
-    _i4.UserView userview,
+  _i2.Future<_i3.UserView> updateIndivAccount(
+    _i3.UserView userview,
     String bio,
     String residence,
+    String gender,
+    DateTime? dob,
+    String contact,
   ) =>
-      caller.callServerEndpoint<int>(
+      caller.callServerEndpoint<_i3.UserView>(
         'account',
         'updateIndivAccount',
         {
           'userview': userview,
           'bio': bio,
           'residence': residence,
+          'gender': gender,
+          'dob': dob,
+          'contact': contact,
         },
       );
 
-  _i2.Future<List<_i4.UserView>> getAllUser() =>
-      caller.callServerEndpoint<List<_i4.UserView>>(
+  _i2.Future<List<_i3.UserView>> getAllUser() =>
+      caller.callServerEndpoint<List<_i3.UserView>>(
         'account',
         'getAllUser',
         {},
       );
 
-  _i2.Future<List<_i4.UserView>> getOrgs() =>
-      caller.callServerEndpoint<List<_i4.UserView>>(
+  _i2.Future<List<_i3.UserView>> getOrgs() =>
+      caller.callServerEndpoint<List<_i3.UserView>>(
         'account',
         'getOrgs',
         {},
       );
 
-  _i2.Future<_i4.UserView> getUserView(int? userId) =>
-      caller.callServerEndpoint<_i4.UserView>(
+  _i2.Future<_i3.UserView> getUserView(int? userId) =>
+      caller.callServerEndpoint<_i3.UserView>(
         'account',
         'getUserView',
         {'userId': userId},
@@ -137,7 +150,7 @@ class EndpointAccount extends _i1.EndpointRef {
         {'profileId': profileId},
       );
 
-  _i2.Future<_i4.UserView> setupProfileI(
+  _i2.Future<_i3.UserView> setupProfileI(
     String? headline,
     String? bio,
     int? userId,
@@ -146,7 +159,7 @@ class EndpointAccount extends _i1.EndpointRef {
     DateTime? dob,
     String contact,
   ) =>
-      caller.callServerEndpoint<_i4.UserView>(
+      caller.callServerEndpoint<_i3.UserView>(
         'account',
         'setupProfileI',
         {
@@ -166,7 +179,7 @@ class EndpointAccount extends _i1.EndpointRef {
     int userId,
     DateTime originDate,
     List<_i6.CustomDetails> customInformation,
-    _i7.ByteData? imageData,
+    String avatarPath,
   ) =>
       caller.callServerEndpoint<void>(
         'account',
@@ -177,26 +190,26 @@ class EndpointAccount extends _i1.EndpointRef {
           'userId': userId,
           'originDate': originDate,
           'customInformation': customInformation,
-          'imageData': imageData,
+          'avatarPath': avatarPath,
         },
       );
 
-  _i2.Future<_i8.Individual> getIndividualData(int? userId) =>
-      caller.callServerEndpoint<_i8.Individual>(
+  _i2.Future<_i7.Individual> getIndividualData(int? userId) =>
+      caller.callServerEndpoint<_i7.Individual>(
         'account',
         'getIndividualData',
         {'userId': userId},
       );
 
-  _i2.Future<_i9.Organization> getOrganizationData(int? userId) =>
-      caller.callServerEndpoint<_i9.Organization>(
+  _i2.Future<_i8.Organization> getOrganizationData(int? userId) =>
+      caller.callServerEndpoint<_i8.Organization>(
         'account',
         'getOrganizationData',
         {'userId': userId},
       );
 
   _i2.Future<String> uploadImage(
-    _i7.ByteData imageData,
+    _i9.ByteData imageData,
     String filename,
   ) =>
       caller.callServerEndpoint<String>(
@@ -255,7 +268,7 @@ class EndpointAccount extends _i1.EndpointRef {
       );
 
   _i2.Future<void> updateAvatar(
-    _i4.UserView userview,
+    _i3.UserView userview,
     String url,
   ) =>
       caller.callServerEndpoint<void>(
@@ -267,19 +280,19 @@ class EndpointAccount extends _i1.EndpointRef {
         },
       );
 
-  _i2.Future<void> removeAvatar(_i4.UserView userview) =>
+  _i2.Future<void> removeAvatar(_i3.UserView userview) =>
       caller.callServerEndpoint<void>(
         'account',
         'removeAvatar',
         {'userview': userview},
       );
 
-  _i2.Stream<_i4.UserView> userSearch(
+  _i2.Stream<_i3.UserView> userSearch(
     int? userId,
     String query,
   ) =>
       caller
-          .callStreamingServerEndpoint<_i2.Stream<_i4.UserView>, _i4.UserView>(
+          .callStreamingServerEndpoint<_i2.Stream<_i3.UserView>, _i3.UserView>(
         'account',
         'userSearch',
         {
@@ -345,8 +358,8 @@ class EndpointChat extends _i1.EndpointRef {
         },
       );
 
-  _i2.Future<List<_i4.UserView>> fetchChatUserViews(int chatId) =>
-      caller.callServerEndpoint<List<_i4.UserView>>(
+  _i2.Future<List<_i3.UserView>> fetchChatUserViews(int chatId) =>
+      caller.callServerEndpoint<List<_i3.UserView>>(
         'chat',
         'fetchChatUserViews',
         {'chatId': chatId},
@@ -363,6 +376,13 @@ class EndpointChat extends _i1.EndpointRef {
           'user1Id': user1Id,
           'user2Id': user2Id,
         },
+      );
+
+  _i2.Future<String> fetchLastMessage(int chatId) =>
+      caller.callServerEndpoint<String>(
+        'chat',
+        'fetchLastMessage',
+        {'chatId': chatId},
       );
 
   _i2.Future<_i11.Chat> getOrCreateChat(
@@ -399,11 +419,11 @@ class EndpointChat extends _i1.EndpointRef {
         {'userId': userId},
       );
 
-  _i2.Stream<_i3.User> chatUserSearch(
+  _i2.Stream<_i4.User> chatUserSearch(
     int? userId,
     String query,
   ) =>
-      caller.callStreamingServerEndpoint<_i2.Stream<_i3.User>, _i3.User>(
+      caller.callStreamingServerEndpoint<_i2.Stream<_i4.User>, _i4.User>(
         'chat',
         'chatUserSearch',
         {
@@ -555,8 +575,8 @@ class EndpointConnection extends _i1.EndpointRef {
         },
       );
 
-  _i2.Future<List<_i4.UserView>> getConnectedUserData(int? userId) =>
-      caller.callServerEndpoint<List<_i4.UserView>>(
+  _i2.Future<List<_i3.UserView>> getConnectedUserData(int? userId) =>
+      caller.callServerEndpoint<List<_i3.UserView>>(
         'connection',
         'getConnectedUserData',
         {'userId': userId},
@@ -607,15 +627,15 @@ class EndpointConnection extends _i1.EndpointRef {
         },
       );
 
-  _i2.Future<List<_i4.UserView>> fetchFollowedOrgs(int profileId) =>
-      caller.callServerEndpoint<List<_i4.UserView>>(
+  _i2.Future<List<_i3.UserView>> fetchFollowedOrgs(int profileId) =>
+      caller.callServerEndpoint<List<_i3.UserView>>(
         'connection',
         'fetchFollowedOrgs',
         {'profileId': profileId},
       );
 
-  _i2.Future<List<_i4.UserView>> fetchConnectedUsers(int userId) =>
-      caller.callServerEndpoint<List<_i4.UserView>>(
+  _i2.Future<List<_i3.UserView>> fetchConnectedUsers(int userId) =>
+      caller.callServerEndpoint<List<_i3.UserView>>(
         'connection',
         'fetchConnectedUsers',
         {'userId': userId},
@@ -874,7 +894,7 @@ class EndpointPost extends _i1.EndpointRef {
 
   _i2.Future<String> uploadFile(
     int userId,
-    _i7.ByteData imageData,
+    _i9.ByteData imageData,
     String filename,
   ) =>
       caller.callServerEndpoint<String>(
@@ -948,7 +968,7 @@ class EndpointProject extends _i1.EndpointRef {
   _i2.Future<String> uploadFile(
     int projectId,
     int memberId,
-    _i7.ByteData fileData,
+    _i9.ByteData fileData,
     String filename,
   ) =>
       caller.callServerEndpoint<String>(
@@ -1059,18 +1079,18 @@ class EndpointRecommendation extends _i1.EndpointRef {
         {'userId': userId},
       );
 
-  _i2.Future<List<_i9.Organization>> recommendOrganizations(int userId) =>
-      caller.callServerEndpoint<List<_i9.Organization>>(
+  _i2.Future<List<_i8.Organization>> recommendOrganizations(int userId) =>
+      caller.callServerEndpoint<List<_i8.Organization>>(
         'recommendation',
         'recommendOrganizations',
         {'userId': userId},
       );
 
-  _i2.Future<List<_i4.UserView>> recommendUsers(
+  _i2.Future<List<_i3.UserView>> recommendUsers(
     int userId, {
     required int limit,
   }) =>
-      caller.callServerEndpoint<List<_i4.UserView>>(
+      caller.callServerEndpoint<List<_i3.UserView>>(
         'recommendation',
         'recommendUsers',
         {
@@ -1156,7 +1176,7 @@ class EndpointSpace extends _i1.EndpointRef {
   _i2.Future<int> addOwner(
     int userId,
     int spaceId,
-    _i4.UserView userview,
+    _i3.UserView userview,
   ) =>
       caller.callServerEndpoint<int>(
         'space',

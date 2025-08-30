@@ -25,8 +25,6 @@ class _LoginPageState extends State<LoginPage> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   final authController = EmailAuthController(client.modules.auth);
-
-  int _selectedIndex = 0;
   late UserInfo? logCheck;
   List<IconData> modeIcon = [Icons.sunny, Icons.nights_stay];
 
@@ -57,17 +55,18 @@ class _LoginPageState extends State<LoginPage> {
           child: Row(
             children: [
               GestureDetector(
-                onTap: () => setState(() {
-                  _selectedIndex = (_selectedIndex + 1) % 2;
-                  Provider.of<ThemeProvider>(
-                    context,
-                    listen: false,
-                  ).toggleTheme();
-                }),
-                child: Icon(
-                  modeIcon[_selectedIndex],
-                  size: 35,
-                  color: Provider.of<ThemeProvider>(context).contrastColor,
+                onTap: () {
+                  context.read<ThemeProvider>().toggleTheme();
+                },
+                child: Consumer<ThemeProvider>(
+                  builder: (context, themeProvider, _) {
+                    final index = themeProvider.isDarkMode ? 1 : 0;
+                    return Icon(
+                      modeIcon[index],
+                      size: 35,
+                      color: themeProvider.contrastColor,
+                    );
+                  },
                 ),
               ),
             ],
@@ -125,6 +124,22 @@ class _LoginPageState extends State<LoginPage> {
                 if (emailController.text != "" &&
                     passwordController.text != "") {
                   // Attempt sign in with the given credentials
+                  bool accountExists = await client.account
+                      .checkEmailExists(emailController.text);
+                  if (!accountExists) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        backgroundColor:
+                            Provider.of<ThemeProvider>(context).mainColor,
+                        content: const AbsText(
+                          displayString: "Account does not exist",
+                          fontSize: 16,
+                          bold: true,
+                        ),
+                      ),
+                    );
+                    return;
+                  }
                   logCheck = await authController.signIn(
                     emailController.text,
                     passwordController.text,

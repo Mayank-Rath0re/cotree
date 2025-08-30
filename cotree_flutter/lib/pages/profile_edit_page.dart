@@ -10,6 +10,7 @@ import 'package:cotree_flutter/models/constants.dart';
 import 'package:cotree_flutter/models/file_handling.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class ProfileEditPage extends StatefulWidget {
   final UserView userView;
@@ -21,6 +22,7 @@ class ProfileEditPage extends StatefulWidget {
 
 class _ProfileEditPageState extends State<ProfileEditPage> {
   File? _selectedImage;
+  late Individual indivData;
   TextEditingController nameController = TextEditingController();
   TextEditingController headlineController = TextEditingController();
   TextEditingController aboutController = TextEditingController();
@@ -38,6 +40,7 @@ class _ProfileEditPageState extends State<ProfileEditPage> {
   void getBuildData() async {
     var indiv = await client.account.getIndividualData(widget.userView.userId);
     setState(() {
+      indivData = indiv;
       nameController.text = widget.userView.name;
       headlineController.text = widget.userView.headline;
       aboutController.text = indiv.bio;
@@ -197,11 +200,13 @@ class _ProfileEditPageState extends State<ProfileEditPage> {
                               await client.account.updateIndivAccount(
                                   updated,
                                   aboutController.text,
-                                  residenceController.text);
-
-                              // Save locally
-                              await Constants()
-                                  .updateUserView(context, updated);
+                                  residenceController.text,
+                                  indivData.gender,
+                                  indivData.dob,
+                                  indivData.contact);
+                              final userCache =
+                                  context.read<UserCacheService>();
+                              await userCache.updateUserView(updated);
 
                               Navigator.pop(context, 'saved');
                             },

@@ -1,4 +1,5 @@
 account:
+  - checkEmailExists:
   - createAccount:
   - createUserView:
   - getUserData:
@@ -27,6 +28,7 @@ chat:
   - fetchChatMessages:
   - fetchChatUserViews:
   - createNewChat:
+  - fetchLastMessage:
   - getOrCreateChat:
   - retrieveDmChats:
   - getUserChats:

@@ -59,7 +59,6 @@ class _SettingsPageState extends State<SettingsPage> {
 
   @override
   Widget build(BuildContext context) {
-    int _selectedIndex = Provider.of<ThemeProvider>(context).isDarkMode ? 0 : 1;
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
@@ -150,36 +149,41 @@ class _SettingsPageState extends State<SettingsPage> {
               const SizedBox(height: 8),
 
               GestureDetector(
-                  onTap: () => setState(() {
-                        _selectedIndex = (_selectedIndex + 1) % 2;
-                        Provider.of<ThemeProvider>(context, listen: false)
-                            .toggleTheme();
-                      }),
-                  child: AbsMinimalBox(
-                    child: Padding(
-                      padding: const EdgeInsets.all(12.0),
-                      child: Row(
-                        children: [
-                          Icon(
-                            Icons.dark_mode_outlined,
-                            color:
-                                Provider.of<ThemeProvider>(context).headColor,
+                onTap: () {
+                  context.read<ThemeProvider>().toggleTheme();
+                },
+                child: AbsMinimalBox(
+                  child: Padding(
+                    padding: const EdgeInsets.all(12.0),
+                    child: Row(
+                      children: [
+                        Icon(
+                          Icons.dark_mode_outlined,
+                          color: context.watch<ThemeProvider>().headColor,
+                        ),
+                        const SizedBox(width: 10),
+                        const Expanded(
+                          child: AbsText(
+                            displayString: "Dark Mode",
+                            fontSize: 15,
                           ),
-                          const SizedBox(width: 10),
-                          const Expanded(
-                            child: AbsText(
-                                displayString: "Dark Mode", fontSize: 15),
-                          ),
-                          Icon(
-                            modeIcon[_selectedIndex],
-                            size: 24,
-                            color: Provider.of<ThemeProvider>(context)
-                                .contrastColor,
-                          ),
-                        ],
-                      ),
+                        ),
+                        Consumer<ThemeProvider>(
+                          builder: (context, themeProvider, _) {
+                            final index = themeProvider.isDarkMode ? 1 : 0;
+                            return Icon(
+                              modeIcon[index],
+                              size: 24,
+                              color: themeProvider.contrastColor,
+                            );
+                          },
+                        ),
+                      ],
                     ),
-                  )),
+                  ),
+                ),
+              ),
+
               const SizedBox(height: 10),
               const Divider(),
               const SizedBox(height: 6),

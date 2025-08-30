@@ -44,7 +44,9 @@ class _ProfilePageState extends State<ProfilePage> {
   bool isLoading = true;
 
   Future<void> getProfileData() async {
-    var user = await Constants().getOrSetUserView(context);
+    final userCache = context.read<UserCacheService>();
+    // Get or set user
+    final user = await userCache.getOrSetUserView(context);
     Individual? accountData;
     try {
       accountData = await client.account.getIndividualData(widget.profileId);

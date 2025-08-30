@@ -7,7 +7,6 @@ import 'package:cotree_flutter/pages/profile_page.dart';
 import 'package:cotree_flutter/pages/profile_page_org.dart';
 import 'package:cotree_flutter/pages/settings_page.dart';
 import 'package:cotree_flutter/pages/space_land_page.dart';
-import 'package:cotree_flutter/themes/theme_provider.dart';
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -119,29 +118,9 @@ class _AbsDrawerState extends State<AbsDrawer> {
                   setState(() {
                     isLoggingOut = true;
                   });
-                  Navigator.pop(context);
-
-                  showDialog(
-                      context: context,
-                      builder: (context) => AlertDialog(
-                            content: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                CircularProgressIndicator(
-                                  color: Provider.of<ThemeProvider>(context)
-                                      .headColor,
-                                ),
-                                const SizedBox(height: 20),
-                                AbsText(
-                                  displayString: "Logging out...",
-                                  fontSize: 16,
-                                  headColor: true,
-                                )
-                              ],
-                            ),
-                          ));
                   await sessionManager.signOutDevice();
-                  await Constants().clearUserView(context);
+                  final userCache = context.read<UserCacheService>();
+                  await userCache.clearUserView();
                 }
               },
             ),

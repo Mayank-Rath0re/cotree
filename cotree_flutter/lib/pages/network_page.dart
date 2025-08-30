@@ -28,7 +28,9 @@ class _NetworkPageState extends State<NetworkPage> {
   Future<void> getConnectData() async {
     sent = [];
     received = [];
-    var user = await Constants().getOrSetUserView(context);
+    final userCache = context.read<UserCacheService>();
+    // Get or set user
+    final user = await userCache.getOrSetUserView(context);
 
     var data = await client.connection.fetchInvitations(user.userId);
     List<UserView> listData =

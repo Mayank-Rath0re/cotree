@@ -228,16 +228,35 @@ class _SignupPageState extends State<SignupPage> {
                     try {
                       // 1) Validate inputs
                       if (!checkIfFieldsEmpty()) {
-                        await _showAbsAlert(
-                            context, "All fields must be provided!");
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text("All fields must be provided!"),
+                          ),
+                        );
                         return;
                       }
-
+                      if (passwordController.text.length < 8) {
+                        await _showAbsAlert(context,
+                            "Password must be at least 8 characters long");
+                        return;
+                      }
                       if (passwordController.text != confPassController.text) {
                         await _showAbsAlert(context, "Passwords do not match");
                         return;
                       }
+                      // Need to add email already exists check
+                      final emailExists = await client.account
+                          .checkEmailExists(emailController.text);
 
+                      if (emailExists) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text(
+                                "An account with this email already exists!"),
+                          ),
+                        );
+                        return;
+                      }
                       // 2) Request account creation (send OTP)
                       final requested =
                           await authController.createAccountRequest(
@@ -307,8 +326,12 @@ class _SignupPageState extends State<SignupPage> {
                         rootNav.pushReplacement(
                           MaterialPageRoute(
                             builder: (_) => isIndividual
-                                ? const ProfileSetupI()
-                                : const ProfileSetupB(),
+                                ? ProfileSetupI(
+                                    userView: createdAccount!,
+                                  )
+                                : ProfileSetupB(
+                                    user: createdAccount!,
+                                  ),
                           ),
                         );
                       });

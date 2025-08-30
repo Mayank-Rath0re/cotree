@@ -29,12 +29,21 @@ class _HomePageState extends State<HomePage> {
   late bool newSpaceInvites;
   late bool newNotifications;
   bool isLoading = true;
+  bool _disposed = false;
 
   Future<void> getUserData() async {
-    var userInfo = await Constants().getOrSetUserView(context);
+    final userCache = context.read<UserCacheService>();
+
+    // Get or set user
+    final userInfo = await userCache.getOrSetUserView(context);
+
+    if (_disposed) return; // <-- prevents setState after dispose
+
     var checkInvites = await client.space.unreadInvites(userInfo.userId);
     var checkNotifications =
         await client.notification.anyUnreadNotifications(userInfo.userId);
+
+    if (_disposed) return; // <-- double guard
     setState(() {
       user = userInfo;
       newSpaceInvites = checkInvites;
@@ -49,15 +58,16 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
-  Future<bool> checkNewSpaceInvites() async {
-    var check = await client.space.unreadInvites(user.userId);
-    return check;
-  }
-
   @override
   void initState() {
     super.initState();
     getUserData();
+  }
+
+  @override
+  void dispose() {
+    _disposed = true;
+    super.dispose();
   }
 
   /// Dynamically generates bar actions to avoid accessing `user` before initialization

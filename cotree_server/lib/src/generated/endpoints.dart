@@ -126,6 +126,24 @@ class Endpoints extends _i1.EndpointDispatch {
       name: 'account',
       endpoint: endpoints['account']!,
       methodConnectors: {
+        'checkEmailExists': _i1.MethodConnector(
+          name: 'checkEmailExists',
+          params: {
+            'email': _i1.ParameterDescription(
+              name: 'email',
+              type: _i1.getType<String>(),
+              nullable: false,
+            )
+          },
+          call: (
+            _i1.Session session,
+            Map<String, dynamic> params,
+          ) async =>
+              (endpoints['account'] as _i2.AccountEndpoint).checkEmailExists(
+            session,
+            params['email'],
+          ),
+        ),
         'createAccount': _i1.MethodConnector(
           name: 'createAccount',
           params: {
@@ -246,6 +264,21 @@ class Endpoints extends _i1.EndpointDispatch {
               type: _i1.getType<String>(),
               nullable: false,
             ),
+            'gender': _i1.ParameterDescription(
+              name: 'gender',
+              type: _i1.getType<String>(),
+              nullable: false,
+            ),
+            'dob': _i1.ParameterDescription(
+              name: 'dob',
+              type: _i1.getType<DateTime?>(),
+              nullable: true,
+            ),
+            'contact': _i1.ParameterDescription(
+              name: 'contact',
+              type: _i1.getType<String>(),
+              nullable: false,
+            ),
           },
           call: (
             _i1.Session session,
@@ -256,6 +289,9 @@ class Endpoints extends _i1.EndpointDispatch {
             params['userview'],
             params['bio'],
             params['residence'],
+            params['gender'],
+            params['dob'],
+            params['contact'],
           ),
         ),
         'getAllUser': _i1.MethodConnector(
@@ -395,10 +431,10 @@ class Endpoints extends _i1.EndpointDispatch {
               type: _i1.getType<List<_i16.CustomDetails>>(),
               nullable: false,
             ),
-            'imageData': _i1.ParameterDescription(
-              name: 'imageData',
-              type: _i1.getType<_i17.ByteData?>(),
-              nullable: true,
+            'avatarPath': _i1.ParameterDescription(
+              name: 'avatarPath',
+              type: _i1.getType<String>(),
+              nullable: false,
             ),
           },
           call: (
@@ -412,7 +448,7 @@ class Endpoints extends _i1.EndpointDispatch {
             params['userId'],
             params['originDate'],
             params['customInformation'],
-            params['imageData'],
+            params['avatarPath'],
           ),
         ),
         'getIndividualData': _i1.MethodConnector(
@@ -791,6 +827,24 @@ class Endpoints extends _i1.EndpointDispatch {
             session,
             params['user1Id'],
             params['user2Id'],
+          ),
+        ),
+        'fetchLastMessage': _i1.MethodConnector(
+          name: 'fetchLastMessage',
+          params: {
+            'chatId': _i1.ParameterDescription(
+              name: 'chatId',
+              type: _i1.getType<int>(),
+              nullable: false,
+            )
+          },
+          call: (
+            _i1.Session session,
+            Map<String, dynamic> params,
+          ) async =>
+              (endpoints['chat'] as _i3.ChatEndpoint).fetchLastMessage(
+            session,
+            params['chatId'],
           ),
         ),
         'getOrCreateChat': _i1.MethodConnector(

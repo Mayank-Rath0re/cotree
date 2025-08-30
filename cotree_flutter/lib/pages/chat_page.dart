@@ -6,6 +6,7 @@ import 'package:cotree_flutter/main.dart';
 import 'package:cotree_flutter/models/constants.dart';
 import 'package:cotree_flutter/pages/dm_page.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class ChatPage extends StatefulWidget {
   const ChatPage({super.key});
@@ -14,9 +15,15 @@ class ChatPage extends StatefulWidget {
   State<ChatPage> createState() => _ChatPageState();
 }
 
+class _ChatItem {
+  final Chat chat;
+  final String? lastMessage;
+  _ChatItem({required this.chat, required this.lastMessage});
+}
+
 class _ChatPageState extends State<ChatPage> {
   TextEditingController searchController = TextEditingController();
-  late List<Chat> chats;
+  late List<_ChatItem> chatData;
   late UserView userview;
   List<User> searchResult = [];
   OverlayEntry? overlayEntry;
@@ -25,12 +32,19 @@ class _ChatPageState extends State<ChatPage> {
   bool isLoading = true;
 
   Future<void> initializePage() async {
-    var user = await Constants().getOrSetUserView(context);
-    List<Chat> chatData =
+    List<_ChatItem> buildData = [];
+    final userCache = context.read<UserCacheService>();
+    // Get or set user
+    final user = await userCache.getOrSetUserView(context);
+    List<Chat> chats =
         await client.chat.retrieveDmChats(sessionManager.signedInUser!.id!);
+    for (var chat in chats) {
+      var lastMessage = await client.chat.fetchLastMessage(chat.id!);
+      buildData.add(_ChatItem(chat: chat, lastMessage: lastMessage));
+    }
     setState(() {
       userview = user;
-      chats = chatData;
+      chatData = buildData;
       isLoading = false;
     });
   }
@@ -128,13 +142,23 @@ class _ChatPageState extends State<ChatPage> {
               onChanged: _onSearchChanged, controller: searchController),
         ),
         const SizedBox(height: 8),
-        if (isLoading || chats.isEmpty) ...[
+        if (isLoading || chatData.isEmpty) ...[
           const SizedBox(height: 100),
           const Center(
               child: AbsText(displayString: "No Previous Chats!", fontSize: 24))
         ] else ...[
-          for (int i = 0; i < chats.length; i++) ...[
-            AbsChatTile(chat: chats[i], myUserView: userview),
+          for (int i = 0; i < chatData.length; i++) ...[
+            AbsChatTile(
+              chat: chatData[i].chat,
+              myUserView: userview,
+              lastMessage: chatData[i].lastMessage,
+              onBack: () {
+                setState(() {
+                  isLoading = true;
+                });
+                initializePage();
+              },
+            ),
             const SizedBox(height: 5),
           ],
         ]

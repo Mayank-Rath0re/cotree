@@ -4,6 +4,7 @@ import 'package:cotree_flutter/components/abs_text.dart';
 import 'package:cotree_flutter/main.dart';
 import 'package:cotree_flutter/models/constants.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class ReviewPage extends StatefulWidget {
   const ReviewPage({super.key});
@@ -17,7 +18,9 @@ class _ReviewApplicationsState extends State<ReviewPage> {
   late bool isLoading = true;
   late List<Offers> offerData;
   Future<void> buildPage() async {
-    var user = await Constants().getOrSetUserView(context);
+    final userCache = context.read<UserCacheService>();
+    // Get or set user
+    final user = await userCache.getOrSetUserView(context);
     var offerInfo = await client.work.fetchAuthorOffers(user.userId);
     setState(() {
       userview = user;

@@ -22,7 +22,9 @@ class _SpaceLandPageState extends State<SpaceLandPage> {
   late UserView userview;
   late List<Space> spaces;
   void fetchSpaces() async {
-    var user = await Constants().getOrSetUserView(context);
+    final userCache = context.read<UserCacheService>();
+    // Get or set user
+    final user = await userCache.getOrSetUserView(context);
     var fetchedSpaces =
         await client.space.fetchSpacesByUser(sessionManager.signedInUser!.id!);
     setState(() {

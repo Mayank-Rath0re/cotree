@@ -4,13 +4,22 @@ import 'package:cotree_flutter/components/abs_minimal_box.dart';
 import 'package:cotree_flutter/components/abs_text.dart';
 import 'package:cotree_flutter/main.dart';
 import 'package:cotree_flutter/pages/dm_page.dart';
+import 'package:cotree_flutter/themes/theme_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 // ignore: must_be_immutable
 class AbsChatTile extends StatefulWidget {
   final Chat chat;
   final UserView myUserView;
-  AbsChatTile({super.key, required this.chat, required this.myUserView});
+  final String? lastMessage;
+  final Function()? onBack;
+  AbsChatTile(
+      {super.key,
+      required this.chat,
+      required this.myUserView,
+      required this.onBack,
+      this.lastMessage = "No messages yet"});
 
   @override
   State<AbsChatTile> createState() => _AbsChatTileState();
@@ -46,7 +55,9 @@ class _AbsChatTileState extends State<AbsChatTile> {
                 builder: (context) => DmPage(
                     chat: widget.chat,
                     userId: userData.userId,
-                    user: widget.myUserView)));
+                    user: widget.myUserView))).then((_) async {
+          widget.onBack!();
+        });
       },
       child: AbsMinimalBox(
         child: isLoading
@@ -62,8 +73,16 @@ class _AbsChatTileState extends State<AbsChatTile> {
                       children: [
                         AbsText(
                           displayString: userData.name,
-                          fontSize: 18,
+                          fontSize: 16,
                           bold: true,
+                        ),
+                        const SizedBox(height: 5),
+                        Text(
+                          widget.lastMessage ?? "No messages",
+                          style: TextStyle(
+                              fontSize: 14,
+                              color: Provider.of<ThemeProvider>(context)
+                                  .contrastColor),
                         ),
                       ],
                     ),

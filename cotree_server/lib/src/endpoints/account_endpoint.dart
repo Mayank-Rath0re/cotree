@@ -18,9 +18,18 @@ class AccountEndpoint extends Endpoint {
   // Class performing general account related functions
 
   // BASIC ACCOUNT CRUD
+  Future<bool> checkEmailExists(Session session, String email) async {
+    var user = await User.db
+        .findFirstRow(session, where: (t) => t.email.equals(email));
+    if (user != null) {
+      return true;
+    }
+    return false;
+  }
+
   // Create Account
-  Future<int> createAccount(Session session, int? id, String name, String email,
-      String accountType, String password) async {
+  Future<UserView?> createAccount(Session session, int? id, String name,
+      String email, String accountType, String password) async {
     // create User object
     User userObj = User(
         userInfoId: id!,
@@ -34,19 +43,27 @@ class AccountEndpoint extends Endpoint {
     // ignore: unused_local_variable
     try {
       var userInsert = await User.db.insertRow(session, userObj);
-      createUserView(session, id, name, "", "", accountType);
+      var userview =
+          await createUserView(session, id, name, "", "", accountType);
+      if (accountType == "Individual") {
+        // ignore: unawaited_futures
+        setupProfileI(session, "", "", userview.userId, "", "", null, "");
+      } else {
+        // ignore: unawaited_futures
+        setupProfileB(session, "", "", userview.userId, DateTime.now(), [], "");
+      }
       // Initialize empty connections list
       var connectObj = Connect(accountId: userInsert.id, activeConnections: []);
       // ignore: unused_local_variable
       var connectInsert = await Connect.db.insertRow(session, connectObj);
-      return userInsert.id!;
+      return userview;
     } catch (e) {
       print("Error inserting user: $e");
-      return -1;
+      return null;
     }
   }
 
-  Future<void> createUserView(Session session, int? userId, String name,
+  Future<UserView> createUserView(Session session, int? userId, String name,
       String headline, String avatar, String accountType) async {
     var userViewObj = UserView(
         userId: userId!,
@@ -56,6 +73,7 @@ class AccountEndpoint extends Endpoint {
         accountType: accountType);
     // ignore: unused_local_variable
     var updateObj = UserView.db.insertRow(session, userViewObj);
+    return updateObj;
   }
 
   // Receive
@@ -68,25 +86,29 @@ class AccountEndpoint extends Endpoint {
 
   // Delete Account
   // Update Account
-  Future<int> updateIndivAccount(
-      Session session, UserView userview, String bio, String residence) async {
-    try {
-      var userData = await User.db.findById(session, userview.userId);
-      var indivAccount = await Individual.db.findFirstRow(session,
-          where: (t) => t.accountId.equals(userview.userId));
-      userData!.name = userview.name;
-      indivAccount!.bio = bio;
-      indivAccount.residence = residence;
-      // update userView
-      await UserView.db.updateRow(session, userview);
-      // update user
-      await User.db.updateRow(session, userData);
-      await Individual.db.updateRow(session, indivAccount);
-      return 0;
-    } catch (err) {
-      print(err);
-      return 1;
-    }
+  Future<UserView> updateIndivAccount(
+      Session session,
+      UserView userview,
+      String bio,
+      String residence,
+      String gender,
+      DateTime? dob,
+      String contact) async {
+    var userData = await User.db.findById(session, userview.userId);
+    var indivAccount = await Individual.db.findFirstRow(session,
+        where: (t) => t.accountId.equals(userview.userId));
+    userData!.name = userview.name;
+    indivAccount!.bio = bio;
+    indivAccount.residence = residence;
+    indivAccount.dob = dob;
+    indivAccount.gender = gender;
+    indivAccount.contact = contact;
+    // update userView
+    var retUser = await UserView.db.updateRow(session, userview);
+    // update user
+    await User.db.updateRow(session, userData);
+    await Individual.db.updateRow(session, indivAccount);
+    return retUser;
   }
 
   // Get all users
@@ -128,10 +150,8 @@ class AccountEndpoint extends Endpoint {
       DateTime? dob,
       String contact) async {
     // Get user id
-    print("In profile setup I:");
     var userView = await UserView.db
         .findFirstRow(session, where: (t) => t.userId.equals(userId));
-    print("Userview: $userView");
     // Update the profile data for that user id
     var individualObj = Individual(
         bio: bio!,
@@ -143,7 +163,6 @@ class AccountEndpoint extends Endpoint {
     userView!.headline = headline!;
     // ignore: unused_local_variable
     var indiv = await Individual.db.insertRow(session, individualObj);
-    print("Individual: $indiv");
     // ignore: unused_local_variable
     var updatedUserView = await UserView.db.updateRow(session, userView);
     return updatedUserView;
@@ -156,13 +175,7 @@ class AccountEndpoint extends Endpoint {
       int userId,
       DateTime originDate,
       List<CustomDetails> customInformation,
-      ByteData? imageData) async {
-    String avatarPath;
-    if (imageData != null) {
-      avatarPath = await uploadImage(session, imageData, "$userId.png");
-    } else {
-      avatarPath = "";
-    }
+      String avatarPath) async {
     // Get user id
     var userView =
         await UserView.db.find(session, where: (t) => t.userId.equals(userId));
@@ -175,6 +188,7 @@ class AccountEndpoint extends Endpoint {
         customFields: customInformation);
     userView[0].headline = headline;
     userView[0].avatar = avatarPath;
+    // ignore: unawaited_futures
     Organization.db.insertRow(session, orgData);
     // ignore: unused_local_variable
     var updatedUserView = UserView.db.updateRow(session, userView[0]);

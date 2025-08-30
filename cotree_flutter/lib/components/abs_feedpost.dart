@@ -35,6 +35,7 @@ class _AbsFeedpostState extends State<AbsFeedpost> {
   late UserView userData;
   late List<String> Urls;
   late int reactionCount;
+  bool originallyLiked = false;
   bool isLiked = false;
   bool isLoading = true;
   Future<void> getAuthorData() async {
@@ -53,6 +54,7 @@ class _AbsFeedpostState extends State<AbsFeedpost> {
         Urls = decodedUrls;
         reactionCount = totalReaction;
         isLiked = reactionInfo != null ? true : false;
+        originallyLiked = isLiked;
         isLoading = false;
       });
     }
@@ -62,6 +64,16 @@ class _AbsFeedpostState extends State<AbsFeedpost> {
   void initState() {
     getAuthorData();
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    if (isLiked != originallyLiked) {
+      client.post.updateReaction(widget.postData.id!, widget.postData.authorId,
+          "P", widget.myUserView.userId, widget.postData.id,
+          type: 0);
+    }
+    super.dispose();
   }
 
   @override
@@ -166,8 +178,7 @@ class _AbsFeedpostState extends State<AbsFeedpost> {
                             ]
                           ],
                         ),
-                        const Divider(thickness: 0.5),
-                        const SizedBox(height: 5),
+                        const SizedBox(height: 10),
                         AbsRichtext(
                             displayString: widget.postData.text, fontSize: 13),
                         //AbsText(
@@ -179,7 +190,11 @@ class _AbsFeedpostState extends State<AbsFeedpost> {
                               child: AbsFeedimagebuild(
                                   imageUrls: widget.postData.media!))
                         ],
-                        const Divider(thickness: 0.5),
+                        Divider(
+                          thickness: 0.5,
+                          color: Provider.of<ThemeProvider>(context)
+                              .secondaryColor,
+                        ),
                         Row(children: [
                           AbsText(
                             displayString: "$reactionCount",
@@ -199,13 +214,6 @@ class _AbsFeedpostState extends State<AbsFeedpost> {
             children: [
               IconButton(
                   onPressed: () {
-                    client.post.updateReaction(
-                        widget.postData.id!,
-                        widget.postData.authorId,
-                        "P",
-                        widget.myUserView.userId,
-                        widget.postData.id,
-                        type: 1);
                     setState(() {
                       isLiked = !isLiked;
                       if (isLiked) {

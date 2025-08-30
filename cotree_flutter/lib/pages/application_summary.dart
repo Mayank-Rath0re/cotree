@@ -6,6 +6,7 @@ import 'package:cotree_flutter/components/abs_text.dart';
 import 'package:cotree_flutter/main.dart';
 import 'package:cotree_flutter/models/constants.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class ApplicationSummary extends StatefulWidget {
   const ApplicationSummary({super.key});
@@ -21,7 +22,9 @@ class _ApplicationSummaryState extends State<ApplicationSummary> {
   List<Offers> _offers = [];
 
   Future<void> _fetchData() async {
-    var user = await Constants().getOrSetUserView(context);
+    final userCache = context.read<UserCacheService>();
+    // Get or set user
+    final user = await userCache.getOrSetUserView(context);
     // keep the same behavior as before (first fetch applications, then offers)
     var applicationInfo = await client.work.fetchUserApplications(user.userId);
 

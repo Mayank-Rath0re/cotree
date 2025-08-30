@@ -20,7 +20,9 @@ class _FeedPageState extends State<FeedPage> {
   bool isLoading = true;
 
   void getFeed() async {
-    var userview = await Constants().getOrSetUserView(context);
+    final userCache = context.read<UserCacheService>();
+    // Get or set user
+    final userview = await userCache.getOrSetUserView(context);
     List<Post> feedPosts =
         await client.recommendation.recommendPosts(userview.userId);
     // List<Post> feedPosts = await client.post.retrieveAllPosts();

@@ -7,6 +7,7 @@ import 'package:cotree_flutter/main.dart';
 import 'package:cotree_flutter/models/constants.dart';
 import 'package:cotree_flutter/pages/add_members_page.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class InviteToSpace extends StatefulWidget {
   final List<int> membersToInvite;
@@ -25,7 +26,9 @@ class _InviteToSpaceState extends State<InviteToSpace> {
 
   void getBuildData() async {
     List<UserView> memberViews = [];
-    var user = await Constants().getOrSetUserView(context);
+    final userCache = context.read<UserCacheService>();
+    // Get or set user
+    final user = await userCache.getOrSetUserView(context);
 
     var spaces = await client.space.fetchSpacesByUser(user.userId);
     for (int i = 0; i < widget.membersToInvite.length; i++) {

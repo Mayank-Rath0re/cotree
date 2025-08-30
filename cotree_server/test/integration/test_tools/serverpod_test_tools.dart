@@ -14,13 +14,13 @@
 import 'package:serverpod_test/serverpod_test.dart' as _i1;
 import 'package:serverpod/serverpod.dart' as _i2;
 import 'dart:async' as _i3;
-import 'package:cotree_server/src/generated/user.dart' as _i4;
-import 'package:cotree_server/src/generated/userview.dart' as _i5;
+import 'package:cotree_server/src/generated/userview.dart' as _i4;
+import 'package:cotree_server/src/generated/user.dart' as _i5;
 import 'package:cotree_server/src/generated/professional_data.dart' as _i6;
 import 'package:cotree_server/src/generated/custom_details.dart' as _i7;
-import 'dart:typed_data' as _i8;
-import 'package:cotree_server/src/generated/individual.dart' as _i9;
-import 'package:cotree_server/src/generated/org.dart' as _i10;
+import 'package:cotree_server/src/generated/individual.dart' as _i8;
+import 'package:cotree_server/src/generated/org.dart' as _i9;
+import 'dart:typed_data' as _i10;
 import 'package:cotree_server/src/generated/message.dart' as _i11;
 import 'package:cotree_server/src/generated/chat.dart' as _i12;
 import 'package:cotree_server/src/generated/connect.dart' as _i13;
@@ -226,7 +226,36 @@ class _AccountEndpoint {
 
   final _i2.SerializationManager _serializationManager;
 
-  _i3.Future<int> createAccount(
+  _i3.Future<bool> checkEmailExists(
+    _i1.TestSessionBuilder sessionBuilder,
+    String email,
+  ) async {
+    return _i1.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _i1.InternalTestSessionBuilder).internalBuild(
+        endpoint: 'account',
+        method: 'checkEmailExists',
+      );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'account',
+          methodName: 'checkEmailExists',
+          parameters: _i1.testObjectToJson({'email': email}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue = await (_localCallContext.method.call(
+          _localUniqueSession,
+          _localCallContext.arguments,
+        ) as _i3.Future<bool>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
+  _i3.Future<_i4.UserView?> createAccount(
     _i1.TestSessionBuilder sessionBuilder,
     int? id,
     String name,
@@ -257,7 +286,7 @@ class _AccountEndpoint {
         var _localReturnValue = await (_localCallContext.method.call(
           _localUniqueSession,
           _localCallContext.arguments,
-        ) as _i3.Future<int>);
+        ) as _i3.Future<_i4.UserView?>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -265,7 +294,7 @@ class _AccountEndpoint {
     });
   }
 
-  _i3.Future<void> createUserView(
+  _i3.Future<_i4.UserView> createUserView(
     _i1.TestSessionBuilder sessionBuilder,
     int? userId,
     String name,
@@ -296,7 +325,7 @@ class _AccountEndpoint {
         var _localReturnValue = await (_localCallContext.method.call(
           _localUniqueSession,
           _localCallContext.arguments,
-        ) as _i3.Future<void>);
+        ) as _i3.Future<_i4.UserView>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -304,7 +333,7 @@ class _AccountEndpoint {
     });
   }
 
-  _i3.Future<_i4.User> getUserData(
+  _i3.Future<_i5.User> getUserData(
     _i1.TestSessionBuilder sessionBuilder,
     int? id,
   ) async {
@@ -325,7 +354,7 @@ class _AccountEndpoint {
         var _localReturnValue = await (_localCallContext.method.call(
           _localUniqueSession,
           _localCallContext.arguments,
-        ) as _i3.Future<_i4.User>);
+        ) as _i3.Future<_i5.User>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -333,11 +362,14 @@ class _AccountEndpoint {
     });
   }
 
-  _i3.Future<int> updateIndivAccount(
+  _i3.Future<_i4.UserView> updateIndivAccount(
     _i1.TestSessionBuilder sessionBuilder,
-    _i5.UserView userview,
+    _i4.UserView userview,
     String bio,
     String residence,
+    String gender,
+    DateTime? dob,
+    String contact,
   ) async {
     return _i1.callAwaitableFunctionAndHandleExceptions(() async {
       var _localUniqueSession =
@@ -354,13 +386,16 @@ class _AccountEndpoint {
             'userview': userview,
             'bio': bio,
             'residence': residence,
+            'gender': gender,
+            'dob': dob,
+            'contact': contact,
           }),
           serializationManager: _serializationManager,
         );
         var _localReturnValue = await (_localCallContext.method.call(
           _localUniqueSession,
           _localCallContext.arguments,
-        ) as _i3.Future<int>);
+        ) as _i3.Future<_i4.UserView>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -368,7 +403,7 @@ class _AccountEndpoint {
     });
   }
 
-  _i3.Future<List<_i5.UserView>> getAllUser(
+  _i3.Future<List<_i4.UserView>> getAllUser(
       _i1.TestSessionBuilder sessionBuilder) async {
     return _i1.callAwaitableFunctionAndHandleExceptions(() async {
       var _localUniqueSession =
@@ -387,7 +422,7 @@ class _AccountEndpoint {
         var _localReturnValue = await (_localCallContext.method.call(
           _localUniqueSession,
           _localCallContext.arguments,
-        ) as _i3.Future<List<_i5.UserView>>);
+        ) as _i3.Future<List<_i4.UserView>>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -395,7 +430,7 @@ class _AccountEndpoint {
     });
   }
 
-  _i3.Future<List<_i5.UserView>> getOrgs(
+  _i3.Future<List<_i4.UserView>> getOrgs(
       _i1.TestSessionBuilder sessionBuilder) async {
     return _i1.callAwaitableFunctionAndHandleExceptions(() async {
       var _localUniqueSession =
@@ -414,7 +449,7 @@ class _AccountEndpoint {
         var _localReturnValue = await (_localCallContext.method.call(
           _localUniqueSession,
           _localCallContext.arguments,
-        ) as _i3.Future<List<_i5.UserView>>);
+        ) as _i3.Future<List<_i4.UserView>>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -422,7 +457,7 @@ class _AccountEndpoint {
     });
   }
 
-  _i3.Future<_i5.UserView> getUserView(
+  _i3.Future<_i4.UserView> getUserView(
     _i1.TestSessionBuilder sessionBuilder,
     int? userId,
   ) async {
@@ -443,7 +478,7 @@ class _AccountEndpoint {
         var _localReturnValue = await (_localCallContext.method.call(
           _localUniqueSession,
           _localCallContext.arguments,
-        ) as _i3.Future<_i5.UserView>);
+        ) as _i3.Future<_i4.UserView>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -480,7 +515,7 @@ class _AccountEndpoint {
     });
   }
 
-  _i3.Future<_i5.UserView> setupProfileI(
+  _i3.Future<_i4.UserView> setupProfileI(
     _i1.TestSessionBuilder sessionBuilder,
     String? headline,
     String? bio,
@@ -515,7 +550,7 @@ class _AccountEndpoint {
         var _localReturnValue = await (_localCallContext.method.call(
           _localUniqueSession,
           _localCallContext.arguments,
-        ) as _i3.Future<_i5.UserView>);
+        ) as _i3.Future<_i4.UserView>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -530,7 +565,7 @@ class _AccountEndpoint {
     int userId,
     DateTime originDate,
     List<_i7.CustomDetails> customInformation,
-    _i8.ByteData? imageData,
+    String avatarPath,
   ) async {
     return _i1.callAwaitableFunctionAndHandleExceptions(() async {
       var _localUniqueSession =
@@ -549,7 +584,7 @@ class _AccountEndpoint {
             'userId': userId,
             'originDate': originDate,
             'customInformation': customInformation,
-            'imageData': imageData,
+            'avatarPath': avatarPath,
           }),
           serializationManager: _serializationManager,
         );
@@ -564,7 +599,7 @@ class _AccountEndpoint {
     });
   }
 
-  _i3.Future<_i9.Individual> getIndividualData(
+  _i3.Future<_i8.Individual> getIndividualData(
     _i1.TestSessionBuilder sessionBuilder,
     int? userId,
   ) async {
@@ -585,7 +620,7 @@ class _AccountEndpoint {
         var _localReturnValue = await (_localCallContext.method.call(
           _localUniqueSession,
           _localCallContext.arguments,
-        ) as _i3.Future<_i9.Individual>);
+        ) as _i3.Future<_i8.Individual>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -593,7 +628,7 @@ class _AccountEndpoint {
     });
   }
 
-  _i3.Future<_i10.Organization> getOrganizationData(
+  _i3.Future<_i9.Organization> getOrganizationData(
     _i1.TestSessionBuilder sessionBuilder,
     int? userId,
   ) async {
@@ -614,7 +649,7 @@ class _AccountEndpoint {
         var _localReturnValue = await (_localCallContext.method.call(
           _localUniqueSession,
           _localCallContext.arguments,
-        ) as _i3.Future<_i10.Organization>);
+        ) as _i3.Future<_i9.Organization>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -624,7 +659,7 @@ class _AccountEndpoint {
 
   _i3.Future<String> uploadImage(
     _i1.TestSessionBuilder sessionBuilder,
-    _i8.ByteData imageData,
+    _i10.ByteData imageData,
     String filename,
   ) async {
     return _i1.callAwaitableFunctionAndHandleExceptions(() async {
@@ -789,7 +824,7 @@ class _AccountEndpoint {
 
   _i3.Future<void> updateAvatar(
     _i1.TestSessionBuilder sessionBuilder,
-    _i5.UserView userview,
+    _i4.UserView userview,
     String url,
   ) async {
     return _i1.callAwaitableFunctionAndHandleExceptions(() async {
@@ -822,7 +857,7 @@ class _AccountEndpoint {
 
   _i3.Future<void> removeAvatar(
     _i1.TestSessionBuilder sessionBuilder,
-    _i5.UserView userview,
+    _i4.UserView userview,
   ) async {
     return _i1.callAwaitableFunctionAndHandleExceptions(() async {
       var _localUniqueSession =
@@ -849,12 +884,12 @@ class _AccountEndpoint {
     });
   }
 
-  _i3.Stream<_i5.UserView> userSearch(
+  _i3.Stream<_i4.UserView> userSearch(
     _i1.TestSessionBuilder sessionBuilder,
     int? userId,
     String query,
   ) {
-    var _localTestStreamManager = _i1.TestStreamManager<_i5.UserView>();
+    var _localTestStreamManager = _i1.TestStreamManager<_i4.UserView>();
     _i1.callStreamFunctionAndHandleExceptions(
       () async {
         var _localUniqueSession =
@@ -1052,7 +1087,7 @@ class _ChatEndpoint {
     });
   }
 
-  _i3.Future<List<_i5.UserView>> fetchChatUserViews(
+  _i3.Future<List<_i4.UserView>> fetchChatUserViews(
     _i1.TestSessionBuilder sessionBuilder,
     int chatId,
   ) async {
@@ -1073,7 +1108,7 @@ class _ChatEndpoint {
         var _localReturnValue = await (_localCallContext.method.call(
           _localUniqueSession,
           _localCallContext.arguments,
-        ) as _i3.Future<List<_i5.UserView>>);
+        ) as _i3.Future<List<_i4.UserView>>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -1107,6 +1142,35 @@ class _ChatEndpoint {
           _localUniqueSession,
           _localCallContext.arguments,
         ) as _i3.Future<_i12.Chat>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
+  _i3.Future<String> fetchLastMessage(
+    _i1.TestSessionBuilder sessionBuilder,
+    int chatId,
+  ) async {
+    return _i1.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _i1.InternalTestSessionBuilder).internalBuild(
+        endpoint: 'chat',
+        method: 'fetchLastMessage',
+      );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'chat',
+          methodName: 'fetchLastMessage',
+          parameters: _i1.testObjectToJson({'chatId': chatId}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue = await (_localCallContext.method.call(
+          _localUniqueSession,
+          _localCallContext.arguments,
+        ) as _i3.Future<String>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -1234,12 +1298,12 @@ class _ChatEndpoint {
     });
   }
 
-  _i3.Stream<_i4.User> chatUserSearch(
+  _i3.Stream<_i5.User> chatUserSearch(
     _i1.TestSessionBuilder sessionBuilder,
     int? userId,
     String query,
   ) {
-    var _localTestStreamManager = _i1.TestStreamManager<_i4.User>();
+    var _localTestStreamManager = _i1.TestStreamManager<_i5.User>();
     _i1.callStreamFunctionAndHandleExceptions(
       () async {
         var _localUniqueSession =
@@ -1663,7 +1727,7 @@ class _ConnectionEndpoint {
     });
   }
 
-  _i3.Future<List<_i5.UserView>> getConnectedUserData(
+  _i3.Future<List<_i4.UserView>> getConnectedUserData(
     _i1.TestSessionBuilder sessionBuilder,
     int? userId,
   ) async {
@@ -1684,7 +1748,7 @@ class _ConnectionEndpoint {
         var _localReturnValue = await (_localCallContext.method.call(
           _localUniqueSession,
           _localCallContext.arguments,
-        ) as _i3.Future<List<_i5.UserView>>);
+        ) as _i3.Future<List<_i4.UserView>>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -1820,7 +1884,7 @@ class _ConnectionEndpoint {
     });
   }
 
-  _i3.Future<List<_i5.UserView>> fetchFollowedOrgs(
+  _i3.Future<List<_i4.UserView>> fetchFollowedOrgs(
     _i1.TestSessionBuilder sessionBuilder,
     int profileId,
   ) async {
@@ -1841,7 +1905,7 @@ class _ConnectionEndpoint {
         var _localReturnValue = await (_localCallContext.method.call(
           _localUniqueSession,
           _localCallContext.arguments,
-        ) as _i3.Future<List<_i5.UserView>>);
+        ) as _i3.Future<List<_i4.UserView>>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -1849,7 +1913,7 @@ class _ConnectionEndpoint {
     });
   }
 
-  _i3.Future<List<_i5.UserView>> fetchConnectedUsers(
+  _i3.Future<List<_i4.UserView>> fetchConnectedUsers(
     _i1.TestSessionBuilder sessionBuilder,
     int userId,
   ) async {
@@ -1870,7 +1934,7 @@ class _ConnectionEndpoint {
         var _localReturnValue = await (_localCallContext.method.call(
           _localUniqueSession,
           _localCallContext.arguments,
-        ) as _i3.Future<List<_i5.UserView>>);
+        ) as _i3.Future<List<_i4.UserView>>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -2615,7 +2679,7 @@ class _PostEndpoint {
   _i3.Future<String> uploadFile(
     _i1.TestSessionBuilder sessionBuilder,
     int userId,
-    _i8.ByteData imageData,
+    _i10.ByteData imageData,
     String filename,
   ) async {
     return _i1.callAwaitableFunctionAndHandleExceptions(() async {
@@ -2794,7 +2858,7 @@ class _ProjectEndpoint {
     _i1.TestSessionBuilder sessionBuilder,
     int projectId,
     int memberId,
-    _i8.ByteData fileData,
+    _i10.ByteData fileData,
     String filename,
   ) async {
     return _i1.callAwaitableFunctionAndHandleExceptions(() async {
@@ -3190,7 +3254,7 @@ class _RecommendationEndpoint {
     });
   }
 
-  _i3.Future<List<_i10.Organization>> recommendOrganizations(
+  _i3.Future<List<_i9.Organization>> recommendOrganizations(
     _i1.TestSessionBuilder sessionBuilder,
     int userId,
   ) async {
@@ -3211,7 +3275,7 @@ class _RecommendationEndpoint {
         var _localReturnValue = await (_localCallContext.method.call(
           _localUniqueSession,
           _localCallContext.arguments,
-        ) as _i3.Future<List<_i10.Organization>>);
+        ) as _i3.Future<List<_i9.Organization>>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -3219,7 +3283,7 @@ class _RecommendationEndpoint {
     });
   }
 
-  _i3.Future<List<_i5.UserView>> recommendUsers(
+  _i3.Future<List<_i4.UserView>> recommendUsers(
     _i1.TestSessionBuilder sessionBuilder,
     int userId, {
     required int limit,
@@ -3244,7 +3308,7 @@ class _RecommendationEndpoint {
         var _localReturnValue = await (_localCallContext.method.call(
           _localUniqueSession,
           _localCallContext.arguments,
-        ) as _i3.Future<List<_i5.UserView>>);
+        ) as _i3.Future<List<_i4.UserView>>);
         return _localReturnValue;
       } finally {
         await _localUniqueSession.close();
@@ -3413,7 +3477,7 @@ class _SpaceEndpoint {
     _i1.TestSessionBuilder sessionBuilder,
     int userId,
     int spaceId,
-    _i5.UserView userview,
+    _i4.UserView userview,
   ) async {
     return _i1.callAwaitableFunctionAndHandleExceptions(() async {
       var _localUniqueSession =

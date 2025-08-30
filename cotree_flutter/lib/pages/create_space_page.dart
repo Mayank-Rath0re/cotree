@@ -11,6 +11,7 @@ import 'package:cotree_flutter/models/file_handling.dart';
 import 'package:cotree_flutter/pages/main_space_page.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class CreateSpacePage extends StatefulWidget {
   const CreateSpacePage({super.key});
@@ -31,7 +32,9 @@ class _CreateSpacePageState extends State<CreateSpacePage> {
   String submitMessage = "";
 
   void getBuildData() async {
-    var user = await Constants().getOrSetUserView(context);
+    final userCache = context.read<UserCacheService>();
+    // Get or set user
+    final user = await userCache.getOrSetUserView(context);
     setState(() {
       userview = user;
     });

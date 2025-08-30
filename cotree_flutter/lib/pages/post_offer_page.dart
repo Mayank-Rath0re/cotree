@@ -45,7 +45,9 @@ class _PostOfferPageState extends State<PostOfferPage> {
       payAvailable ? "₹$payRange1–₹$payRange2 / mo" : "Not disclosed";
 
   Future<void> getBuildData() async {
-    final user = await Constants().getOrSetUserView(context);
+    final userCache = context.read<UserCacheService>();
+    // Get or set user
+    final user = await userCache.getOrSetUserView(context);
     if (!mounted) return;
     setState(() {
       userview = user;

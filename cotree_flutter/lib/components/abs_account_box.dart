@@ -61,6 +61,15 @@ class _AbsAccountBoxState extends State<AbsAccountBox> {
                   avatarUrl: widget.profileUserView.avatar,
                 ),
                 const SizedBox(height: 15),
+                Text(
+                  widget.profileUserView.name,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.bold,
+                      color: Provider.of<ThemeProvider>(context).contrastColor),
+                ),
                 AbsText(
                     displayString: widget.profileUserView.name,
                     fontSize: 14,

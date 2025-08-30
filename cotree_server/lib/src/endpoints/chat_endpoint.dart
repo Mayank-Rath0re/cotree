@@ -67,6 +67,17 @@ class ChatEndpoint extends Endpoint {
     return chatNew;
   }
 
+  Future<String> fetchLastMessage(Session session, int chatId) async {
+    var message = await Message.db.findFirstRow(session,
+        where: (t) => t.chatId.equals(chatId),
+        orderBy: (t) => t.sentAt,
+        orderDescending: true);
+    if (message != null) {
+      return message.content;
+    }
+    return "";
+  }
+
   Future<Chat> getOrCreateChat(
       Session session, int user1Id, int user2Id) async {
     var user1Chats = await ChatParticipant.db

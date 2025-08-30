@@ -9,6 +9,7 @@ import 'package:cotree_flutter/pages/application_summary.dart';
 import 'package:cotree_flutter/pages/review_page.dart';
 import 'package:cotree_flutter/pages/work_desc_page.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class WorkPage extends StatefulWidget {
   const WorkPage({super.key});
@@ -28,7 +29,9 @@ class _WorkPageState extends State<WorkPage> {
   bool isLoading = true;
 
   Future<void> getOfferData() async {
-    var user = await Constants().getOrSetUserView(context);
+    final userCache = context.read<UserCacheService>();
+    // Get or set user
+    final user = await userCache.getOrSetUserView(context);
     var offersInfo = await client.recommendation.recommendOffers(user.userId);
     //var offersInfo = await client.work.fetchOffers();
     setState(() {

@@ -12,6 +12,7 @@ import 'package:cotree_flutter/pages/home_page.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:provider/provider.dart';
 import 'package:reorderables/reorderables.dart';
 
 class CreatePostPage extends StatefulWidget {
@@ -31,7 +32,9 @@ class _CreatePostPageState extends State<CreatePostPage> {
   List<File?> _selectedFile = [];
 
   void getBuildData() async {
-    var user = await Constants().getOrSetUserView(context);
+    final userCache = context.read<UserCacheService>();
+    // Get or set user
+    final user = await userCache.getOrSetUserView(context);
     setState(() {
       userview = user;
       isLoading = false;
@@ -268,6 +271,21 @@ class _CreatePostPageState extends State<CreatePostPage> {
                                 setState(() {
                                   isSubmitting = true;
                                 });
+                                if (content.text.isEmpty) {
+                                  setState(() {
+                                    isSubmitting = false;
+                                  });
+                                  ScaffoldMessenger.of(context)
+                                      .showSnackBar(SnackBar(
+                                    content: const AbsText(
+                                      displayString: "Post cannot be empty!",
+                                      fontSize: 15,
+                                      headColor: true,
+                                      bold: true,
+                                    ),
+                                  ));
+                                  return;
+                                }
                                 if (_selectedFile.isNotEmpty) {
                                   await uploadAllFiles();
                                 }
@@ -280,15 +298,14 @@ class _CreatePostPageState extends State<CreatePostPage> {
                                 Navigator.pop(context);
                                 ScaffoldMessenger.of(context)
                                     .showSnackBar(SnackBar(
-                                        content: Card(
-                                  child: const AbsText(
+                                  content: const AbsText(
                                     displayString:
                                         "Post Uploaded Successfully!",
                                     fontSize: 15,
                                     headColor: true,
                                     bold: true,
                                   ),
-                                )));
+                                ));
                               }
                             },
                             text: "Upload",

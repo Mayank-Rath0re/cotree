@@ -15,7 +15,8 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 class ProfileSetupI extends StatefulWidget {
-  const ProfileSetupI({super.key});
+  final UserView userView;
+  const ProfileSetupI({super.key, required this.userView});
 
   @override
   State<ProfileSetupI> createState() => _ProfileSetupIState();
@@ -306,31 +307,17 @@ class _ProfileSetupIState extends State<ProfileSetupI> {
   }
 
   Future<void> _submitProfile() async {
-    if (headingController.text.trim().isEmpty ||
-        bioController.text.trim().isEmpty ||
-        residenceController.text.trim().isEmpty ||
-        phoneController.text.trim().isEmpty ||
-        dob == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Please fill in all required fields'),
-          backgroundColor: Colors.red,
-        ),
-      );
-      return;
-    }
-
     setState(() {
       isLoading = true;
     });
 
     try {
-      UserView user = await client.account.setupProfileI(
-        headingController.text.trim(),
+      widget.userView.headline = headingController.text.trim();
+      var user = await client.account.updateIndivAccount(
+        widget.userView,
         bioController.text.trim(),
-        sessionManager.signedInUser!.id,
-        genderValue == 0 ? "M" : "F",
         residenceController.text.trim(),
+        genderValue == 0 ? "M" : "F",
         dob,
         phoneController.text.trim(),
       );
@@ -342,7 +329,9 @@ class _ProfileSetupIState extends State<ProfileSetupI> {
         );
         await client.account.updateAvatar(user, url);
         user.avatar = url;
-        await Constants().updateUserView(context, user);
+        final userCache = context.read<UserCacheService>();
+        // Get or set user
+        await userCache.getOrSetUserView(context);
       }
 
       if (mounted) {
@@ -467,6 +456,11 @@ class _ProfileSetupIState extends State<ProfileSetupI> {
                                 null,
                                 "");
                             if (mounted) {
+                              final userCache =
+                                  context.read<UserCacheService>();
+                              // Get or set user
+
+                              await userCache.getOrSetUserView(context);
                               Navigator.pushReplacement(
                                 context,
                                 MaterialPageRoute(
