@@ -1,25 +1,202 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cotree_client/cotree_client.dart';
-import 'package:cotree_flutter/components/abs_minimal_box.dart';
+import 'package:cotree_flutter/components/abs_request_card.dart';
 import 'package:cotree_flutter/components/abs_text.dart';
 import 'package:cotree_flutter/main.dart';
-import 'package:cotree_flutter/pages/profile_page.dart';
 import 'package:cotree_flutter/themes/theme_provider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:heroicons/heroicons.dart';
 import 'package:provider/provider.dart';
 
 class RequestsPage extends StatefulWidget {
   final int userId;
-  final Connect connectData;
+  final int initialIndex;
+  const RequestsPage({super.key, required this.userId, this.initialIndex = 0});
+
+  @override
+  State<RequestsPage> createState() => _RequestsPageState();
+}
+
+class _RequestsPageState extends State<RequestsPage> {
+  List<Invitation> sent = [];
+  List<Invitation> received = [];
+  int _groupValue = 0;
+  bool isLoading = true;
+
+  void getBuildData() async {
+    var data = await client.connection.fetchInvitations(widget.userId);
+    if (!mounted) return; // safety against setState after dispose
+    setState(() {
+      if (widget.initialIndex == 1) {
+        _groupValue = 1;
+      }
+      for (var element in data) {
+        if (element.sender == widget.userId) {
+          sent.add(element);
+        } else {
+          received.add(element);
+        }
+      }
+      isLoading = false;
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    // Run after first frame to avoid dual-build issue
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      getBuildData();
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+        appBar: AppBar(
+          title: const AbsText(
+              displayString: "Connection Requests", fontSize: 16, bold: true),
+        ),
+        body: RefreshIndicator(
+            onRefresh: () async {
+              setState(() {
+                isLoading = true;
+                sent = [];
+                received = [];
+              });
+              WidgetsBinding.instance.addPostFrameCallback((_) {
+                getBuildData();
+              });
+            },
+            child: SafeArea(
+              child: isLoading
+                  ? const Center(child: CircularProgressIndicator())
+                  : SingleChildScrollView(
+                      child: Padding(
+                        padding: const EdgeInsets.all(10.0),
+                        child: Column(
+                          children: [
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: CupertinoSlidingSegmentedControl<int>(
+                                    // The animation for the sliding selection is built-in here.
+                                    children: const <int, Widget>{
+                                      0: Padding(
+                                        padding: EdgeInsets.all(8),
+                                        child: AbsText(
+                                            displayString: "Sent",
+                                            fontSize: 16,
+                                            bold: true),
+                                      ),
+                                      1: Padding(
+                                        padding: EdgeInsets.all(8),
+                                        child: AbsText(
+                                            displayString: "Received",
+                                            fontSize: 16,
+                                            bold: true),
+                                      ),
+                                    },
+                                    groupValue: _groupValue,
+                                    onValueChanged: (int? value) {
+                                      setState(() {
+                                        _groupValue = value!;
+                                      });
+                                    },
+                                    backgroundColor:
+                                        Provider.of<ThemeProvider>(context)
+                                            .mainColor,
+                                    thumbColor:
+                                        Provider.of<ThemeProvider>(context)
+                                            .headColor,
+                                    padding: const EdgeInsets.all(
+                                        12), // Adjust padding around the thumb
+                                  ),
+                                ),
+                              ],
+                            ),
+                            if (_groupValue == 0) ...[
+                              const SizedBox(height: 10),
+                              if (sent.isEmpty) ...[
+                                // empty state handler
+                              ] else ...[
+                                for (int i = 0; i < sent.length; i++) ...[
+                                  AbsRequestCard(
+                                    userId: widget.userId,
+                                    invitation: sent[i],
+                                    isReceived: false,
+                                    onWithdraw: () async {
+                                      if (!mounted) return;
+                                      setState(() {
+                                        sent.removeAt(i);
+                                      });
+                                    },
+                                    onAccept: () {},
+                                    onReject: () {},
+                                  ),
+                                  const SizedBox(height: 6),
+                                ]
+                              ]
+                            ] else ...[
+                              const SizedBox(height: 10),
+                              if (received.isEmpty) ...[
+                                // empty state handler
+                              ] else ...[
+                                for (int i = 0; i < received.length; i++) ...[
+                                  AbsRequestCard(
+                                    userId: widget.userId,
+                                    invitation: received[i],
+                                    isReceived: true,
+                                    onAccept: () async {
+                                      if (!mounted) return;
+                                      setState(() {
+                                        received.removeAt(i);
+                                      });
+                                    },
+                                    onReject: () async {
+                                      if (!mounted) return;
+                                      setState(() {
+                                        received.removeAt(i);
+                                      });
+                                    },
+                                    onWithdraw: () {},
+                                  ),
+                                  const SizedBox(height: 6),
+                                ]
+                              ]
+                            ]
+                          ],
+                        ),
+                      ),
+                    ),
+            )));
+  }
+}
+
+/*
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+
+import 'package:cotree_client/cotree_client.dart';
+import 'package:cotree_flutter/components/abs_minimal_box.dart';
+import 'package:cotree_flutter/components/abs_text.dart';
+import 'package:cotree_flutter/pages/profile_page.dart';
+import 'package:cotree_flutter/themes/theme_provider.dart';
+import 'package:cotree_flutter/main.dart';
+
+/// Compact, easier-to-read rewrite of the original RequestsPage.
+/// Functionality preserved: shows Sent/Received, pull-to-refresh,
+/// withdraw / accept / reject, swipe to act, and open profile.
+class RequestsPage extends StatefulWidget {
+  final int userId;
   final int index;
+
   const RequestsPage({
-    super.key,
+    Key? key,
     required this.userId,
-    required this.connectData,
-    required this.index,
-  });
+    this.index = 0,
+  }) : super(key: key);
 
   @override
   State<RequestsPage> createState() => _RequestsPageState();
@@ -27,139 +204,270 @@ class RequestsPage extends StatefulWidget {
 
 class _RequestRow {
   final UserView user;
-  final dynamic entry; // underlying connect entry from connectData.*Pending
+  final dynamic entry;
   _RequestRow(this.user, this.entry);
 }
 
-class _RequestsPageState extends State<RequestsPage>
-    with SingleTickerProviderStateMixin {
-  List<_RequestRow> _sentRows = [];
-  List<_RequestRow> _receivedRows = [];
-  int selectedIndex = 0;
-  bool isLoading = true;
-  // ignore: unused_field
+class _RequestsPageState extends State<RequestsPage> {
+  final List<_RequestRow> _sent = [];
+  final List<_RequestRow> _received = [];
+  int _selected = 0;
+  bool _loading = true;
   bool _refreshing = false;
-
-  Future<void> getUser() async {
-    setState(() {
-      isLoading = true;
-    });
-    try {
-      final sentEntries = widget.connectData.sentPending ?? [];
-      final receivedEntries = widget.connectData.receivedPending ?? [];
-
-      final sentFutures =
-          sentEntries.map((e) => client.account.getUserView(e.user)).toList();
-      final receivedFutures = receivedEntries
-          .map((e) => client.account.getUserView(e.user))
-          .toList();
-
-      final sentUsers = await Future.wait(sentFutures);
-      final receivedUsers = await Future.wait(receivedFutures);
-
-      if (!mounted) return;
-      setState(() {
-        _sentRows = List.generate(
-          sentUsers.length,
-          (i) => _RequestRow(sentUsers[i], sentEntries[i]),
-        );
-        _receivedRows = List.generate(
-          receivedUsers.length,
-          (i) => _RequestRow(receivedUsers[i], receivedEntries[i]),
-        );
-        isLoading = false;
-      });
-    } catch (e) {
-      if (!mounted) return;
-      setState(() {
-        isLoading = false;
-      });
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Failed to load requests: $e')),
-      );
-    }
-  }
 
   @override
   void initState() {
     super.initState();
-    selectedIndex = widget.index;
-    getUser();
+    _selected = widget.index;
+    _loadRequests();
   }
 
-  Future<void> _onRefresh() async {
+  Future<void> _loadRequests() async {
+    setState(() => _loading = true);
+    try {
+      final sentEntries = widget.connectData.sentPending ?? [];
+      final recvEntries = widget.connectData.receivedPending ?? [];
+
+      final sentFutures =
+          sentEntries.map((e) => client.account.getUserView(e.user));
+      final recvFutures =
+          recvEntries.map((e) => client.account.getUserView(e.user));
+
+      final sentUsers = await Future.wait(sentFutures);
+      final recvUsers = await Future.wait(recvFutures);
+
+      if (!mounted) return;
+      _sent
+        ..clear()
+        ..addAll(List.generate(sentUsers.length,
+            (i) => _RequestRow(sentUsers[i], sentEntries[i])));
+      _received
+        ..clear()
+        ..addAll(List.generate(recvUsers.length,
+            (i) => _RequestRow(recvUsers[i], recvEntries[i])));
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Failed to load requests: $e')),
+        );
+      }
+    } finally {
+      if (mounted) setState(() => _loading = false);
+    }
+  }
+
+  Future<void> _refresh() async {
     setState(() => _refreshing = true);
-    await getUser();
-    if (!mounted) return;
-    setState(() => _refreshing = false);
+    await _loadRequests();
+    if (mounted) setState(() => _refreshing = false);
   }
 
-  Future<void> _withdraw(int index) async {
-    final row = _sentRows[index];
+  Future<void> _withdrawAt(int idx) async {
+    final row = _sent[idx];
     try {
       await client.connection.withdrawConnection(widget.userId, row.entry);
       if (!mounted) return;
-      setState(() {
-        _sentRows.removeAt(index);
-        widget.connectData.sentPending?.remove(row.entry);
-      });
+      setState(() => _sent.removeAt(idx));
+      widget.connectData.sentPending?.remove(row.entry);
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
             content: AbsText(displayString: 'Withdrawn request', fontSize: 16)),
       );
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Could not withdraw: $e')),
-      );
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text('Could not withdraw: $e')));
     }
   }
 
-  Future<void> _accept(int index) async {
-    final row = _receivedRows[index];
+  Future<void> _acceptAt(int idx) async {
+    final row = _received[idx];
     try {
-      await client.connection.confirmConnection(
-        sessionManager.signedInUser!.id,
-        row.entry,
-      );
+      await client.connection
+          .confirmConnection(sessionManager.signedInUser!.id, row.entry);
       if (!mounted) return;
-      setState(() {
-        _receivedRows.removeAt(index);
-        widget.connectData.receivedPending?.remove(row.entry);
-      });
+      setState(() => _received.removeAt(idx));
+      widget.connectData.receivedPending?.remove(row.entry);
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
             content: AbsText(
                 displayString: 'Accepted connection request', fontSize: 16)),
       );
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Could not accept: $e')),
-      );
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text('Could not accept: $e')));
     }
   }
 
-  Future<void> _reject(int index) async {
-    final row = _receivedRows[index];
+  Future<void> _rejectAt(int idx) async {
+    final row = _received[idx];
     try {
-      await client.connection.rejectConnection(
-        sessionManager.signedInUser!.id,
-        row.entry,
-      );
+      await client.connection
+          .rejectConnection(sessionManager.signedInUser!.id, row.entry);
       if (!mounted) return;
-      setState(() {
-        _receivedRows.removeAt(index);
-        widget.connectData.receivedPending?.remove(row.entry);
-      });
+      setState(() => _received.removeAt(idx));
+      widget.connectData.receivedPending?.remove(row.entry);
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
             content: AbsText(
                 displayString: 'Rejected connection request', fontSize: 16)),
       );
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Could not reject: $e')),
-      );
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text('Could not reject: $e')));
     }
+  }
+
+  void _openProfile(int id) {
+    Navigator.push(
+        context, MaterialPageRoute(builder: (_) => ProfilePage(profileId: id)));
+  }
+
+  Widget _buildCard(_RequestRow row, Widget trailing, VoidCallback onTap) {
+    return GestureDetector(
+      onTap: onTap,
+      child: AbsMinimalBox(
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            CircleAvatar(
+              radius: 30,
+              backgroundImage: (row.user.avatar.isNotEmpty)
+                  ? CachedNetworkImageProvider(row.user.avatar)
+                  : null,
+              child: (row.user.avatar.isEmpty)
+                  ? const Icon(Icons.person, color: Colors.white70)
+                  : null,
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  AbsText(
+                      displayString: row.user.name, fontSize: 15, bold: true),
+                  if (row.user.headline.isNotEmpty)
+                    AbsText(displayString: row.user.headline, fontSize: 12),
+                  const SizedBox(height: 8),
+                  Align(alignment: Alignment.centerLeft, child: trailing),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _empty(String label) => Center(
+        child: Padding(
+          padding: const EdgeInsets.only(top: 64.0),
+          child: Column(mainAxisSize: MainAxisSize.min, children: [
+            const Icon(Icons.inbox, size: 56),
+            const SizedBox(height: 12),
+            AbsText(displayString: label, fontSize: 16)
+          ]),
+        ),
+      );
+
+  Widget _loadingList() => ListView.separated(
+        itemCount: 6,
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+        separatorBuilder: (_, __) => const SizedBox(height: 10),
+        itemBuilder: (_, __) => Container(
+          height: 72,
+          decoration: BoxDecoration(
+              color: Theme.of(context).cardColor,
+              borderRadius: BorderRadius.circular(12)),
+          padding: const EdgeInsets.all(12),
+          child: Row(children: [
+            Container(
+                height: 44,
+                width: 44,
+                decoration: const BoxDecoration(
+                    color: Colors.black12, shape: BoxShape.circle)),
+            const SizedBox(width: 12),
+            Expanded(
+                child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                  Container(height: 12, width: 140, color: Colors.black12),
+                  const SizedBox(height: 8),
+                  Container(height: 10, width: 90, color: Colors.black12)
+                ])),
+            const SizedBox(width: 12),
+            Container(height: 36, width: 88, color: Colors.black12),
+          ]),
+        ),
+      );
+
+  Widget _listFor(List<_RequestRow> rows, {required bool isSent}) {
+    if (rows.isEmpty)
+      return _empty(isSent ? 'No sent requests' : 'No received requests');
+
+    return ListView.separated(
+      itemCount: rows.length,
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      separatorBuilder: (_, __) => const SizedBox(height: 10),
+      itemBuilder: (context, i) {
+        final row = rows[i];
+        final tp = Provider.of<ThemeProvider>(context);
+
+        final trailing = isSent
+            ? OutlinedButton.icon(
+                onPressed: () => _withdrawAt(i),
+                icon: Icon(Icons.undo, color: tp.headColor, size: 18),
+                label: const AbsText(displayString: 'Withdraw', fontSize: 14),
+                style: OutlinedButton.styleFrom(
+                    minimumSize: const Size(0, 36),
+                    padding: const EdgeInsets.symmetric(horizontal: 12),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10))),
+              )
+            : Row(mainAxisSize: MainAxisSize.min, children: [
+                ElevatedButton.icon(
+                  onPressed: () => _acceptAt(i),
+                  icon: Icon(Icons.check, color: tp.headColor, size: 18),
+                  label: const AbsText(displayString: 'Accept', fontSize: 14),
+                  style: ElevatedButton.styleFrom(
+                      minimumSize: const Size(0, 36),
+                      padding: const EdgeInsets.symmetric(horizontal: 12),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10))),
+                ),
+                const SizedBox(width: 8),
+                OutlinedButton.icon(
+                  onPressed: () => _rejectAt(i),
+                  icon: Icon(Icons.close, color: tp.headColor, size: 18),
+                  label: const AbsText(displayString: 'Ignore', fontSize: 14),
+                  style: OutlinedButton.styleFrom(
+                      minimumSize: const Size(0, 36),
+                      padding: const EdgeInsets.symmetric(horizontal: 12),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10))),
+                ),
+              ]);
+
+        return Dismissible(
+          key: ValueKey('req-${row.user.userId}-$i'),
+          direction: DismissDirection.endToStart,
+          background: Container(
+            alignment: Alignment.centerRight,
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            color: Colors.blue.withOpacity(0.15),
+            child: Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: const [
+                  Icon(Icons.swipe, size: 18),
+                  SizedBox(width: 6),
+                  Text('')
+                ]),
+          ),
+          onDismissed: (_) => isSent ? _withdrawAt(i) : _acceptAt(i),
+          child: _buildCard(row, trailing, () => _openProfile(row.user.userId)),
+        );
+      },
+    );
   }
 
   @override
@@ -170,391 +478,67 @@ class _RequestsPageState extends State<RequestsPage>
     return Scaffold(
       appBar: AppBar(
         title: const AbsText(
-          displayString: 'Manage Requests',
-          fontSize: 16,
-          bold: true,
-        ),
+            displayString: 'Manage Requests', fontSize: 16, bold: true),
         centerTitle: true,
         leading: IconButton(
-          onPressed: () => Navigator.pop(context),
-          icon: const Icon(Icons.arrow_back_ios),
-        ),
+            onPressed: () => Navigator.pop(context),
+            icon: const Icon(Icons.arrow_back_ios)),
       ),
       body: SafeArea(
-        child: Column(
-          children: [
-            const SizedBox(height: 8),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 12.0),
-              child: DecoratedBox(
-                decoration: BoxDecoration(
-                  color: bg,
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: CupertinoSlidingSegmentedControl<int>(
-                  children: <int, Widget>{
-                    0: _SegmentTab(
-                      icon: HeroIcons.arrowUpOnSquare,
-                      label: 'Sent',
-                      count: _sentRows.length,
-                    ),
-                    1: _SegmentTab(
-                      icon: HeroIcons.arrowDownOnSquare,
-                      label: 'Received',
-                      count: _receivedRows.length,
-                    ),
-                  },
-                  groupValue: selectedIndex,
-                  onValueChanged: (int? v) =>
-                      setState(() => selectedIndex = v ?? 0),
-                  backgroundColor: bg,
-                  thumbColor: tp.headColor,
-                  padding: const EdgeInsets.all(8),
-                ),
+        child: Column(children: [
+          const SizedBox(height: 8),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 12.0),
+            child: DecoratedBox(
+              decoration: BoxDecoration(
+                  color: bg, borderRadius: BorderRadius.circular(12)),
+              child: CupertinoSlidingSegmentedControl<int>(
+                children: {
+                  0: _segTab(Icons.send, 'Sent', _sent.length),
+                  1: _segTab(Icons.inbox, 'Received', _received.length),
+                },
+                groupValue: _selected,
+                onValueChanged: (v) => setState(() => _selected = v ?? 0),
+                backgroundColor: bg,
+                thumbColor: tp.headColor,
+                padding: const EdgeInsets.all(8),
               ),
             ),
-            const SizedBox(height: 8),
-            Expanded(
-              child: RefreshIndicator(
-                onRefresh: _onRefresh,
-                child: AnimatedSwitcher(
-                  duration: const Duration(milliseconds: 250),
-                  switchInCurve: Curves.easeOut,
-                  switchOutCurve: Curves.easeIn,
-                  child: isLoading
-                      ? const _LoadingList()
-                      : selectedIndex == 0
-                          ? _RequestsList(
-                              key: const PageStorageKey('requests-sent'),
-                              rows: _sentRows,
-                              emptyLabel: 'No sent requests',
-                              actionBuilder: (ctx, index) => _WithdrawButton(
-                                onPressed: () => _withdraw(index),
-                              ),
-                              onTapUser: (i) =>
-                                  _openProfile(_sentRows[i].user.userId),
-                              onDismissed: (i) => _withdraw(i),
-                              dismissLabel: 'Withdraw',
-                            )
-                          : _RequestsList(
-                              key: const PageStorageKey('requests-received'),
-                              rows: _receivedRows,
-                              emptyLabel: 'No received requests',
-                              actionBuilder: (ctx, index) =>
-                                  _AcceptRejectButtons(
-                                onAccept: () => _accept(index),
-                                onReject: () => _reject(index),
-                              ),
-                              onTapUser: (i) =>
-                                  _openProfile(_receivedRows[i].user.userId),
-                              onDismissed: (i) => _accept(i),
-                              // swipe to accept as a shortcut
-                              dismissLabel: 'Accept',
-                            ),
-                ),
+          ),
+          const SizedBox(height: 8),
+          Expanded(
+            child: RefreshIndicator(
+              onRefresh: _refresh,
+              child: AnimatedSwitcher(
+                duration: const Duration(milliseconds: 200),
+                child: _loading
+                    ? _loadingList()
+                    : (_selected == 0
+                        ? _listFor(_sent, isSent: true)
+                        : _listFor(_received, isSent: false)),
               ),
             ),
-          ],
-        ),
+          ),
+        ]),
       ),
     );
   }
 
-  void _openProfile(int userId) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => ProfilePage(profileId: userId),
-      ),
-    );
-  }
-}
-
-/// ----------------------- Widgets -----------------------
-
-class _SegmentTab extends StatelessWidget {
-  final HeroIcons icon;
-  final String label;
-  final int count;
-  const _SegmentTab({
-    required this.icon,
-    required this.label,
-    required this.count,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          HeroIcon(icon, size: 18),
+  Widget _segTab(IconData icon, String label, int count) => Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+        child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+          Icon(icon, size: 18),
           const SizedBox(width: 6),
           AbsText(displayString: label, fontSize: 15, bold: true),
           const SizedBox(width: 8),
-          _CountChip(count: count),
-        ],
-      ),
-    );
-  }
-}
+          _countChip(count: count)
+        ]),
+      );
 
-class _CountChip extends StatelessWidget {
-  final int count;
-  const _CountChip({required this.count});
-  @override
-  Widget build(BuildContext context) {
-    return Container(
+  Widget _countChip({required int count}) => Container(
       padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
       decoration: BoxDecoration(
-        color: Colors.black12,
-        borderRadius: BorderRadius.circular(10),
-      ),
-      child: AbsText(displayString: '$count', fontSize: 12),
-    );
-  }
+          color: Colors.black12, borderRadius: BorderRadius.circular(10)),
+      child: AbsText(displayString: '$count', fontSize: 12));
 }
-
-class _RequestsList extends StatelessWidget {
-  final List<_RequestRow> rows;
-  final String emptyLabel;
-  final Widget Function(BuildContext, int) actionBuilder;
-  final void Function(int index) onTapUser;
-  final Future<void> Function(int index) onDismissed;
-  final String dismissLabel;
-
-  const _RequestsList({
-    super.key,
-    required this.rows,
-    required this.emptyLabel,
-    required this.actionBuilder,
-    required this.onTapUser,
-    required this.onDismissed,
-    required this.dismissLabel,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    if (rows.isEmpty) {
-      return _EmptyState(label: emptyLabel);
-    }
-
-    return ListView.separated(
-      itemCount: rows.length,
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-      separatorBuilder: (_, __) => const SizedBox(height: 10),
-      itemBuilder: (context, index) {
-        final row = rows[index];
-        return Dismissible(
-          key: ValueKey('req-${row.user.userId}-$index'),
-          direction: DismissDirection.endToStart,
-          background: _DismissBg(label: dismissLabel, alignEnd: true),
-          onDismissed: (_) => onDismissed(index),
-          child: _RequestCard(
-            user: row.user,
-            onTap: () => onTapUser(index),
-            trailing: actionBuilder(context, index),
-          ),
-        );
-      },
-    );
-  }
-}
-
-class _DismissBg extends StatelessWidget {
-  final String label;
-  final bool alignEnd;
-  const _DismissBg({required this.label, this.alignEnd = false});
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      alignment: alignEnd ? Alignment.centerRight : Alignment.centerLeft,
-      padding: const EdgeInsets.symmetric(horizontal: 16),
-      color: Colors.blue.withOpacity(0.15),
-      child: Row(
-        mainAxisAlignment:
-            alignEnd ? MainAxisAlignment.end : MainAxisAlignment.start,
-        children: [
-          const Icon(Icons.swipe, size: 18),
-          const SizedBox(width: 6),
-          Text(label),
-        ],
-      ),
-    );
-  }
-}
-
-class _RequestCard extends StatelessWidget {
-  final UserView user;
-  final VoidCallback onTap;
-  final Widget trailing;
-  const _RequestCard(
-      {required this.user, required this.onTap, required this.trailing});
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-        onTap: () {
-          Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => ProfilePage(profileId: user.userId)));
-        },
-        child: AbsMinimalBox(
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              CircleAvatar(
-                radius: 30,
-                backgroundImage: (user.avatar.isNotEmpty)
-                    ? CachedNetworkImageProvider(user.avatar)
-                    : null,
-                child: (user.avatar.isEmpty)
-                    ? const Icon(Icons.person, color: Colors.white70)
-                    : null,
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    AbsText(displayString: user.name, fontSize: 15, bold: true),
-                    if ((user.headline).isNotEmpty)
-                      AbsText(displayString: user.headline, fontSize: 12),
-                    trailing,
-                  ],
-                ),
-              ),
-            ],
-          ),
-        ));
-  }
-}
-
-class _WithdrawButton extends StatelessWidget {
-  final VoidCallback onPressed;
-  const _WithdrawButton({required this.onPressed});
-  @override
-  Widget build(BuildContext context) {
-    return OutlinedButton.icon(
-      onPressed: onPressed,
-      icon: Icon(Icons.undo,
-          color: Provider.of<ThemeProvider>(context).headColor, size: 18),
-      label: const AbsText(displayString: "Withdraw", fontSize: 14),
-      style: OutlinedButton.styleFrom(
-        minimumSize: const Size(0, 36),
-        padding: const EdgeInsets.symmetric(horizontal: 12),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-      ),
-    );
-  }
-}
-
-class _AcceptRejectButtons extends StatelessWidget {
-  final VoidCallback onAccept;
-  final VoidCallback onReject;
-  const _AcceptRejectButtons({required this.onAccept, required this.onReject});
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        ElevatedButton.icon(
-          onPressed: onAccept,
-          icon: Icon(Icons.check,
-              color: Provider.of<ThemeProvider>(context).headColor, size: 18),
-          label: const AbsText(displayString: "Accept", fontSize: 14),
-          style: ElevatedButton.styleFrom(
-            minimumSize: const Size(0, 36),
-            padding: const EdgeInsets.symmetric(horizontal: 12),
-            shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-          ),
-        ),
-        const SizedBox(width: 8),
-        ElevatedButton.icon(
-          onPressed: onReject,
-          icon: Icon(Icons.close,
-              color: Provider.of<ThemeProvider>(context).headColor, size: 18),
-          label: const AbsText(displayString: "Ignore", fontSize: 14),
-          style: OutlinedButton.styleFrom(
-            minimumSize: const Size(0, 36),
-            padding: const EdgeInsets.symmetric(horizontal: 12),
-            shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-class _EmptyState extends StatelessWidget {
-  final String label;
-  const _EmptyState({required this.label});
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Padding(
-        padding: const EdgeInsets.only(top: 64.0),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const Icon(Icons.inbox, size: 56),
-            const SizedBox(height: 12),
-            AbsText(displayString: label, fontSize: 16),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class _LoadingList extends StatelessWidget {
-  const _LoadingList();
-  @override
-  Widget build(BuildContext context) {
-    return ListView.separated(
-      itemCount: 6,
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-      separatorBuilder: (_, __) => const SizedBox(height: 10),
-      itemBuilder: (context, index) {
-        return Container(
-          height: 72,
-          decoration: BoxDecoration(
-            color: Theme.of(context).cardColor,
-            borderRadius: BorderRadius.circular(12),
-          ),
-          padding: const EdgeInsets.all(12),
-          child: Row(
-            children: [
-              Container(
-                height: 44,
-                width: 44,
-                decoration: BoxDecoration(
-                  color: Colors.black12,
-                  shape: BoxShape.circle,
-                ),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Container(height: 12, width: 140, color: Colors.black12),
-                    const SizedBox(height: 8),
-                    Container(height: 10, width: 90, color: Colors.black12),
-                  ],
-                ),
-              ),
-              const SizedBox(width: 12),
-              Container(height: 36, width: 88, color: Colors.black12),
-            ],
-          ),
-        );
-      },
-    );
-  }
-}
+*/

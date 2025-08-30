@@ -134,8 +134,11 @@ class PostEndpoint extends Endpoint {
           type: type);
       // ignore: unused_local_variable
       var reactionIns = await Reaction.db.insertRow(session, reactionObj);
-      await notifyObj.createNotification(session, authorId,
-          "Liked your $reactionType.", userId, postId, reactionType);
+      // Notify the user
+      if (authorId != userId) {
+        await notifyObj.createNotification(session, authorId,
+            "Liked your $reactionType.", userId, postId, reactionType);
+      }
     } else {
       // ignore: unused_local_variable
       var delReaction = Reaction.db.deleteRow(session, reactionObj);

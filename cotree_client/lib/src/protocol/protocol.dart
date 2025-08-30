@@ -33,35 +33,38 @@ import 'project.dart' as _i21;
 import 'project_assigned.dart' as _i22;
 import 'reactions.dart' as _i23;
 import 'reply.dart' as _i24;
-import 'space.dart' as _i25;
-import 'space_invite.dart' as _i26;
-import 'task.dart' as _i27;
-import 'task_assigned.dart' as _i28;
-import 'team_member.dart' as _i29;
-import 'teams.dart' as _i30;
-import 'user.dart' as _i31;
-import 'userview.dart' as _i32;
-import 'package:cotree_client/src/protocol/userview.dart' as _i33;
-import 'package:cotree_client/src/protocol/professional_data.dart' as _i34;
-import 'package:cotree_client/src/protocol/custom_details.dart' as _i35;
-import 'package:cotree_client/src/protocol/message.dart' as _i36;
-import 'package:cotree_client/src/protocol/chat.dart' as _i37;
-import 'package:cotree_client/src/protocol/notification.dart' as _i38;
-import 'package:cotree_client/src/protocol/post.dart' as _i39;
-import 'package:cotree_client/src/protocol/comment.dart' as _i40;
-import 'package:cotree_client/src/protocol/teams.dart' as _i41;
-import 'package:cotree_client/src/protocol/documents.dart' as _i42;
-import 'package:cotree_client/src/protocol/task.dart' as _i43;
-import 'package:cotree_client/src/protocol/member.dart' as _i44;
-import 'package:cotree_client/src/protocol/offers.dart' as _i45;
-import 'package:cotree_client/src/protocol/org.dart' as _i46;
-import 'package:cotree_client/src/protocol/space_invite.dart' as _i47;
-import 'package:cotree_client/src/protocol/team_member.dart' as _i48;
-import 'package:cotree_client/src/protocol/space.dart' as _i49;
-import 'package:cotree_client/src/protocol/project.dart' as _i50;
-import 'package:cotree_client/src/protocol/meetings.dart' as _i51;
-import 'package:cotree_client/src/protocol/applications.dart' as _i52;
-import 'package:serverpod_auth_client/serverpod_auth_client.dart' as _i53;
+import 'report_post.dart' as _i25;
+import 'report_user.dart' as _i26;
+import 'space.dart' as _i27;
+import 'space_invite.dart' as _i28;
+import 'task.dart' as _i29;
+import 'task_assigned.dart' as _i30;
+import 'team_member.dart' as _i31;
+import 'teams.dart' as _i32;
+import 'user.dart' as _i33;
+import 'userview.dart' as _i34;
+import 'package:cotree_client/src/protocol/userview.dart' as _i35;
+import 'package:cotree_client/src/protocol/professional_data.dart' as _i36;
+import 'package:cotree_client/src/protocol/custom_details.dart' as _i37;
+import 'package:cotree_client/src/protocol/message.dart' as _i38;
+import 'package:cotree_client/src/protocol/chat.dart' as _i39;
+import 'package:cotree_client/src/protocol/invitations.dart' as _i40;
+import 'package:cotree_client/src/protocol/notification.dart' as _i41;
+import 'package:cotree_client/src/protocol/post.dart' as _i42;
+import 'package:cotree_client/src/protocol/comment.dart' as _i43;
+import 'package:cotree_client/src/protocol/teams.dart' as _i44;
+import 'package:cotree_client/src/protocol/documents.dart' as _i45;
+import 'package:cotree_client/src/protocol/task.dart' as _i46;
+import 'package:cotree_client/src/protocol/member.dart' as _i47;
+import 'package:cotree_client/src/protocol/offers.dart' as _i48;
+import 'package:cotree_client/src/protocol/org.dart' as _i49;
+import 'package:cotree_client/src/protocol/space_invite.dart' as _i50;
+import 'package:cotree_client/src/protocol/team_member.dart' as _i51;
+import 'package:cotree_client/src/protocol/space.dart' as _i52;
+import 'package:cotree_client/src/protocol/project.dart' as _i53;
+import 'package:cotree_client/src/protocol/meetings.dart' as _i54;
+import 'package:cotree_client/src/protocol/applications.dart' as _i55;
+import 'package:serverpod_auth_client/serverpod_auth_client.dart' as _i56;
 export 'greeting.dart';
 export 'applications.dart';
 export 'chat.dart';
@@ -85,6 +88,8 @@ export 'project.dart';
 export 'project_assigned.dart';
 export 'reactions.dart';
 export 'reply.dart';
+export 'report_post.dart';
+export 'report_user.dart';
 export 'space.dart';
 export 'space_invite.dart';
 export 'task.dart';
@@ -177,29 +182,35 @@ class Protocol extends _i1.SerializationManager {
     if (t == _i24.Reply) {
       return _i24.Reply.fromJson(data) as T;
     }
-    if (t == _i25.Space) {
-      return _i25.Space.fromJson(data) as T;
+    if (t == _i25.ReportPost) {
+      return _i25.ReportPost.fromJson(data) as T;
     }
-    if (t == _i26.SpaceInvite) {
-      return _i26.SpaceInvite.fromJson(data) as T;
+    if (t == _i26.ReportUser) {
+      return _i26.ReportUser.fromJson(data) as T;
     }
-    if (t == _i27.Task) {
-      return _i27.Task.fromJson(data) as T;
+    if (t == _i27.Space) {
+      return _i27.Space.fromJson(data) as T;
     }
-    if (t == _i28.TaskAssigned) {
-      return _i28.TaskAssigned.fromJson(data) as T;
+    if (t == _i28.SpaceInvite) {
+      return _i28.SpaceInvite.fromJson(data) as T;
     }
-    if (t == _i29.TeamMember) {
-      return _i29.TeamMember.fromJson(data) as T;
+    if (t == _i29.Task) {
+      return _i29.Task.fromJson(data) as T;
     }
-    if (t == _i30.Teams) {
-      return _i30.Teams.fromJson(data) as T;
+    if (t == _i30.TaskAssigned) {
+      return _i30.TaskAssigned.fromJson(data) as T;
     }
-    if (t == _i31.User) {
-      return _i31.User.fromJson(data) as T;
+    if (t == _i31.TeamMember) {
+      return _i31.TeamMember.fromJson(data) as T;
     }
-    if (t == _i32.UserView) {
-      return _i32.UserView.fromJson(data) as T;
+    if (t == _i32.Teams) {
+      return _i32.Teams.fromJson(data) as T;
+    }
+    if (t == _i33.User) {
+      return _i33.User.fromJson(data) as T;
+    }
+    if (t == _i34.UserView) {
+      return _i34.UserView.fromJson(data) as T;
     }
     if (t == _i1.getType<_i2.Greeting?>()) {
       return (data != null ? _i2.Greeting.fromJson(data) : null) as T;
@@ -270,29 +281,35 @@ class Protocol extends _i1.SerializationManager {
     if (t == _i1.getType<_i24.Reply?>()) {
       return (data != null ? _i24.Reply.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i25.Space?>()) {
-      return (data != null ? _i25.Space.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i25.ReportPost?>()) {
+      return (data != null ? _i25.ReportPost.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i26.SpaceInvite?>()) {
-      return (data != null ? _i26.SpaceInvite.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i26.ReportUser?>()) {
+      return (data != null ? _i26.ReportUser.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i27.Task?>()) {
-      return (data != null ? _i27.Task.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i27.Space?>()) {
+      return (data != null ? _i27.Space.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i28.TaskAssigned?>()) {
-      return (data != null ? _i28.TaskAssigned.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i28.SpaceInvite?>()) {
+      return (data != null ? _i28.SpaceInvite.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i29.TeamMember?>()) {
-      return (data != null ? _i29.TeamMember.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i29.Task?>()) {
+      return (data != null ? _i29.Task.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i30.Teams?>()) {
-      return (data != null ? _i30.Teams.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i30.TaskAssigned?>()) {
+      return (data != null ? _i30.TaskAssigned.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i31.User?>()) {
-      return (data != null ? _i31.User.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i31.TeamMember?>()) {
+      return (data != null ? _i31.TeamMember.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i32.UserView?>()) {
-      return (data != null ? _i32.UserView.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i32.Teams?>()) {
+      return (data != null ? _i32.Teams.fromJson(data) : null) as T;
+    }
+    if (t == _i1.getType<_i33.User?>()) {
+      return (data != null ? _i33.User.fromJson(data) : null) as T;
+    }
+    if (t == _i1.getType<_i34.UserView?>()) {
+      return (data != null ? _i34.UserView.fromJson(data) : null) as T;
     }
     if (t == List<int>) {
       return (data as List).map((e) => deserialize<int>(e)).toList() as T;
@@ -300,16 +317,6 @@ class Protocol extends _i1.SerializationManager {
     if (t == _i1.getType<List<_i24.Reply>?>()) {
       return (data != null
           ? (data as List).map((e) => deserialize<_i24.Reply>(e)).toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<List<_i12.Invitation>?>()) {
-      return (data != null
-          ? (data as List).map((e) => deserialize<_i12.Invitation>(e)).toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<List<_i12.Invitation>?>()) {
-      return (data != null
-          ? (data as List).map((e) => deserialize<_i12.Invitation>(e)).toList()
           : null) as T;
     }
     if (t == List<String>) {
@@ -329,108 +336,112 @@ class Protocol extends _i1.SerializationManager {
       return (data as List).map((e) => deserialize<List<String>>(e)).toList()
           as T;
     }
-    if (t == _i1.getType<List<_i28.TaskAssigned>?>()) {
+    if (t == _i1.getType<List<_i30.TaskAssigned>?>()) {
       return (data != null
           ? (data as List)
-              .map((e) => deserialize<_i28.TaskAssigned>(e))
+              .map((e) => deserialize<_i30.TaskAssigned>(e))
               .toList()
           : null) as T;
     }
-    if (t == List<_i33.UserView>) {
-      return (data as List).map((e) => deserialize<_i33.UserView>(e)).toList()
+    if (t == List<_i35.UserView>) {
+      return (data as List).map((e) => deserialize<_i35.UserView>(e)).toList()
           as T;
     }
-    if (t == List<_i34.ProfessionalData>) {
+    if (t == List<_i36.ProfessionalData>) {
       return (data as List)
-          .map((e) => deserialize<_i34.ProfessionalData>(e))
+          .map((e) => deserialize<_i36.ProfessionalData>(e))
           .toList() as T;
     }
-    if (t == List<_i35.CustomDetails>) {
+    if (t == List<_i37.CustomDetails>) {
       return (data as List)
-          .map((e) => deserialize<_i35.CustomDetails>(e))
+          .map((e) => deserialize<_i37.CustomDetails>(e))
           .toList() as T;
     }
     if (t == List<String>) {
       return (data as List).map((e) => deserialize<String>(e)).toList() as T;
     }
-    if (t == List<_i36.Message>) {
-      return (data as List).map((e) => deserialize<_i36.Message>(e)).toList()
+    if (t == List<_i38.Message>) {
+      return (data as List).map((e) => deserialize<_i38.Message>(e)).toList()
           as T;
     }
-    if (t == List<_i37.Chat>) {
-      return (data as List).map((e) => deserialize<_i37.Chat>(e)).toList() as T;
+    if (t == List<_i39.Chat>) {
+      return (data as List).map((e) => deserialize<_i39.Chat>(e)).toList() as T;
     }
-    if (t == List<_i38.Notification>) {
+    if (t == List<_i40.Invitation>) {
+      return (data as List).map((e) => deserialize<_i40.Invitation>(e)).toList()
+          as T;
+    }
+    if (t == List<_i41.Notification>) {
       return (data as List)
-          .map((e) => deserialize<_i38.Notification>(e))
+          .map((e) => deserialize<_i41.Notification>(e))
           .toList() as T;
     }
-    if (t == List<_i39.Post>) {
-      return (data as List).map((e) => deserialize<_i39.Post>(e)).toList() as T;
+    if (t == List<_i42.Post>) {
+      return (data as List).map((e) => deserialize<_i42.Post>(e)).toList() as T;
     }
-    if (t == List<_i40.Comment>) {
-      return (data as List).map((e) => deserialize<_i40.Comment>(e)).toList()
+    if (t == List<_i43.Comment>) {
+      return (data as List).map((e) => deserialize<_i43.Comment>(e)).toList()
           as T;
     }
-    if (t == List<_i41.Teams>) {
-      return (data as List).map((e) => deserialize<_i41.Teams>(e)).toList()
+    if (t == List<_i44.Teams>) {
+      return (data as List).map((e) => deserialize<_i44.Teams>(e)).toList()
           as T;
     }
     if (t == List<int>) {
       return (data as List).map((e) => deserialize<int>(e)).toList() as T;
     }
-    if (t == List<_i42.Documents>) {
-      return (data as List).map((e) => deserialize<_i42.Documents>(e)).toList()
+    if (t == List<_i45.Documents>) {
+      return (data as List).map((e) => deserialize<_i45.Documents>(e)).toList()
           as T;
     }
-    if (t == List<_i43.Task>) {
-      return (data as List).map((e) => deserialize<_i43.Task>(e)).toList() as T;
+    if (t == List<_i46.Task>) {
+      return (data as List).map((e) => deserialize<_i46.Task>(e)).toList() as T;
     }
-    if (t == List<_i44.Member>) {
-      return (data as List).map((e) => deserialize<_i44.Member>(e)).toList()
+    if (t == List<_i47.Member>) {
+      return (data as List).map((e) => deserialize<_i47.Member>(e)).toList()
           as T;
     }
-    if (t == List<_i45.Offers>) {
-      return (data as List).map((e) => deserialize<_i45.Offers>(e)).toList()
+    if (t == List<_i48.Offers>) {
+      return (data as List).map((e) => deserialize<_i48.Offers>(e)).toList()
           as T;
     }
-    if (t == List<_i46.Organization>) {
+    if (t == List<_i49.Organization>) {
       return (data as List)
-          .map((e) => deserialize<_i46.Organization>(e))
+          .map((e) => deserialize<_i49.Organization>(e))
           .toList() as T;
     }
     if (t == List<List<String>>) {
       return (data as List).map((e) => deserialize<List<String>>(e)).toList()
           as T;
     }
-    if (t == List<_i47.SpaceInvite>) {
+    if (t == List<_i50.SpaceInvite>) {
       return (data as List)
-          .map((e) => deserialize<_i47.SpaceInvite>(e))
+          .map((e) => deserialize<_i50.SpaceInvite>(e))
           .toList() as T;
     }
-    if (t == List<_i48.TeamMember>) {
-      return (data as List).map((e) => deserialize<_i48.TeamMember>(e)).toList()
+    if (t == List<_i51.TeamMember>) {
+      return (data as List).map((e) => deserialize<_i51.TeamMember>(e)).toList()
           as T;
     }
-    if (t == List<_i49.Space>) {
-      return (data as List).map((e) => deserialize<_i49.Space>(e)).toList()
+    if (t == List<_i52.Space>) {
+      return (data as List).map((e) => deserialize<_i52.Space>(e)).toList()
           as T;
     }
-    if (t == List<_i50.Project>) {
-      return (data as List).map((e) => deserialize<_i50.Project>(e)).toList()
+    if (t == List<_i53.Project>) {
+      return (data as List).map((e) => deserialize<_i53.Project>(e)).toList()
           as T;
     }
-    if (t == List<_i51.Meetings>) {
-      return (data as List).map((e) => deserialize<_i51.Meetings>(e)).toList()
+    if (t == List<_i54.Meetings>) {
+      return (data as List).map((e) => deserialize<_i54.Meetings>(e)).toList()
           as T;
     }
-    if (t == List<_i52.Applications>) {
+    if (t == List<_i55.Applications>) {
       return (data as List)
-          .map((e) => deserialize<_i52.Applications>(e))
+          .map((e) => deserialize<_i55.Applications>(e))
           .toList() as T;
     }
     try {
-      return _i53.Protocol().deserialize<T>(data, t);
+      return _i56.Protocol().deserialize<T>(data, t);
     } on _i1.DeserializationTypeNotFoundException catch (_) {}
     return super.deserialize<T>(data, t);
   }
@@ -508,31 +519,37 @@ class Protocol extends _i1.SerializationManager {
     if (data is _i24.Reply) {
       return 'Reply';
     }
-    if (data is _i25.Space) {
+    if (data is _i25.ReportPost) {
+      return 'ReportPost';
+    }
+    if (data is _i26.ReportUser) {
+      return 'ReportUser';
+    }
+    if (data is _i27.Space) {
       return 'Space';
     }
-    if (data is _i26.SpaceInvite) {
+    if (data is _i28.SpaceInvite) {
       return 'SpaceInvite';
     }
-    if (data is _i27.Task) {
+    if (data is _i29.Task) {
       return 'Task';
     }
-    if (data is _i28.TaskAssigned) {
+    if (data is _i30.TaskAssigned) {
       return 'TaskAssigned';
     }
-    if (data is _i29.TeamMember) {
+    if (data is _i31.TeamMember) {
       return 'TeamMember';
     }
-    if (data is _i30.Teams) {
+    if (data is _i32.Teams) {
       return 'Teams';
     }
-    if (data is _i31.User) {
+    if (data is _i33.User) {
       return 'User';
     }
-    if (data is _i32.UserView) {
+    if (data is _i34.UserView) {
       return 'UserView';
     }
-    className = _i53.Protocol().getClassNameForObject(data);
+    className = _i56.Protocol().getClassNameForObject(data);
     if (className != null) {
       return 'serverpod_auth.$className';
     }
@@ -614,33 +631,39 @@ class Protocol extends _i1.SerializationManager {
     if (dataClassName == 'Reply') {
       return deserialize<_i24.Reply>(data['data']);
     }
+    if (dataClassName == 'ReportPost') {
+      return deserialize<_i25.ReportPost>(data['data']);
+    }
+    if (dataClassName == 'ReportUser') {
+      return deserialize<_i26.ReportUser>(data['data']);
+    }
     if (dataClassName == 'Space') {
-      return deserialize<_i25.Space>(data['data']);
+      return deserialize<_i27.Space>(data['data']);
     }
     if (dataClassName == 'SpaceInvite') {
-      return deserialize<_i26.SpaceInvite>(data['data']);
+      return deserialize<_i28.SpaceInvite>(data['data']);
     }
     if (dataClassName == 'Task') {
-      return deserialize<_i27.Task>(data['data']);
+      return deserialize<_i29.Task>(data['data']);
     }
     if (dataClassName == 'TaskAssigned') {
-      return deserialize<_i28.TaskAssigned>(data['data']);
+      return deserialize<_i30.TaskAssigned>(data['data']);
     }
     if (dataClassName == 'TeamMember') {
-      return deserialize<_i29.TeamMember>(data['data']);
+      return deserialize<_i31.TeamMember>(data['data']);
     }
     if (dataClassName == 'Teams') {
-      return deserialize<_i30.Teams>(data['data']);
+      return deserialize<_i32.Teams>(data['data']);
     }
     if (dataClassName == 'User') {
-      return deserialize<_i31.User>(data['data']);
+      return deserialize<_i33.User>(data['data']);
     }
     if (dataClassName == 'UserView') {
-      return deserialize<_i32.UserView>(data['data']);
+      return deserialize<_i34.UserView>(data['data']);
     }
     if (dataClassName.startsWith('serverpod_auth.')) {
       data['className'] = dataClassName.substring(15);
-      return _i53.Protocol().deserializeByClassName(data);
+      return _i56.Protocol().deserializeByClassName(data);
     }
     return super.deserializeByClassName(data);
   }

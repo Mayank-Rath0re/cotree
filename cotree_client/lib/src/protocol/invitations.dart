@@ -14,24 +14,27 @@ import 'package:serverpod_client/serverpod_client.dart' as _i1;
 abstract class Invitation implements _i1.SerializableModel {
   Invitation._({
     this.id,
-    required this.user,
+    required this.sender,
+    required this.receiver,
+    bool? isRejected,
     this.personalText,
-    required this.type,
-  });
+  }) : isRejected = isRejected ?? false;
 
   factory Invitation({
     int? id,
-    required int user,
+    required int sender,
+    required int receiver,
+    bool? isRejected,
     String? personalText,
-    required String type,
   }) = _InvitationImpl;
 
   factory Invitation.fromJson(Map<String, dynamic> jsonSerialization) {
     return Invitation(
       id: jsonSerialization['id'] as int?,
-      user: jsonSerialization['user'] as int,
+      sender: jsonSerialization['sender'] as int,
+      receiver: jsonSerialization['receiver'] as int,
+      isRejected: jsonSerialization['isRejected'] as bool,
       personalText: jsonSerialization['personalText'] as String?,
-      type: jsonSerialization['type'] as String,
     );
   }
 
@@ -40,28 +43,32 @@ abstract class Invitation implements _i1.SerializableModel {
   /// the id will be null.
   int? id;
 
-  int user;
+  int sender;
+
+  int receiver;
+
+  bool isRejected;
 
   String? personalText;
-
-  String type;
 
   /// Returns a shallow copy of this [Invitation]
   /// with some or all fields replaced by the given arguments.
   @_i1.useResult
   Invitation copyWith({
     int? id,
-    int? user,
+    int? sender,
+    int? receiver,
+    bool? isRejected,
     String? personalText,
-    String? type,
   });
   @override
   Map<String, dynamic> toJson() {
     return {
       if (id != null) 'id': id,
-      'user': user,
+      'sender': sender,
+      'receiver': receiver,
+      'isRejected': isRejected,
       if (personalText != null) 'personalText': personalText,
-      'type': type,
     };
   }
 
@@ -76,14 +83,16 @@ class _Undefined {}
 class _InvitationImpl extends Invitation {
   _InvitationImpl({
     int? id,
-    required int user,
+    required int sender,
+    required int receiver,
+    bool? isRejected,
     String? personalText,
-    required String type,
   }) : super._(
           id: id,
-          user: user,
+          sender: sender,
+          receiver: receiver,
+          isRejected: isRejected,
           personalText: personalText,
-          type: type,
         );
 
   /// Returns a shallow copy of this [Invitation]
@@ -92,15 +101,17 @@ class _InvitationImpl extends Invitation {
   @override
   Invitation copyWith({
     Object? id = _Undefined,
-    int? user,
+    int? sender,
+    int? receiver,
+    bool? isRejected,
     Object? personalText = _Undefined,
-    String? type,
   }) {
     return Invitation(
       id: id is int? ? id : this.id,
-      user: user ?? this.user,
+      sender: sender ?? this.sender,
+      receiver: receiver ?? this.receiver,
+      isRejected: isRejected ?? this.isRejected,
       personalText: personalText is String? ? personalText : this.personalText,
-      type: type ?? this.type,
     );
   }
 }

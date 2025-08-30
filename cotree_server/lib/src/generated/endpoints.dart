@@ -968,6 +968,50 @@ class Endpoints extends _i1.EndpointDispatch {
             params['userId'],
           ),
         ),
+        'fetchInvitations': _i1.MethodConnector(
+          name: 'fetchInvitations',
+          params: {
+            'userId': _i1.ParameterDescription(
+              name: 'userId',
+              type: _i1.getType<int?>(),
+              nullable: true,
+            )
+          },
+          call: (
+            _i1.Session session,
+            Map<String, dynamic> params,
+          ) async =>
+              (endpoints['connection'] as _i4.ConnectionEndpoint)
+                  .fetchInvitations(
+            session,
+            params['userId'],
+          ),
+        ),
+        'fetchInvitationByUsers': _i1.MethodConnector(
+          name: 'fetchInvitationByUsers',
+          params: {
+            'userId': _i1.ParameterDescription(
+              name: 'userId',
+              type: _i1.getType<int>(),
+              nullable: false,
+            ),
+            'secondaryId': _i1.ParameterDescription(
+              name: 'secondaryId',
+              type: _i1.getType<int>(),
+              nullable: false,
+            ),
+          },
+          call: (
+            _i1.Session session,
+            Map<String, dynamic> params,
+          ) async =>
+              (endpoints['connection'] as _i4.ConnectionEndpoint)
+                  .fetchInvitationByUsers(
+            session,
+            params['userId'],
+            params['secondaryId'],
+          ),
+        ),
         'isConnection': _i1.MethodConnector(
           name: 'isConnection',
           params: {
@@ -1023,6 +1067,30 @@ class Endpoints extends _i1.EndpointDispatch {
             params['personalText'],
           ),
         ),
+        'removeInvite': _i1.MethodConnector(
+          name: 'removeInvite',
+          params: {
+            'senderId': _i1.ParameterDescription(
+              name: 'senderId',
+              type: _i1.getType<int>(),
+              nullable: false,
+            ),
+            'receiverId': _i1.ParameterDescription(
+              name: 'receiverId',
+              type: _i1.getType<int>(),
+              nullable: false,
+            ),
+          },
+          call: (
+            _i1.Session session,
+            Map<String, dynamic> params,
+          ) async =>
+              (endpoints['connection'] as _i4.ConnectionEndpoint).removeInvite(
+            session,
+            params['senderId'],
+            params['receiverId'],
+          ),
+        ),
         'getInviteData': _i1.MethodConnector(
           name: 'getInviteData',
           params: {
@@ -1050,16 +1118,11 @@ class Endpoints extends _i1.EndpointDispatch {
         'confirmConnection': _i1.MethodConnector(
           name: 'confirmConnection',
           params: {
-            'receiverId': _i1.ParameterDescription(
-              name: 'receiverId',
-              type: _i1.getType<int?>(),
-              nullable: true,
-            ),
             'invite': _i1.ParameterDescription(
               name: 'invite',
               type: _i1.getType<_i20.Invitation>(),
               nullable: false,
-            ),
+            )
           },
           call: (
             _i1.Session session,
@@ -1068,7 +1131,6 @@ class Endpoints extends _i1.EndpointDispatch {
               (endpoints['connection'] as _i4.ConnectionEndpoint)
                   .confirmConnection(
             session,
-            params['receiverId'],
             params['invite'],
           ),
         ),
@@ -1080,9 +1142,9 @@ class Endpoints extends _i1.EndpointDispatch {
               type: _i1.getType<int>(),
               nullable: false,
             ),
-            'invite': _i1.ParameterDescription(
-              name: 'invite',
-              type: _i1.getType<_i20.Invitation>(),
+            'receiverId': _i1.ParameterDescription(
+              name: 'receiverId',
+              type: _i1.getType<int>(),
               nullable: false,
             ),
           },
@@ -1094,22 +1156,17 @@ class Endpoints extends _i1.EndpointDispatch {
                   .withdrawConnection(
             session,
             params['senderId'],
-            params['invite'],
+            params['receiverId'],
           ),
         ),
         'rejectConnection': _i1.MethodConnector(
           name: 'rejectConnection',
           params: {
-            'receiverId': _i1.ParameterDescription(
-              name: 'receiverId',
-              type: _i1.getType<int?>(),
-              nullable: true,
-            ),
-            'invite': _i1.ParameterDescription(
-              name: 'invite',
+            'inviteData': _i1.ParameterDescription(
+              name: 'inviteData',
               type: _i1.getType<_i20.Invitation>(),
               nullable: false,
-            ),
+            )
           },
           call: (
             _i1.Session session,
@@ -1118,8 +1175,7 @@ class Endpoints extends _i1.EndpointDispatch {
               (endpoints['connection'] as _i4.ConnectionEndpoint)
                   .rejectConnection(
             session,
-            params['receiverId'],
-            params['invite'],
+            params['inviteData'],
           ),
         ),
         'removeConnection': _i1.MethodConnector(
@@ -1426,6 +1482,25 @@ class Endpoints extends _i1.EndpointDispatch {
             params['referencedUser'],
             params['objectId'],
             params['objectType'],
+          ),
+        ),
+        'deleteNotification': _i1.MethodConnector(
+          name: 'deleteNotification',
+          params: {
+            'notifId': _i1.ParameterDescription(
+              name: 'notifId',
+              type: _i1.getType<int>(),
+              nullable: false,
+            )
+          },
+          call: (
+            _i1.Session session,
+            Map<String, dynamic> params,
+          ) async =>
+              (endpoints['notification'] as _i7.NotificationEndpoint)
+                  .deleteNotification(
+            session,
+            params['notifId'],
           ),
         ),
         'notifyMyConnections': _i1.MethodConnector(

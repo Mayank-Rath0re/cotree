@@ -1343,6 +1343,68 @@ class _ConnectionEndpoint {
     });
   }
 
+  _i3.Future<List<_i14.Invitation>> fetchInvitations(
+    _i1.TestSessionBuilder sessionBuilder,
+    int? userId,
+  ) async {
+    return _i1.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _i1.InternalTestSessionBuilder).internalBuild(
+        endpoint: 'connection',
+        method: 'fetchInvitations',
+      );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'connection',
+          methodName: 'fetchInvitations',
+          parameters: _i1.testObjectToJson({'userId': userId}),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue = await (_localCallContext.method.call(
+          _localUniqueSession,
+          _localCallContext.arguments,
+        ) as _i3.Future<List<_i14.Invitation>>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
+  _i3.Future<_i14.Invitation?> fetchInvitationByUsers(
+    _i1.TestSessionBuilder sessionBuilder,
+    int userId,
+    int secondaryId,
+  ) async {
+    return _i1.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _i1.InternalTestSessionBuilder).internalBuild(
+        endpoint: 'connection',
+        method: 'fetchInvitationByUsers',
+      );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'connection',
+          methodName: 'fetchInvitationByUsers',
+          parameters: _i1.testObjectToJson({
+            'userId': userId,
+            'secondaryId': secondaryId,
+          }),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue = await (_localCallContext.method.call(
+          _localUniqueSession,
+          _localCallContext.arguments,
+        ) as _i3.Future<_i14.Invitation?>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
   _i3.Future<int> isConnection(
     _i1.TestSessionBuilder sessionBuilder,
     int userId,
@@ -1411,6 +1473,39 @@ class _ConnectionEndpoint {
     });
   }
 
+  _i3.Future<void> removeInvite(
+    _i1.TestSessionBuilder sessionBuilder,
+    int senderId,
+    int receiverId,
+  ) async {
+    return _i1.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _i1.InternalTestSessionBuilder).internalBuild(
+        endpoint: 'connection',
+        method: 'removeInvite',
+      );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'connection',
+          methodName: 'removeInvite',
+          parameters: _i1.testObjectToJson({
+            'senderId': senderId,
+            'receiverId': receiverId,
+          }),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue = await (_localCallContext.method.call(
+          _localUniqueSession,
+          _localCallContext.arguments,
+        ) as _i3.Future<void>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
   _i3.Future<_i14.Invitation?> getInviteData(
     _i1.TestSessionBuilder sessionBuilder,
     int receiverId,
@@ -1446,7 +1541,6 @@ class _ConnectionEndpoint {
 
   _i3.Future<void> confirmConnection(
     _i1.TestSessionBuilder sessionBuilder,
-    int? receiverId,
     _i14.Invitation invite,
   ) async {
     return _i1.callAwaitableFunctionAndHandleExceptions(() async {
@@ -1460,10 +1554,7 @@ class _ConnectionEndpoint {
           createSessionCallback: (_) => _localUniqueSession,
           endpointPath: 'connection',
           methodName: 'confirmConnection',
-          parameters: _i1.testObjectToJson({
-            'receiverId': receiverId,
-            'invite': invite,
-          }),
+          parameters: _i1.testObjectToJson({'invite': invite}),
           serializationManager: _serializationManager,
         );
         var _localReturnValue = await (_localCallContext.method.call(
@@ -1480,7 +1571,7 @@ class _ConnectionEndpoint {
   _i3.Future<void> withdrawConnection(
     _i1.TestSessionBuilder sessionBuilder,
     int senderId,
-    _i14.Invitation invite,
+    int receiverId,
   ) async {
     return _i1.callAwaitableFunctionAndHandleExceptions(() async {
       var _localUniqueSession =
@@ -1495,7 +1586,7 @@ class _ConnectionEndpoint {
           methodName: 'withdrawConnection',
           parameters: _i1.testObjectToJson({
             'senderId': senderId,
-            'invite': invite,
+            'receiverId': receiverId,
           }),
           serializationManager: _serializationManager,
         );
@@ -1512,8 +1603,7 @@ class _ConnectionEndpoint {
 
   _i3.Future<void> rejectConnection(
     _i1.TestSessionBuilder sessionBuilder,
-    int? receiverId,
-    _i14.Invitation invite,
+    _i14.Invitation inviteData,
   ) async {
     return _i1.callAwaitableFunctionAndHandleExceptions(() async {
       var _localUniqueSession =
@@ -1526,10 +1616,7 @@ class _ConnectionEndpoint {
           createSessionCallback: (_) => _localUniqueSession,
           endpointPath: 'connection',
           methodName: 'rejectConnection',
-          parameters: _i1.testObjectToJson({
-            'receiverId': receiverId,
-            'invite': invite,
-          }),
+          parameters: _i1.testObjectToJson({'inviteData': inviteData}),
           serializationManager: _serializationManager,
         );
         var _localReturnValue = await (_localCallContext.method.call(
@@ -1966,6 +2053,35 @@ class _NotificationEndpoint {
             'objectId': objectId,
             'objectType': objectType,
           }),
+          serializationManager: _serializationManager,
+        );
+        var _localReturnValue = await (_localCallContext.method.call(
+          _localUniqueSession,
+          _localCallContext.arguments,
+        ) as _i3.Future<void>);
+        return _localReturnValue;
+      } finally {
+        await _localUniqueSession.close();
+      }
+    });
+  }
+
+  _i3.Future<void> deleteNotification(
+    _i1.TestSessionBuilder sessionBuilder,
+    int notifId,
+  ) async {
+    return _i1.callAwaitableFunctionAndHandleExceptions(() async {
+      var _localUniqueSession =
+          (sessionBuilder as _i1.InternalTestSessionBuilder).internalBuild(
+        endpoint: 'notification',
+        method: 'deleteNotification',
+      );
+      try {
+        var _localCallContext = await _endpointDispatch.getMethodCallContext(
+          createSessionCallback: (_) => _localUniqueSession,
+          endpointPath: 'notification',
+          methodName: 'deleteNotification',
+          parameters: _i1.testObjectToJson({'notifId': notifId}),
           serializationManager: _serializationManager,
         );
         var _localReturnValue = await (_localCallContext.method.call(

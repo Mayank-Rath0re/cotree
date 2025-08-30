@@ -192,7 +192,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                     MaterialPageRoute(
                                         builder: (context) =>
                                             UserConnectionsPage(
-                                                userview: myUserview)));
+                                                userview: userData)));
                               },
                               child: AbsMinimalBox(
                                   roundedBorder: true,
@@ -382,8 +382,8 @@ class _ProfilePageState extends State<ProfilePage> {
                                         .getInviteData(myUserview.userId,
                                             widget.profileId!);
                                     if (inviteData != null) {
-                                      client.connection.confirmConnection(
-                                          myUserview.userId, inviteData);
+                                      client.connection
+                                          .confirmConnection(inviteData);
                                       setState(() {
                                         profileViewType = 1;
                                       });
@@ -406,8 +406,8 @@ class _ProfilePageState extends State<ProfilePage> {
                                         .getInviteData(myUserview.userId,
                                             widget.profileId!);
                                     if (inviteData != null) {
-                                      client.connection.rejectConnection(
-                                          myUserview.userId, inviteData);
+                                      client.connection
+                                          .rejectConnection(inviteData);
                                       setState(() {
                                         profileViewType = 0;
                                       });
@@ -493,7 +493,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                     MaterialPageRoute(
                                         builder: (context) => AddProfileInfo(
                                               profileId: widget.profileId!,
-                                              index: 0,
+                                              index: 1,
                                             )));
                               },
                               icon: Icon(FluentIcons.add_16_regular,
@@ -536,7 +536,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                       MaterialPageRoute(
                                           builder: (context) => AddProfileInfo(
                                                 profileId: widget.profileId!,
-                                                index: 1,
+                                                index: 0,
                                               )));
                                 },
                                 icon: Icon(FluentIcons.add_16_regular,

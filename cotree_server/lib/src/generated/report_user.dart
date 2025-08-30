@@ -11,58 +11,63 @@
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod/serverpod.dart' as _i1;
 
-abstract class Connect
+abstract class ReportUser
     implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
-  Connect._({
+  ReportUser._({
     this.id,
-    this.accountId,
-    required this.activeConnections,
+    required this.reporterId,
+    required this.reportedId,
+    required this.reason,
   });
 
-  factory Connect({
+  factory ReportUser({
     int? id,
-    int? accountId,
-    required List<int> activeConnections,
-  }) = _ConnectImpl;
+    required int reporterId,
+    required int reportedId,
+    required String reason,
+  }) = _ReportUserImpl;
 
-  factory Connect.fromJson(Map<String, dynamic> jsonSerialization) {
-    return Connect(
+  factory ReportUser.fromJson(Map<String, dynamic> jsonSerialization) {
+    return ReportUser(
       id: jsonSerialization['id'] as int?,
-      accountId: jsonSerialization['accountId'] as int?,
-      activeConnections: (jsonSerialization['activeConnections'] as List)
-          .map((e) => e as int)
-          .toList(),
+      reporterId: jsonSerialization['reporterId'] as int,
+      reportedId: jsonSerialization['reportedId'] as int,
+      reason: jsonSerialization['reason'] as String,
     );
   }
 
-  static final t = ConnectTable();
+  static final t = ReportUserTable();
 
-  static const db = ConnectRepository._();
+  static const db = ReportUserRepository._();
 
   @override
   int? id;
 
-  int? accountId;
+  int reporterId;
 
-  List<int> activeConnections;
+  int reportedId;
+
+  String reason;
 
   @override
   _i1.Table<int?> get table => t;
 
-  /// Returns a shallow copy of this [Connect]
+  /// Returns a shallow copy of this [ReportUser]
   /// with some or all fields replaced by the given arguments.
   @_i1.useResult
-  Connect copyWith({
+  ReportUser copyWith({
     int? id,
-    int? accountId,
-    List<int>? activeConnections,
+    int? reporterId,
+    int? reportedId,
+    String? reason,
   });
   @override
   Map<String, dynamic> toJson() {
     return {
       if (id != null) 'id': id,
-      if (accountId != null) 'accountId': accountId,
-      'activeConnections': activeConnections.toJson(),
+      'reporterId': reporterId,
+      'reportedId': reportedId,
+      'reason': reason,
     };
   }
 
@@ -70,31 +75,32 @@ abstract class Connect
   Map<String, dynamic> toJsonForProtocol() {
     return {
       if (id != null) 'id': id,
-      if (accountId != null) 'accountId': accountId,
-      'activeConnections': activeConnections.toJson(),
+      'reporterId': reporterId,
+      'reportedId': reportedId,
+      'reason': reason,
     };
   }
 
-  static ConnectInclude include() {
-    return ConnectInclude._();
+  static ReportUserInclude include() {
+    return ReportUserInclude._();
   }
 
-  static ConnectIncludeList includeList({
-    _i1.WhereExpressionBuilder<ConnectTable>? where,
+  static ReportUserIncludeList includeList({
+    _i1.WhereExpressionBuilder<ReportUserTable>? where,
     int? limit,
     int? offset,
-    _i1.OrderByBuilder<ConnectTable>? orderBy,
+    _i1.OrderByBuilder<ReportUserTable>? orderBy,
     bool orderDescending = false,
-    _i1.OrderByListBuilder<ConnectTable>? orderByList,
-    ConnectInclude? include,
+    _i1.OrderByListBuilder<ReportUserTable>? orderByList,
+    ReportUserInclude? include,
   }) {
-    return ConnectIncludeList._(
+    return ReportUserIncludeList._(
       where: where,
       limit: limit,
       offset: offset,
-      orderBy: orderBy?.call(Connect.t),
+      orderBy: orderBy?.call(ReportUser.t),
       orderDescending: orderDescending,
-      orderByList: orderByList?.call(Connect.t),
+      orderByList: orderByList?.call(ReportUser.t),
       include: include,
     );
   }
@@ -107,72 +113,82 @@ abstract class Connect
 
 class _Undefined {}
 
-class _ConnectImpl extends Connect {
-  _ConnectImpl({
+class _ReportUserImpl extends ReportUser {
+  _ReportUserImpl({
     int? id,
-    int? accountId,
-    required List<int> activeConnections,
+    required int reporterId,
+    required int reportedId,
+    required String reason,
   }) : super._(
           id: id,
-          accountId: accountId,
-          activeConnections: activeConnections,
+          reporterId: reporterId,
+          reportedId: reportedId,
+          reason: reason,
         );
 
-  /// Returns a shallow copy of this [Connect]
+  /// Returns a shallow copy of this [ReportUser]
   /// with some or all fields replaced by the given arguments.
   @_i1.useResult
   @override
-  Connect copyWith({
+  ReportUser copyWith({
     Object? id = _Undefined,
-    Object? accountId = _Undefined,
-    List<int>? activeConnections,
+    int? reporterId,
+    int? reportedId,
+    String? reason,
   }) {
-    return Connect(
+    return ReportUser(
       id: id is int? ? id : this.id,
-      accountId: accountId is int? ? accountId : this.accountId,
-      activeConnections:
-          activeConnections ?? this.activeConnections.map((e0) => e0).toList(),
+      reporterId: reporterId ?? this.reporterId,
+      reportedId: reportedId ?? this.reportedId,
+      reason: reason ?? this.reason,
     );
   }
 }
 
-class ConnectTable extends _i1.Table<int?> {
-  ConnectTable({super.tableRelation}) : super(tableName: 'connect') {
-    accountId = _i1.ColumnInt(
-      'accountId',
+class ReportUserTable extends _i1.Table<int?> {
+  ReportUserTable({super.tableRelation}) : super(tableName: 'report_user') {
+    reporterId = _i1.ColumnInt(
+      'reporterId',
       this,
     );
-    activeConnections = _i1.ColumnSerializable(
-      'activeConnections',
+    reportedId = _i1.ColumnInt(
+      'reportedId',
+      this,
+    );
+    reason = _i1.ColumnString(
+      'reason',
       this,
     );
   }
 
-  late final _i1.ColumnInt accountId;
+  late final _i1.ColumnInt reporterId;
 
-  late final _i1.ColumnSerializable activeConnections;
+  late final _i1.ColumnInt reportedId;
+
+  late final _i1.ColumnString reason;
 
   @override
   List<_i1.Column> get columns => [
         id,
-        accountId,
-        activeConnections,
+        reporterId,
+        reportedId,
+        reason,
       ];
 }
 
-class ConnectInclude extends _i1.IncludeObject {
-  ConnectInclude._();
+class ReportUserInclude extends _i1.IncludeObject {
+  ReportUserInclude._();
 
   @override
   Map<String, _i1.Include?> get includes => {};
 
   @override
-  _i1.Table<int?> get table => Connect.t;
+  _i1.Table<int?> get table => ReportUser.t;
 }
 
-class ConnectIncludeList extends _i1.IncludeList {
-  ConnectIncludeList._({
-    _i1.WhereExpressionBuilder<ConnectTable>? where,
+class ReportUserIncludeList extends _i1.IncludeList {
+  ReportUserIncludeList._({
+    _i1.WhereExpressionBuilder<ReportUserTable>? where,
     super.limit,
     super.offset,
     super.orderBy,
@@ -180,20 +196,20 @@ class ConnectIncludeList extends _i1.IncludeList {
     super.orderByList,
     super.include,
   }) {
-    super.where = where?.call(Connect.t);
+    super.where = where?.call(ReportUser.t);
   }
 
   @override
   Map<String, _i1.Include?> get includes => include?.includes ?? {};
 
   @override
-  _i1.Table<int?> get table => Connect.t;
+  _i1.Table<int?> get table => ReportUser.t;
 }
 
-class ConnectRepository {
-  const ConnectRepository._();
+class ReportUserRepository {
+  const ReportUserRepository._();
 
-  /// Returns a list of [Connect]s matching the given query parameters.
+  /// Returns a list of [ReportUser]s matching the given query parameters.
   ///
   /// Use [where] to specify which items to include in the return value.
   /// If none is specified, all items will be returned.
@@ -215,20 +231,20 @@ class ConnectRepository {
   ///   limit: 100,
   /// );
   /// ```
-  Future<List<Connect>> find(
+  Future<List<ReportUser>> find(
     _i1.Session session, {
-    _i1.WhereExpressionBuilder<ConnectTable>? where,
+    _i1.WhereExpressionBuilder<ReportUserTable>? where,
     int? limit,
     int? offset,
-    _i1.OrderByBuilder<ConnectTable>? orderBy,
+    _i1.OrderByBuilder<ReportUserTable>? orderBy,
     bool orderDescending = false,
-    _i1.OrderByListBuilder<ConnectTable>? orderByList,
+    _i1.OrderByListBuilder<ReportUserTable>? orderByList,
     _i1.Transaction? transaction,
   }) async {
-    return session.db.find<Connect>(
-      where: where?.call(Connect.t),
-      orderBy: orderBy?.call(Connect.t),
-      orderByList: orderByList?.call(Connect.t),
+    return session.db.find<ReportUser>(
+      where: where?.call(ReportUser.t),
+      orderBy: orderBy?.call(ReportUser.t),
+      orderByList: orderByList?.call(ReportUser.t),
       orderDescending: orderDescending,
       limit: limit,
       offset: offset,
@@ -236,7 +252,7 @@ class ConnectRepository {
     );
   }
 
-  /// Returns the first matching [Connect] matching the given query parameters.
+  /// Returns the first matching [ReportUser] matching the given query parameters.
   ///
   /// Use [where] to specify which items to include in the return value.
   /// If none is specified, all items will be returned.
@@ -253,136 +269,136 @@ class ConnectRepository {
   ///   orderBy: (t) => t.age,
   /// );
   /// ```
-  Future<Connect?> findFirstRow(
+  Future<ReportUser?> findFirstRow(
     _i1.Session session, {
-    _i1.WhereExpressionBuilder<ConnectTable>? where,
+    _i1.WhereExpressionBuilder<ReportUserTable>? where,
     int? offset,
-    _i1.OrderByBuilder<ConnectTable>? orderBy,
+    _i1.OrderByBuilder<ReportUserTable>? orderBy,
     bool orderDescending = false,
-    _i1.OrderByListBuilder<ConnectTable>? orderByList,
+    _i1.OrderByListBuilder<ReportUserTable>? orderByList,
     _i1.Transaction? transaction,
   }) async {
-    return session.db.findFirstRow<Connect>(
-      where: where?.call(Connect.t),
-      orderBy: orderBy?.call(Connect.t),
-      orderByList: orderByList?.call(Connect.t),
+    return session.db.findFirstRow<ReportUser>(
+      where: where?.call(ReportUser.t),
+      orderBy: orderBy?.call(ReportUser.t),
+      orderByList: orderByList?.call(ReportUser.t),
       orderDescending: orderDescending,
       offset: offset,
       transaction: transaction,
     );
   }
 
-  /// Finds a single [Connect] by its [id] or null if no such row exists.
-  Future<Connect?> findById(
+  /// Finds a single [ReportUser] by its [id] or null if no such row exists.
+  Future<ReportUser?> findById(
     _i1.Session session,
     int id, {
     _i1.Transaction? transaction,
   }) async {
-    return session.db.findById<Connect>(
+    return session.db.findById<ReportUser>(
       id,
       transaction: transaction,
     );
   }
 
-  /// Inserts all [Connect]s in the list and returns the inserted rows.
+  /// Inserts all [ReportUser]s in the list and returns the inserted rows.
   ///
-  /// The returned [Connect]s will have their `id` fields set.
+  /// The returned [ReportUser]s will have their `id` fields set.
   ///
   /// This is an atomic operation, meaning that if one of the rows fails to
   /// insert, none of the rows will be inserted.
-  Future<List<Connect>> insert(
+  Future<List<ReportUser>> insert(
     _i1.Session session,
-    List<Connect> rows, {
+    List<ReportUser> rows, {
     _i1.Transaction? transaction,
   }) async {
-    return session.db.insert<Connect>(
+    return session.db.insert<ReportUser>(
       rows,
       transaction: transaction,
     );
   }
 
-  /// Inserts a single [Connect] and returns the inserted row.
+  /// Inserts a single [ReportUser] and returns the inserted row.
   ///
-  /// The returned [Connect] will have its `id` field set.
-  Future<Connect> insertRow(
+  /// The returned [ReportUser] will have its `id` field set.
+  Future<ReportUser> insertRow(
     _i1.Session session,
-    Connect row, {
+    ReportUser row, {
     _i1.Transaction? transaction,
   }) async {
-    return session.db.insertRow<Connect>(
+    return session.db.insertRow<ReportUser>(
       row,
       transaction: transaction,
     );
   }
 
-  /// Updates all [Connect]s in the list and returns the updated rows. If
+  /// Updates all [ReportUser]s in the list and returns the updated rows. If
   /// [columns] is provided, only those columns will be updated. Defaults to
   /// all columns.
   /// This is an atomic operation, meaning that if one of the rows fails to
   /// update, none of the rows will be updated.
-  Future<List<Connect>> update(
+  Future<List<ReportUser>> update(
     _i1.Session session,
-    List<Connect> rows, {
-    _i1.ColumnSelections<ConnectTable>? columns,
+    List<ReportUser> rows, {
+    _i1.ColumnSelections<ReportUserTable>? columns,
     _i1.Transaction? transaction,
   }) async {
-    return session.db.update<Connect>(
+    return session.db.update<ReportUser>(
       rows,
-      columns: columns?.call(Connect.t),
+      columns: columns?.call(ReportUser.t),
       transaction: transaction,
     );
   }
 
-  /// Updates a single [Connect]. The row needs to have its id set.
+  /// Updates a single [ReportUser]. The row needs to have its id set.
   /// Optionally, a list of [columns] can be provided to only update those
   /// columns. Defaults to all columns.
-  Future<Connect> updateRow(
+  Future<ReportUser> updateRow(
     _i1.Session session,
-    Connect row, {
-    _i1.ColumnSelections<ConnectTable>? columns,
+    ReportUser row, {
+    _i1.ColumnSelections<ReportUserTable>? columns,
     _i1.Transaction? transaction,
   }) async {
-    return session.db.updateRow<Connect>(
+    return session.db.updateRow<ReportUser>(
       row,
-      columns: columns?.call(Connect.t),
+      columns: columns?.call(ReportUser.t),
       transaction: transaction,
     );
   }
 
-  /// Deletes all [Connect]s in the list and returns the deleted rows.
+  /// Deletes all [ReportUser]s in the list and returns the deleted rows.
   /// This is an atomic operation, meaning that if one of the rows fail to
   /// be deleted, none of the rows will be deleted.
-  Future<List<Connect>> delete(
+  Future<List<ReportUser>> delete(
     _i1.Session session,
-    List<Connect> rows, {
+    List<ReportUser> rows, {
     _i1.Transaction? transaction,
   }) async {
-    return session.db.delete<Connect>(
+    return session.db.delete<ReportUser>(
       rows,
       transaction: transaction,
     );
   }
 
-  /// Deletes a single [Connect].
-  Future<Connect> deleteRow(
+  /// Deletes a single [ReportUser].
+  Future<ReportUser> deleteRow(
     _i1.Session session,
-    Connect row, {
+    ReportUser row, {
     _i1.Transaction? transaction,
   }) async {
-    return session.db.deleteRow<Connect>(
+    return session.db.deleteRow<ReportUser>(
       row,
       transaction: transaction,
     );
   }
 
   /// Deletes all rows matching the [where] expression.
-  Future<List<Connect>> deleteWhere(
+  Future<List<ReportUser>> deleteWhere(
     _i1.Session session, {
-    required _i1.WhereExpressionBuilder<ConnectTable> where,
+    required _i1.WhereExpressionBuilder<ReportUserTable> where,
     _i1.Transaction? transaction,
   }) async {
-    return session.db.deleteWhere<Connect>(
-      where: where(Connect.t),
+    return session.db.deleteWhere<ReportUser>(
+      where: where(ReportUser.t),
       transaction: transaction,
     );
   }
@@ -391,12 +407,12 @@ class ConnectRepository {
   /// will return the count of all rows in the table.
   Future<int> count(
     _i1.Session session, {
-    _i1.WhereExpressionBuilder<ConnectTable>? where,
+    _i1.WhereExpressionBuilder<ReportUserTable>? where,
     int? limit,
     _i1.Transaction? transaction,
   }) async {
-    return session.db.count<Connect>(
-      where: where?.call(Connect.t),
+    return session.db.count<ReportUser>(
+      where: where?.call(ReportUser.t),
       limit: limit,
       transaction: transaction,
     );

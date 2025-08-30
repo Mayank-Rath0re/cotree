@@ -1,6 +1,7 @@
 import 'package:cotree_client/cotree_client.dart';
 import 'package:cotree_flutter/components/abs_avatar.dart';
 import 'package:cotree_flutter/components/abs_minimal_box.dart';
+import 'package:cotree_flutter/components/abs_request_card.dart';
 import 'package:cotree_flutter/components/abs_text.dart';
 import 'package:cotree_flutter/main.dart';
 import 'package:cotree_flutter/pages/post_detailed_page.dart';
@@ -24,8 +25,15 @@ class _NotifItem {
   _NotifItem({required this.notif, required this.user});
 }
 
+class _InvitationItem {
+  final Invitation invite;
+  final Notification notif;
+  _InvitationItem({required this.invite, required this.notif});
+}
+
 class _NotificationsPageState extends State<NotificationsPage> {
   List<_NotifItem> items = [];
+  List<_InvitationItem> requests = [];
   bool isLoading = true;
 
   Widget? notifPage(String tag, int id) {
@@ -50,14 +58,24 @@ class _NotificationsPageState extends State<NotificationsPage> {
       final fetched = await client.notification
           .fetchUserNotifications(widget.userview.userId);
 
-      // Mark them read in the backend (but don't mutate local objects)
-      client.notification.markRead(fetched);
-
-      final loaded = await Future.wait(fetched.map((n) async {
-        final u = await client.account.getUserView(n.referencedUser);
-        return _NotifItem(notif: n, user: u);
-      }));
-
+      final List<_NotifItem> loaded = [];
+      final List<_InvitationItem> invites = [];
+      for (var n in fetched) {
+        if (n.objectType == "profile") {
+          try {
+            var inv = await client.connection.fetchInvitationByUsers(
+              n.referencedUser,
+              widget.userview.userId,
+            );
+            if (inv != null) {
+              invites.add(_InvitationItem(invite: inv, notif: n));
+            }
+          } catch (_) {}
+        } else {
+          final u = await client.account.getUserView(n.referencedUser);
+          loaded.add(_NotifItem(notif: n, user: u));
+        }
+      }
       // Sort so that "new" stays on top, then by time
       loaded.sort((a, b) {
         if (a.notif.unread && !b.notif.unread) return -1;
@@ -67,8 +85,12 @@ class _NotificationsPageState extends State<NotificationsPage> {
 
       setState(() {
         items = loaded;
+        requests = invites;
         isLoading = false;
       });
+
+      // Mark them read in the backend (but don't mutate local objects)
+      client.notification.markRead(fetched);
     } catch (_) {
       setState(() {
         items = [];
@@ -167,11 +189,59 @@ class _NotificationsPageState extends State<NotificationsPage> {
           : RefreshIndicator(
               color: Provider.of<ThemeProvider>(context).headColor,
               onRefresh: getBuildData,
-              child: items.isEmpty
+              child: (items.isEmpty && requests.isEmpty)
                   ? ListView(children: [_buildEmptyState()])
                   : ListView(
                       padding: const EdgeInsets.all(12),
                       children: [
+                        if (requests.isNotEmpty) ...[
+                          Padding(
+                            padding: EdgeInsets.symmetric(vertical: 6),
+                            child: GestureDetector(
+                                child: Row(
+                              children: [
+                                const AbsText(
+                                    displayString: 'Connection Requests',
+                                    fontSize: 13,
+                                    bold: true),
+                                const Spacer(),
+                                Row(
+                                  children: [
+                                    const AbsText(
+                                        displayString: "See all", fontSize: 12),
+                                    const Icon(Icons.chevron_right, size: 16)
+                                  ],
+                                )
+                              ],
+                            )),
+                          ),
+                          const SizedBox(height: 6),
+                          for (var req in requests) ...[
+                            AbsRequestCard(
+                                key: ValueKey(req.invite.id),
+                                userId: widget.userview.userId,
+                                isReceived: true,
+                                invitation: req.invite,
+                                onAccept: () async {
+                                  if (!mounted) return;
+                                  setState(() {
+                                    requests.remove(req);
+                                  });
+                                  await client.notification
+                                      .deleteNotification(req.notif.id!);
+                                },
+                                onReject: () async {
+                                  if (!mounted) return;
+                                  setState(() {
+                                    requests.remove(req);
+                                  });
+                                  await client.notification
+                                      .deleteNotification(req.notif.id!);
+                                },
+                                onWithdraw: () {}),
+                            const SizedBox(height: 8),
+                          ],
+                        ],
                         if (unreadItems.isNotEmpty) ...[
                           const Padding(
                             padding: EdgeInsets.symmetric(vertical: 6),

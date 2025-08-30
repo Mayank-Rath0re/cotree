@@ -11,25 +11,50 @@ class ConnectionEndpoint extends Endpoint {
     return connectObj[0];
   }
 
+  Future<List<Invitation>> fetchInvitations(
+      Session session, int? userId) async {
+    var inviteData = await Invitation.db.find(session,
+        where: (t) =>
+            t.sender.equals(userId) |
+            (t.receiver.equals(userId) & t.isRejected.equals(false)),
+        orderBy: (t) => t.id,
+        orderDescending: true);
+    return inviteData;
+  }
+
+  Future<Invitation?> fetchInvitationByUsers(
+      Session session, int userId, int secondaryId) async {
+    var inviteData = await Invitation.db.findFirstRow(session,
+        where: (t) =>
+            t.sender.equals(userId) &
+            t.receiver.equals(secondaryId) &
+            t.isRejected.equals(false));
+    return inviteData;
+  }
+
   Future<int> isConnection(
       Session session, int userId, int secondaryUserId) async {
     var connectObj = await Connect.db
-        .find(session, where: (t) => t.accountId.equals(userId));
-    if (connectObj[0].activeConnections.contains(secondaryUserId)) {
+        .findFirstRow(session, where: (t) => t.accountId.equals(userId));
+    if (connectObj!.activeConnections.contains(secondaryUserId)) {
       // Account is Connected
       return 1;
     }
-    for (int i = 0; i < connectObj[0].sentPending!.length; i++) {
-      if (connectObj[0].sentPending![i].user == secondaryUserId) {
-        // Account is Pending
-        return 2;
-      }
+    var sent = await Invitation.db.findFirstRow(session,
+        where: (t) =>
+            t.sender.equals(userId) | t.receiver.equals(secondaryUserId));
+    if (sent != null) {
+      // Account is Pending
+      return 2;
     }
-    for (int i = 0; i < connectObj[0].receivedPending!.length; i++) {
+    var received = await Invitation.db.findFirstRow(session,
+        where: (t) =>
+            t.sender.equals(secondaryUserId) &
+            t.receiver.equals(userId) &
+            t.isRejected.equals(false));
+    if (received != null) {
       // Account has received request from this profile
-      if (connectObj[0].receivedPending![i].user == secondaryUserId) {
-        return 3;
-      }
+      return 3;
     }
     // Account is completely stranger
     return 0;
@@ -38,111 +63,109 @@ class ConnectionEndpoint extends Endpoint {
   // Send Request
   Future<void> sendConnectionRequest(Session session, int? senderId,
       int? receiverId, String? personalText) async {
-    // Update details for the first user
-    var firstUserConnect = await Connect.db
-        .find(session, where: (t) => t.accountId.equals(senderId));
-    var inviteSend = Invitation(user: receiverId!, type: "Sent");
-    if (firstUserConnect[0].sentPending == null) {
-      firstUserConnect[0].sentPending = [inviteSend];
-    } else {
-      firstUserConnect[0].sentPending!.add(inviteSend);
+    var check = await Invitation.db.findFirstRow(session,
+        where: (t) =>
+            t.sender.equals(receiverId) & t.receiver.equals(senderId));
+    if (check != null) {
+      if (check.isRejected == true) {
+        check.isRejected = false;
+        check.sender = senderId!;
+        check.receiver = receiverId!;
+        check.personalText = personalText;
+        // ignore: unused_local_variable
+        var inviteSend = await Invitation.db.updateRow(session, check);
+        // ignore: unawaited_futures
+        notifObj.createNotification(session, receiverId,
+            "sent you a connection request", senderId, senderId, "profile");
+      }
+      return;
     }
-    // Connection Request updation for the second user
-    var secondUserConnect = await Connect.db
-        .find(session, where: (t) => t.accountId.equals(receiverId));
     var invite = Invitation(
-        user: senderId!, type: "Received", personalText: personalText);
-    if (secondUserConnect[0].receivedPending == null) {
-      secondUserConnect[0].receivedPending = [invite];
-    } else {
-      secondUserConnect[0].receivedPending!.add(invite);
-    }
-    // Push the changes to database
+        sender: senderId!, receiver: receiverId!, personalText: personalText);
     // ignore: unused_local_variable
-    var updateData = await Connect.db
-        .update(session, [firstUserConnect[0], secondUserConnect[0]]);
+    var inviteSend = await Invitation.db.insertRow(session, invite);
     // ignore: unawaited_futures
     notifObj.createNotification(session, receiverId,
         "sent you a connection request", senderId, senderId, "profile");
   }
 
-  Future<List<Invitation>> removeInvite(
-      List<Invitation>? data, int? accountId) async {
-    for (int i = 0; i < data!.length; i++) {
-      if (data[i].user == accountId) {
-        data.removeAt(i);
-        break;
-      }
+  Future<void> removeInvite(
+      Session session, int senderId, int receiverId) async {
+    var data = await Invitation.db.findFirstRow(session,
+        where: (t) =>
+            t.sender.equals(senderId) & t.receiver.equals(receiverId));
+    if (data != null) {
+      // ignore: unused_local_variable
+      var delInvite = await Invitation.db.deleteRow(session, data);
     }
-    return data;
   }
 
   Future<Invitation?> getInviteData(
       Session session, int receiverId, int secondaryId) async {
-    var connectData = await Connect.db
-        .find(session, where: (t) => t.accountId.equals(receiverId));
-    for (int i = 0; i < connectData[0].receivedPending!.length; i++) {
-      if (connectData[0].receivedPending![i].user == secondaryId) {
-        return connectData[0].receivedPending![i];
-      }
+    var inviteData = await Invitation.db.findFirstRow(session,
+        where: (t) =>
+            t.sender.equals(secondaryId) &
+            t.receiver.equals(receiverId) &
+            t.isRejected.equals(false));
+    if (inviteData != null) {
+      return inviteData;
     }
     return null;
   }
 
   // Send Confirmation
-  Future<void> confirmConnection(
-      Session session, int? receiverId, Invitation invite) async {
+  Future<void> confirmConnection(Session session, Invitation invite) async {
     // Update active connections for both users
     var firstUserData = await Connect.db
-        .find(session, where: (t) => t.accountId.equals(invite.user));
-    var secondUserData = await Connect.db
-        .find(session, where: (t) => t.accountId.equals(receiverId));
-    firstUserData[0].activeConnections.add(receiverId!);
-    secondUserData[0].activeConnections.add(invite.user);
+        .findFirstRow(session, where: (t) => t.accountId.equals(invite.sender));
+    var secondUserData = await Connect.db.findFirstRow(session,
+        where: (t) => t.accountId.equals(invite.receiver));
+    firstUserData!.activeConnections.add(invite.receiver);
+    secondUserData!.activeConnections.add(invite.sender);
     // Remove Invitation data for both user
-    firstUserData[0].sentPending =
-        await removeInvite(firstUserData[0].sentPending, receiverId);
-    secondUserData[0].receivedPending =
-        await removeInvite(secondUserData[0].receivedPending, invite.user);
+    // ignore: unused_local_variable
+    var delInvite = await Invitation.db.deleteRow(session, invite);
     // Push updated data to database
     // ignore: unused_local_variable
     var updateDB =
-        await Connect.db.update(session, [firstUserData[0], secondUserData[0]]);
-    await NotificationEndpoint().createNotification(session, invite.user,
-        "accepted your invite", receiverId, receiverId, "request");
+        await Connect.db.update(session, [firstUserData, secondUserData]);
+    await notifObj.createNotification(session, invite.sender,
+        "accepted your invite", invite.receiver, invite.receiver, "request");
+    await Notification.db.deleteWhere(session,
+        where: (t) =>
+            t.forUser.equals(invite.receiver) &
+            t.referencedUser.equals(invite.sender) &
+            t.objectType.equals("profile"));
   }
 
   // Withdraw Connection Request
   Future<void> withdrawConnection(
-      Session session, int senderId, Invitation invite) async {
+      Session session, int senderId, int receiverId) async {
     // remove sent Request from sender
     // Update active connections for both users
-    var firstUserData = await Connect.db
-        .find(session, where: (t) => t.accountId.equals(senderId));
-    var secondUserData = await Connect.db
-        .find(session, where: (t) => t.accountId.equals(invite.user));
-    // remove received invitation from receiver
-    firstUserData[0].sentPending =
-        await removeInvite(firstUserData[0].sentPending, invite.user);
-    secondUserData[0].receivedPending =
-        await removeInvite(secondUserData[0].receivedPending, senderId);
-    // Push updated data to database
     // ignore: unused_local_variable
-    var updateDB =
-        await Connect.db.update(session, [firstUserData[0], secondUserData[0]]);
+    var inviteData = await Invitation.db.deleteWhere(session,
+        where: (t) =>
+            t.sender.equals(senderId) & t.receiver.equals(receiverId));
+    // ignore: unused_local_variable
+    var notifData = await Notification.db.deleteWhere(session,
+        where: (t) =>
+            t.forUser.equals(receiverId) &
+            t.referencedUser.equals(senderId) &
+            t.objectType.equals("profile"));
   }
 
   // Reject Invitation
-  Future<void> rejectConnection(
-      Session session, int? receiverId, Invitation invite) async {
+  Future<void> rejectConnection(Session session, Invitation inviteData) async {
     // Remove invitation from the receivers data
-    var secondUserData = await Connect.db
-        .find(session, where: (t) => t.accountId.equals(receiverId));
-    secondUserData[0].receivedPending =
-        await removeInvite(secondUserData[0].receivedPending, invite.user);
-    // Push data to the DB
+    inviteData.isRejected = true;
     // ignore: unused_local_variable
-    var updateDB = await Connect.db.update(session, secondUserData);
+    var invite = await Invitation.db.updateRow(session, inviteData);
+    await Notification.db.deleteWhere(session,
+        where: (t) =>
+            t.forUser.equals(inviteData.receiver) &
+            t.referencedUser.equals(inviteData.sender) &
+            t.objectType.equals("profile"));
   }
 
   Future<void> removeConnection(

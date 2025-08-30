@@ -1,0 +1,6 @@
+class: ReportUser
+table: report_user
+fields:
+    reporterId: int, relation(parent=user)
+    reportedId: int, relation(parent=user)
+    reason: String

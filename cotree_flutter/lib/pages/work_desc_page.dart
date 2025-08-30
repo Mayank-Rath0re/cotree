@@ -6,6 +6,7 @@ import 'package:cotree_flutter/components/abs_multiline_textfield.dart';
 import 'package:cotree_flutter/components/abs_org_avatar.dart';
 import 'package:cotree_flutter/components/abs_text.dart';
 import 'package:cotree_flutter/main.dart';
+import 'package:cotree_flutter/pages/profile_page.dart';
 import 'package:cotree_flutter/themes/theme_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -223,9 +224,14 @@ class _WorkDescPageState extends State<WorkDescPage> {
                                 children: [
                                   GestureDetector(
                                       onTap: () {
-                                        /*
-                                    Navigator.push(context, MaterialPageRoute(builder: (context) => ProfilePage(profileId: , userview: userview)));
-                                    */
+                                        Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    ProfilePage(
+                                                        profileId: widget
+                                                            .offerData
+                                                            .author)));
                                       },
                                       child: AbsOrgAvatar(
                                           radius: 40, avatarUrl: authorAvatar)),

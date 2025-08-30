@@ -15,6 +15,11 @@ class NotificationEndpoint extends Endpoint {
     await Notification.db.insertRow(session, notifyObj);
   }
 
+  Future<void> deleteNotification(Session session, int notifId) async {
+    await Notification.db
+        .deleteWhere(session, where: (t) => t.id.equals(notifId));
+  }
+
   Future<void> notifyMyConnections(Session session, int userId, String content,
       int? objectId, String? objectType) async {
     var connections = await Connect.db

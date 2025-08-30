@@ -1,6 +1,7 @@
 import 'package:cotree_client/cotree_client.dart';
 import 'package:cotree_flutter/components/abs_account_box.dart';
 import 'package:cotree_flutter/components/abs_minimal_box.dart';
+import 'package:cotree_flutter/components/abs_request_card.dart';
 import 'package:cotree_flutter/components/abs_text.dart';
 import 'package:cotree_flutter/main.dart';
 import 'package:cotree_flutter/models/constants.dart';
@@ -17,16 +18,19 @@ class NetworkPage extends StatefulWidget {
 }
 
 class _NetworkPageState extends State<NetworkPage> {
-  late Connect userConnectData;
+  late List<Invitation> sent = [];
+  late List<Invitation> received = [];
   late UserView myUserView;
   late List<UserView> userData = [];
   late List<UserView> orgsData = [];
   bool isLoading = true;
 
   Future<void> getConnectData() async {
+    sent = [];
+    received = [];
     var user = await Constants().getOrSetUserView(context);
-    Connect data = await client.connection
-        .fetchConnectData(sessionManager.signedInUser!.id);
+
+    var data = await client.connection.fetchInvitations(user.userId);
     List<UserView> listData =
         await client.recommendation.recommendUsers(user.userId, limit: 20);
     print("${listData.length} ${userData.length}");
@@ -34,7 +38,14 @@ class _NetworkPageState extends State<NetworkPage> {
     if (!mounted) return; // safety against setState after dispose
     setState(() {
       myUserView = user;
-      userConnectData = data;
+      for (var element in data) {
+        print("${element.sender} ${element.receiver}");
+        if (element.sender == user.userId) {
+          sent.add(element);
+        } else {
+          received.add(element);
+        }
+      }
       userData = listData;
       orgsData = listOrgData;
       isLoading = false;
@@ -79,8 +90,7 @@ class _NetworkPageState extends State<NetworkPage> {
                         context,
                         MaterialPageRoute(
                           builder: (context) => RequestsPage(
-                            connectData: userConnectData,
-                            index: 0,
+                            initialIndex: 0,
                             userId: myUserView.userId,
                           ),
                         ),
@@ -93,8 +103,7 @@ class _NetworkPageState extends State<NetworkPage> {
                     },
                     child: AbsMinimalBox(
                       child: AbsText(
-                        displayString:
-                            "Sent (${userConnectData.sentPending!.length})",
+                        displayString: "Sent (${sent.length})",
                         fontSize: 16,
                       ),
                     ),
@@ -108,8 +117,7 @@ class _NetworkPageState extends State<NetworkPage> {
                         context,
                         MaterialPageRoute(
                           builder: (context) => RequestsPage(
-                            connectData: userConnectData,
-                            index: 1,
+                            initialIndex: 1,
                             userId: myUserView.userId,
                           ),
                         ),
@@ -122,8 +130,7 @@ class _NetworkPageState extends State<NetworkPage> {
                     },
                     child: AbsMinimalBox(
                       child: AbsText(
-                        displayString:
-                            "Received (${userConnectData.receivedPending!.length})",
+                        displayString: "Received (${received.length})",
                         fontSize: 16,
                       ),
                     ),
@@ -131,7 +138,48 @@ class _NetworkPageState extends State<NetworkPage> {
                 ),
               ],
             ),
-            const SizedBox(height: 15),
+            const SizedBox(height: 10),
+            if (received.isNotEmpty) ...[
+              Padding(
+                padding: EdgeInsets.symmetric(vertical: 6),
+                child: GestureDetector(
+                    child: Row(
+                  children: [
+                    const AbsText(
+                        displayString: 'Connection Requests',
+                        fontSize: 13,
+                        bold: true),
+                    const Spacer(),
+                    Row(
+                      children: [
+                        const AbsText(displayString: "See all", fontSize: 12),
+                        const Icon(Icons.chevron_right, size: 16)
+                      ],
+                    )
+                  ],
+                )),
+              ),
+              const SizedBox(height: 6),
+              AbsRequestCard(
+                  key: ValueKey(received[0].id),
+                  userId: myUserView.userId,
+                  isReceived: true,
+                  invitation: received[0],
+                  onAccept: () {
+                    if (!mounted) return;
+                    setState(() {
+                      received.remove(received[0]);
+                    });
+                  },
+                  onReject: () {
+                    if (!mounted) return;
+                    setState(() {
+                      received.remove(received[0]);
+                    });
+                  },
+                  onWithdraw: () {}),
+              const SizedBox(height: 8),
+            ],
             const Divider(),
             const AbsText(
               displayString: "Fellow Coteries",

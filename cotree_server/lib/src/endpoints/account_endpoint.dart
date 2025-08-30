@@ -36,11 +36,7 @@ class AccountEndpoint extends Endpoint {
       var userInsert = await User.db.insertRow(session, userObj);
       createUserView(session, id, name, "", "", accountType);
       // Initialize empty connections list
-      var connectObj = Connect(
-          accountId: userInsert.id,
-          activeConnections: [],
-          sentPending: [],
-          receivedPending: []);
+      var connectObj = Connect(accountId: userInsert.id, activeConnections: []);
       // ignore: unused_local_variable
       var connectInsert = await Connect.db.insertRow(session, connectObj);
       return userInsert.id!;

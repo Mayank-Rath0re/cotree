@@ -11,26 +11,27 @@
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:serverpod_client/serverpod_client.dart' as _i1;
 
-abstract class Connect implements _i1.SerializableModel {
-  Connect._({
+abstract class ReportPost implements _i1.SerializableModel {
+  ReportPost._({
     this.id,
-    this.accountId,
-    required this.activeConnections,
+    required this.reporterId,
+    required this.postId,
+    required this.reason,
   });
 
-  factory Connect({
+  factory ReportPost({
     int? id,
-    int? accountId,
-    required List<int> activeConnections,
-  }) = _ConnectImpl;
+    required int reporterId,
+    required int postId,
+    required String reason,
+  }) = _ReportPostImpl;
 
-  factory Connect.fromJson(Map<String, dynamic> jsonSerialization) {
-    return Connect(
+  factory ReportPost.fromJson(Map<String, dynamic> jsonSerialization) {
+    return ReportPost(
       id: jsonSerialization['id'] as int?,
-      accountId: jsonSerialization['accountId'] as int?,
-      activeConnections: (jsonSerialization['activeConnections'] as List)
-          .map((e) => e as int)
-          .toList(),
+      reporterId: jsonSerialization['reporterId'] as int,
+      postId: jsonSerialization['postId'] as int,
+      reason: jsonSerialization['reason'] as String,
     );
   }
 
@@ -39,24 +40,28 @@ abstract class Connect implements _i1.SerializableModel {
   /// the id will be null.
   int? id;
 
-  int? accountId;
+  int reporterId;
 
-  List<int> activeConnections;
+  int postId;
 
-  /// Returns a shallow copy of this [Connect]
+  String reason;
+
+  /// Returns a shallow copy of this [ReportPost]
   /// with some or all fields replaced by the given arguments.
   @_i1.useResult
-  Connect copyWith({
+  ReportPost copyWith({
     int? id,
-    int? accountId,
-    List<int>? activeConnections,
+    int? reporterId,
+    int? postId,
+    String? reason,
   });
   @override
   Map<String, dynamic> toJson() {
     return {
       if (id != null) 'id': id,
-      if (accountId != null) 'accountId': accountId,
-      'activeConnections': activeConnections.toJson(),
+      'reporterId': reporterId,
+      'postId': postId,
+      'reason': reason,
     };
   }
 
@@ -68,31 +73,34 @@ abstract class Connect implements _i1.SerializableModel {
 
 class _Undefined {}
 
-class _ConnectImpl extends Connect {
-  _ConnectImpl({
+class _ReportPostImpl extends ReportPost {
+  _ReportPostImpl({
     int? id,
-    int? accountId,
-    required List<int> activeConnections,
+    required int reporterId,
+    required int postId,
+    required String reason,
   }) : super._(
           id: id,
-          accountId: accountId,
-          activeConnections: activeConnections,
+          reporterId: reporterId,
+          postId: postId,
+          reason: reason,
         );
 
-  /// Returns a shallow copy of this [Connect]
+  /// Returns a shallow copy of this [ReportPost]
   /// with some or all fields replaced by the given arguments.
   @_i1.useResult
   @override
-  Connect copyWith({
+  ReportPost copyWith({
     Object? id = _Undefined,
-    Object? accountId = _Undefined,
-    List<int>? activeConnections,
+    int? reporterId,
+    int? postId,
+    String? reason,
   }) {
-    return Connect(
+    return ReportPost(
       id: id is int? ? id : this.id,
-      accountId: accountId is int? ? accountId : this.accountId,
-      activeConnections:
-          activeConnections ?? this.activeConnections.map((e0) => e0).toList(),
+      reporterId: reporterId ?? this.reporterId,
+      postId: postId ?? this.postId,
+      reason: reason ?? this.reason,
     );
   }
 }

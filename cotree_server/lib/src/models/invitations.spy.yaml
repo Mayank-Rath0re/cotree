@@ -1,6 +1,7 @@
 class: Invitation
 table: invitation
 fields:
-    user: int, relation(parent=user)
+    sender: int, relation(parent=user)
+    receiver: int, relation(parent=user)
+    isRejected: bool, default=false
     personalText: String?
-    type: String

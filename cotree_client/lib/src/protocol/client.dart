@@ -441,6 +441,26 @@ class EndpointConnection extends _i1.EndpointRef {
         {'userId': userId},
       );
 
+  _i2.Future<List<_i13.Invitation>> fetchInvitations(int? userId) =>
+      caller.callServerEndpoint<List<_i13.Invitation>>(
+        'connection',
+        'fetchInvitations',
+        {'userId': userId},
+      );
+
+  _i2.Future<_i13.Invitation?> fetchInvitationByUsers(
+    int userId,
+    int secondaryId,
+  ) =>
+      caller.callServerEndpoint<_i13.Invitation?>(
+        'connection',
+        'fetchInvitationByUsers',
+        {
+          'userId': userId,
+          'secondaryId': secondaryId,
+        },
+      );
+
   _i2.Future<int> isConnection(
     int userId,
     int secondaryUserId,
@@ -469,6 +489,19 @@ class EndpointConnection extends _i1.EndpointRef {
         },
       );
 
+  _i2.Future<void> removeInvite(
+    int senderId,
+    int receiverId,
+  ) =>
+      caller.callServerEndpoint<void>(
+        'connection',
+        'removeInvite',
+        {
+          'senderId': senderId,
+          'receiverId': receiverId,
+        },
+      );
+
   _i2.Future<_i13.Invitation?> getInviteData(
     int receiverId,
     int secondaryId,
@@ -482,43 +515,31 @@ class EndpointConnection extends _i1.EndpointRef {
         },
       );
 
-  _i2.Future<void> confirmConnection(
-    int? receiverId,
-    _i13.Invitation invite,
-  ) =>
+  _i2.Future<void> confirmConnection(_i13.Invitation invite) =>
       caller.callServerEndpoint<void>(
         'connection',
         'confirmConnection',
-        {
-          'receiverId': receiverId,
-          'invite': invite,
-        },
+        {'invite': invite},
       );
 
   _i2.Future<void> withdrawConnection(
     int senderId,
-    _i13.Invitation invite,
+    int receiverId,
   ) =>
       caller.callServerEndpoint<void>(
         'connection',
         'withdrawConnection',
         {
           'senderId': senderId,
-          'invite': invite,
+          'receiverId': receiverId,
         },
       );
 
-  _i2.Future<void> rejectConnection(
-    int? receiverId,
-    _i13.Invitation invite,
-  ) =>
+  _i2.Future<void> rejectConnection(_i13.Invitation inviteData) =>
       caller.callServerEndpoint<void>(
         'connection',
         'rejectConnection',
-        {
-          'receiverId': receiverId,
-          'invite': invite,
-        },
+        {'inviteData': inviteData},
       );
 
   _i2.Future<void> removeConnection(
@@ -667,6 +688,13 @@ class EndpointNotification extends _i1.EndpointRef {
           'objectId': objectId,
           'objectType': objectType,
         },
+      );
+
+  _i2.Future<void> deleteNotification(int notifId) =>
+      caller.callServerEndpoint<void>(
+        'notification',
+        'deleteNotification',
+        {'notifId': notifId},
       );
 
   _i2.Future<void> notifyMyConnections(

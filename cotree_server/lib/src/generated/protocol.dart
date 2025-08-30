@@ -35,34 +35,37 @@ import 'project.dart' as _i23;
 import 'project_assigned.dart' as _i24;
 import 'reactions.dart' as _i25;
 import 'reply.dart' as _i26;
-import 'space.dart' as _i27;
-import 'space_invite.dart' as _i28;
-import 'task.dart' as _i29;
-import 'task_assigned.dart' as _i30;
-import 'team_member.dart' as _i31;
-import 'teams.dart' as _i32;
-import 'user.dart' as _i33;
-import 'userview.dart' as _i34;
-import 'package:cotree_server/src/generated/userview.dart' as _i35;
-import 'package:cotree_server/src/generated/professional_data.dart' as _i36;
-import 'package:cotree_server/src/generated/custom_details.dart' as _i37;
-import 'package:cotree_server/src/generated/message.dart' as _i38;
-import 'package:cotree_server/src/generated/chat.dart' as _i39;
-import 'package:cotree_server/src/generated/notification.dart' as _i40;
-import 'package:cotree_server/src/generated/post.dart' as _i41;
-import 'package:cotree_server/src/generated/comment.dart' as _i42;
-import 'package:cotree_server/src/generated/teams.dart' as _i43;
-import 'package:cotree_server/src/generated/documents.dart' as _i44;
-import 'package:cotree_server/src/generated/task.dart' as _i45;
-import 'package:cotree_server/src/generated/member.dart' as _i46;
-import 'package:cotree_server/src/generated/offers.dart' as _i47;
-import 'package:cotree_server/src/generated/org.dart' as _i48;
-import 'package:cotree_server/src/generated/space_invite.dart' as _i49;
-import 'package:cotree_server/src/generated/team_member.dart' as _i50;
-import 'package:cotree_server/src/generated/space.dart' as _i51;
-import 'package:cotree_server/src/generated/project.dart' as _i52;
-import 'package:cotree_server/src/generated/meetings.dart' as _i53;
-import 'package:cotree_server/src/generated/applications.dart' as _i54;
+import 'report_post.dart' as _i27;
+import 'report_user.dart' as _i28;
+import 'space.dart' as _i29;
+import 'space_invite.dart' as _i30;
+import 'task.dart' as _i31;
+import 'task_assigned.dart' as _i32;
+import 'team_member.dart' as _i33;
+import 'teams.dart' as _i34;
+import 'user.dart' as _i35;
+import 'userview.dart' as _i36;
+import 'package:cotree_server/src/generated/userview.dart' as _i37;
+import 'package:cotree_server/src/generated/professional_data.dart' as _i38;
+import 'package:cotree_server/src/generated/custom_details.dart' as _i39;
+import 'package:cotree_server/src/generated/message.dart' as _i40;
+import 'package:cotree_server/src/generated/chat.dart' as _i41;
+import 'package:cotree_server/src/generated/invitations.dart' as _i42;
+import 'package:cotree_server/src/generated/notification.dart' as _i43;
+import 'package:cotree_server/src/generated/post.dart' as _i44;
+import 'package:cotree_server/src/generated/comment.dart' as _i45;
+import 'package:cotree_server/src/generated/teams.dart' as _i46;
+import 'package:cotree_server/src/generated/documents.dart' as _i47;
+import 'package:cotree_server/src/generated/task.dart' as _i48;
+import 'package:cotree_server/src/generated/member.dart' as _i49;
+import 'package:cotree_server/src/generated/offers.dart' as _i50;
+import 'package:cotree_server/src/generated/org.dart' as _i51;
+import 'package:cotree_server/src/generated/space_invite.dart' as _i52;
+import 'package:cotree_server/src/generated/team_member.dart' as _i53;
+import 'package:cotree_server/src/generated/space.dart' as _i54;
+import 'package:cotree_server/src/generated/project.dart' as _i55;
+import 'package:cotree_server/src/generated/meetings.dart' as _i56;
+import 'package:cotree_server/src/generated/applications.dart' as _i57;
 export 'greeting.dart';
 export 'applications.dart';
 export 'chat.dart';
@@ -86,6 +89,8 @@ export 'project.dart';
 export 'project_assigned.dart';
 export 'reactions.dart';
 export 'reply.dart';
+export 'report_post.dart';
+export 'report_user.dart';
 export 'space.dart';
 export 'space_invite.dart';
 export 'task.dart';
@@ -382,18 +387,6 @@ class Protocol extends _i1.SerializationManagerServer {
           columnType: _i2.ColumnType.json,
           isNullable: false,
           dartType: 'List<int>',
-        ),
-        _i2.ColumnDefinition(
-          name: 'receivedPending',
-          columnType: _i2.ColumnType.json,
-          isNullable: true,
-          dartType: 'List<protocol:Invitation>?',
-        ),
-        _i2.ColumnDefinition(
-          name: 'sentPending',
-          columnType: _i2.ColumnType.json,
-          isNullable: true,
-          dartType: 'List<protocol:Invitation>?',
         ),
       ],
       foreignKeys: [
@@ -705,10 +698,23 @@ class Protocol extends _i1.SerializationManagerServer {
           columnDefault: 'nextval(\'invitation_id_seq\'::regclass)',
         ),
         _i2.ColumnDefinition(
-          name: 'user',
+          name: 'sender',
           columnType: _i2.ColumnType.bigint,
           isNullable: false,
           dartType: 'int',
+        ),
+        _i2.ColumnDefinition(
+          name: 'receiver',
+          columnType: _i2.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int',
+        ),
+        _i2.ColumnDefinition(
+          name: 'isRejected',
+          columnType: _i2.ColumnType.boolean,
+          isNullable: false,
+          dartType: 'bool',
+          columnDefault: 'false',
         ),
         _i2.ColumnDefinition(
           name: 'personalText',
@@ -716,24 +722,28 @@ class Protocol extends _i1.SerializationManagerServer {
           isNullable: true,
           dartType: 'String?',
         ),
-        _i2.ColumnDefinition(
-          name: 'type',
-          columnType: _i2.ColumnType.text,
-          isNullable: false,
-          dartType: 'String',
-        ),
       ],
       foreignKeys: [
         _i2.ForeignKeyDefinition(
           constraintName: 'invitation_fk_0',
-          columns: ['user'],
+          columns: ['sender'],
           referenceTable: 'user',
           referenceTableSchema: 'public',
           referenceColumns: ['id'],
           onUpdate: _i2.ForeignKeyAction.noAction,
           onDelete: _i2.ForeignKeyAction.noAction,
           matchType: null,
-        )
+        ),
+        _i2.ForeignKeyDefinition(
+          constraintName: 'invitation_fk_1',
+          columns: ['receiver'],
+          referenceTable: 'user',
+          referenceTableSchema: 'public',
+          referenceColumns: ['id'],
+          onUpdate: _i2.ForeignKeyAction.noAction,
+          onDelete: _i2.ForeignKeyAction.noAction,
+          matchType: null,
+        ),
       ],
       indexes: [
         _i2.IndexDefinition(
@@ -1712,6 +1722,148 @@ class Protocol extends _i1.SerializationManagerServer {
       managed: true,
     ),
     _i2.TableDefinition(
+      name: 'report_post',
+      dartName: 'ReportPost',
+      schema: 'public',
+      module: 'cotree',
+      columns: [
+        _i2.ColumnDefinition(
+          name: 'id',
+          columnType: _i2.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int?',
+          columnDefault: 'nextval(\'report_post_id_seq\'::regclass)',
+        ),
+        _i2.ColumnDefinition(
+          name: 'reporterId',
+          columnType: _i2.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int',
+        ),
+        _i2.ColumnDefinition(
+          name: 'postId',
+          columnType: _i2.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int',
+        ),
+        _i2.ColumnDefinition(
+          name: 'reason',
+          columnType: _i2.ColumnType.text,
+          isNullable: false,
+          dartType: 'String',
+        ),
+      ],
+      foreignKeys: [
+        _i2.ForeignKeyDefinition(
+          constraintName: 'report_post_fk_0',
+          columns: ['reporterId'],
+          referenceTable: 'user',
+          referenceTableSchema: 'public',
+          referenceColumns: ['id'],
+          onUpdate: _i2.ForeignKeyAction.noAction,
+          onDelete: _i2.ForeignKeyAction.noAction,
+          matchType: null,
+        ),
+        _i2.ForeignKeyDefinition(
+          constraintName: 'report_post_fk_1',
+          columns: ['postId'],
+          referenceTable: 'post',
+          referenceTableSchema: 'public',
+          referenceColumns: ['id'],
+          onUpdate: _i2.ForeignKeyAction.noAction,
+          onDelete: _i2.ForeignKeyAction.noAction,
+          matchType: null,
+        ),
+      ],
+      indexes: [
+        _i2.IndexDefinition(
+          indexName: 'report_post_pkey',
+          tableSpace: null,
+          elements: [
+            _i2.IndexElementDefinition(
+              type: _i2.IndexElementDefinitionType.column,
+              definition: 'id',
+            )
+          ],
+          type: 'btree',
+          isUnique: true,
+          isPrimary: true,
+        )
+      ],
+      managed: true,
+    ),
+    _i2.TableDefinition(
+      name: 'report_user',
+      dartName: 'ReportUser',
+      schema: 'public',
+      module: 'cotree',
+      columns: [
+        _i2.ColumnDefinition(
+          name: 'id',
+          columnType: _i2.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int?',
+          columnDefault: 'nextval(\'report_user_id_seq\'::regclass)',
+        ),
+        _i2.ColumnDefinition(
+          name: 'reporterId',
+          columnType: _i2.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int',
+        ),
+        _i2.ColumnDefinition(
+          name: 'reportedId',
+          columnType: _i2.ColumnType.bigint,
+          isNullable: false,
+          dartType: 'int',
+        ),
+        _i2.ColumnDefinition(
+          name: 'reason',
+          columnType: _i2.ColumnType.text,
+          isNullable: false,
+          dartType: 'String',
+        ),
+      ],
+      foreignKeys: [
+        _i2.ForeignKeyDefinition(
+          constraintName: 'report_user_fk_0',
+          columns: ['reporterId'],
+          referenceTable: 'user',
+          referenceTableSchema: 'public',
+          referenceColumns: ['id'],
+          onUpdate: _i2.ForeignKeyAction.noAction,
+          onDelete: _i2.ForeignKeyAction.noAction,
+          matchType: null,
+        ),
+        _i2.ForeignKeyDefinition(
+          constraintName: 'report_user_fk_1',
+          columns: ['reportedId'],
+          referenceTable: 'user',
+          referenceTableSchema: 'public',
+          referenceColumns: ['id'],
+          onUpdate: _i2.ForeignKeyAction.noAction,
+          onDelete: _i2.ForeignKeyAction.noAction,
+          matchType: null,
+        ),
+      ],
+      indexes: [
+        _i2.IndexDefinition(
+          indexName: 'report_user_pkey',
+          tableSpace: null,
+          elements: [
+            _i2.IndexElementDefinition(
+              type: _i2.IndexElementDefinitionType.column,
+              definition: 'id',
+            )
+          ],
+          type: 'btree',
+          isUnique: true,
+          isPrimary: true,
+        )
+      ],
+      managed: true,
+    ),
+    _i2.TableDefinition(
       name: 'space',
       dartName: 'Space',
       schema: 'public',
@@ -2372,29 +2524,35 @@ class Protocol extends _i1.SerializationManagerServer {
     if (t == _i26.Reply) {
       return _i26.Reply.fromJson(data) as T;
     }
-    if (t == _i27.Space) {
-      return _i27.Space.fromJson(data) as T;
+    if (t == _i27.ReportPost) {
+      return _i27.ReportPost.fromJson(data) as T;
     }
-    if (t == _i28.SpaceInvite) {
-      return _i28.SpaceInvite.fromJson(data) as T;
+    if (t == _i28.ReportUser) {
+      return _i28.ReportUser.fromJson(data) as T;
     }
-    if (t == _i29.Task) {
-      return _i29.Task.fromJson(data) as T;
+    if (t == _i29.Space) {
+      return _i29.Space.fromJson(data) as T;
     }
-    if (t == _i30.TaskAssigned) {
-      return _i30.TaskAssigned.fromJson(data) as T;
+    if (t == _i30.SpaceInvite) {
+      return _i30.SpaceInvite.fromJson(data) as T;
     }
-    if (t == _i31.TeamMember) {
-      return _i31.TeamMember.fromJson(data) as T;
+    if (t == _i31.Task) {
+      return _i31.Task.fromJson(data) as T;
     }
-    if (t == _i32.Teams) {
-      return _i32.Teams.fromJson(data) as T;
+    if (t == _i32.TaskAssigned) {
+      return _i32.TaskAssigned.fromJson(data) as T;
     }
-    if (t == _i33.User) {
-      return _i33.User.fromJson(data) as T;
+    if (t == _i33.TeamMember) {
+      return _i33.TeamMember.fromJson(data) as T;
     }
-    if (t == _i34.UserView) {
-      return _i34.UserView.fromJson(data) as T;
+    if (t == _i34.Teams) {
+      return _i34.Teams.fromJson(data) as T;
+    }
+    if (t == _i35.User) {
+      return _i35.User.fromJson(data) as T;
+    }
+    if (t == _i36.UserView) {
+      return _i36.UserView.fromJson(data) as T;
     }
     if (t == _i1.getType<_i4.Greeting?>()) {
       return (data != null ? _i4.Greeting.fromJson(data) : null) as T;
@@ -2465,29 +2623,35 @@ class Protocol extends _i1.SerializationManagerServer {
     if (t == _i1.getType<_i26.Reply?>()) {
       return (data != null ? _i26.Reply.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i27.Space?>()) {
-      return (data != null ? _i27.Space.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i27.ReportPost?>()) {
+      return (data != null ? _i27.ReportPost.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i28.SpaceInvite?>()) {
-      return (data != null ? _i28.SpaceInvite.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i28.ReportUser?>()) {
+      return (data != null ? _i28.ReportUser.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i29.Task?>()) {
-      return (data != null ? _i29.Task.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i29.Space?>()) {
+      return (data != null ? _i29.Space.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i30.TaskAssigned?>()) {
-      return (data != null ? _i30.TaskAssigned.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i30.SpaceInvite?>()) {
+      return (data != null ? _i30.SpaceInvite.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i31.TeamMember?>()) {
-      return (data != null ? _i31.TeamMember.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i31.Task?>()) {
+      return (data != null ? _i31.Task.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i32.Teams?>()) {
-      return (data != null ? _i32.Teams.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i32.TaskAssigned?>()) {
+      return (data != null ? _i32.TaskAssigned.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i33.User?>()) {
-      return (data != null ? _i33.User.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i33.TeamMember?>()) {
+      return (data != null ? _i33.TeamMember.fromJson(data) : null) as T;
     }
-    if (t == _i1.getType<_i34.UserView?>()) {
-      return (data != null ? _i34.UserView.fromJson(data) : null) as T;
+    if (t == _i1.getType<_i34.Teams?>()) {
+      return (data != null ? _i34.Teams.fromJson(data) : null) as T;
+    }
+    if (t == _i1.getType<_i35.User?>()) {
+      return (data != null ? _i35.User.fromJson(data) : null) as T;
+    }
+    if (t == _i1.getType<_i36.UserView?>()) {
+      return (data != null ? _i36.UserView.fromJson(data) : null) as T;
     }
     if (t == List<int>) {
       return (data as List).map((e) => deserialize<int>(e)).toList() as T;
@@ -2495,16 +2659,6 @@ class Protocol extends _i1.SerializationManagerServer {
     if (t == _i1.getType<List<_i26.Reply>?>()) {
       return (data != null
           ? (data as List).map((e) => deserialize<_i26.Reply>(e)).toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<List<_i14.Invitation>?>()) {
-      return (data != null
-          ? (data as List).map((e) => deserialize<_i14.Invitation>(e)).toList()
-          : null) as T;
-    }
-    if (t == _i1.getType<List<_i14.Invitation>?>()) {
-      return (data != null
-          ? (data as List).map((e) => deserialize<_i14.Invitation>(e)).toList()
           : null) as T;
     }
     if (t == List<String>) {
@@ -2524,104 +2678,108 @@ class Protocol extends _i1.SerializationManagerServer {
       return (data as List).map((e) => deserialize<List<String>>(e)).toList()
           as T;
     }
-    if (t == _i1.getType<List<_i30.TaskAssigned>?>()) {
+    if (t == _i1.getType<List<_i32.TaskAssigned>?>()) {
       return (data != null
           ? (data as List)
-              .map((e) => deserialize<_i30.TaskAssigned>(e))
+              .map((e) => deserialize<_i32.TaskAssigned>(e))
               .toList()
           : null) as T;
     }
-    if (t == List<_i35.UserView>) {
-      return (data as List).map((e) => deserialize<_i35.UserView>(e)).toList()
+    if (t == List<_i37.UserView>) {
+      return (data as List).map((e) => deserialize<_i37.UserView>(e)).toList()
           as T;
     }
-    if (t == List<_i36.ProfessionalData>) {
+    if (t == List<_i38.ProfessionalData>) {
       return (data as List)
-          .map((e) => deserialize<_i36.ProfessionalData>(e))
+          .map((e) => deserialize<_i38.ProfessionalData>(e))
           .toList() as T;
     }
-    if (t == List<_i37.CustomDetails>) {
+    if (t == List<_i39.CustomDetails>) {
       return (data as List)
-          .map((e) => deserialize<_i37.CustomDetails>(e))
+          .map((e) => deserialize<_i39.CustomDetails>(e))
           .toList() as T;
     }
     if (t == List<String>) {
       return (data as List).map((e) => deserialize<String>(e)).toList() as T;
     }
-    if (t == List<_i38.Message>) {
-      return (data as List).map((e) => deserialize<_i38.Message>(e)).toList()
+    if (t == List<_i40.Message>) {
+      return (data as List).map((e) => deserialize<_i40.Message>(e)).toList()
           as T;
     }
-    if (t == List<_i39.Chat>) {
-      return (data as List).map((e) => deserialize<_i39.Chat>(e)).toList() as T;
+    if (t == List<_i41.Chat>) {
+      return (data as List).map((e) => deserialize<_i41.Chat>(e)).toList() as T;
     }
-    if (t == List<_i40.Notification>) {
+    if (t == List<_i42.Invitation>) {
+      return (data as List).map((e) => deserialize<_i42.Invitation>(e)).toList()
+          as T;
+    }
+    if (t == List<_i43.Notification>) {
       return (data as List)
-          .map((e) => deserialize<_i40.Notification>(e))
+          .map((e) => deserialize<_i43.Notification>(e))
           .toList() as T;
     }
-    if (t == List<_i41.Post>) {
-      return (data as List).map((e) => deserialize<_i41.Post>(e)).toList() as T;
+    if (t == List<_i44.Post>) {
+      return (data as List).map((e) => deserialize<_i44.Post>(e)).toList() as T;
     }
-    if (t == List<_i42.Comment>) {
-      return (data as List).map((e) => deserialize<_i42.Comment>(e)).toList()
+    if (t == List<_i45.Comment>) {
+      return (data as List).map((e) => deserialize<_i45.Comment>(e)).toList()
           as T;
     }
-    if (t == List<_i43.Teams>) {
-      return (data as List).map((e) => deserialize<_i43.Teams>(e)).toList()
+    if (t == List<_i46.Teams>) {
+      return (data as List).map((e) => deserialize<_i46.Teams>(e)).toList()
           as T;
     }
     if (t == List<int>) {
       return (data as List).map((e) => deserialize<int>(e)).toList() as T;
     }
-    if (t == List<_i44.Documents>) {
-      return (data as List).map((e) => deserialize<_i44.Documents>(e)).toList()
+    if (t == List<_i47.Documents>) {
+      return (data as List).map((e) => deserialize<_i47.Documents>(e)).toList()
           as T;
     }
-    if (t == List<_i45.Task>) {
-      return (data as List).map((e) => deserialize<_i45.Task>(e)).toList() as T;
+    if (t == List<_i48.Task>) {
+      return (data as List).map((e) => deserialize<_i48.Task>(e)).toList() as T;
     }
-    if (t == List<_i46.Member>) {
-      return (data as List).map((e) => deserialize<_i46.Member>(e)).toList()
+    if (t == List<_i49.Member>) {
+      return (data as List).map((e) => deserialize<_i49.Member>(e)).toList()
           as T;
     }
-    if (t == List<_i47.Offers>) {
-      return (data as List).map((e) => deserialize<_i47.Offers>(e)).toList()
+    if (t == List<_i50.Offers>) {
+      return (data as List).map((e) => deserialize<_i50.Offers>(e)).toList()
           as T;
     }
-    if (t == List<_i48.Organization>) {
+    if (t == List<_i51.Organization>) {
       return (data as List)
-          .map((e) => deserialize<_i48.Organization>(e))
+          .map((e) => deserialize<_i51.Organization>(e))
           .toList() as T;
     }
     if (t == List<List<String>>) {
       return (data as List).map((e) => deserialize<List<String>>(e)).toList()
           as T;
     }
-    if (t == List<_i49.SpaceInvite>) {
+    if (t == List<_i52.SpaceInvite>) {
       return (data as List)
-          .map((e) => deserialize<_i49.SpaceInvite>(e))
+          .map((e) => deserialize<_i52.SpaceInvite>(e))
           .toList() as T;
     }
-    if (t == List<_i50.TeamMember>) {
-      return (data as List).map((e) => deserialize<_i50.TeamMember>(e)).toList()
+    if (t == List<_i53.TeamMember>) {
+      return (data as List).map((e) => deserialize<_i53.TeamMember>(e)).toList()
           as T;
     }
-    if (t == List<_i51.Space>) {
-      return (data as List).map((e) => deserialize<_i51.Space>(e)).toList()
+    if (t == List<_i54.Space>) {
+      return (data as List).map((e) => deserialize<_i54.Space>(e)).toList()
           as T;
     }
-    if (t == List<_i52.Project>) {
-      return (data as List).map((e) => deserialize<_i52.Project>(e)).toList()
+    if (t == List<_i55.Project>) {
+      return (data as List).map((e) => deserialize<_i55.Project>(e)).toList()
           as T;
     }
-    if (t == List<_i53.Meetings>) {
-      return (data as List).map((e) => deserialize<_i53.Meetings>(e)).toList()
+    if (t == List<_i56.Meetings>) {
+      return (data as List).map((e) => deserialize<_i56.Meetings>(e)).toList()
           as T;
     }
-    if (t == List<_i54.Applications>) {
+    if (t == List<_i57.Applications>) {
       return (data as List)
-          .map((e) => deserialize<_i54.Applications>(e))
+          .map((e) => deserialize<_i57.Applications>(e))
           .toList() as T;
     }
     try {
@@ -2706,28 +2864,34 @@ class Protocol extends _i1.SerializationManagerServer {
     if (data is _i26.Reply) {
       return 'Reply';
     }
-    if (data is _i27.Space) {
+    if (data is _i27.ReportPost) {
+      return 'ReportPost';
+    }
+    if (data is _i28.ReportUser) {
+      return 'ReportUser';
+    }
+    if (data is _i29.Space) {
       return 'Space';
     }
-    if (data is _i28.SpaceInvite) {
+    if (data is _i30.SpaceInvite) {
       return 'SpaceInvite';
     }
-    if (data is _i29.Task) {
+    if (data is _i31.Task) {
       return 'Task';
     }
-    if (data is _i30.TaskAssigned) {
+    if (data is _i32.TaskAssigned) {
       return 'TaskAssigned';
     }
-    if (data is _i31.TeamMember) {
+    if (data is _i33.TeamMember) {
       return 'TeamMember';
     }
-    if (data is _i32.Teams) {
+    if (data is _i34.Teams) {
       return 'Teams';
     }
-    if (data is _i33.User) {
+    if (data is _i35.User) {
       return 'User';
     }
-    if (data is _i34.UserView) {
+    if (data is _i36.UserView) {
       return 'UserView';
     }
     className = _i2.Protocol().getClassNameForObject(data);
@@ -2816,29 +2980,35 @@ class Protocol extends _i1.SerializationManagerServer {
     if (dataClassName == 'Reply') {
       return deserialize<_i26.Reply>(data['data']);
     }
+    if (dataClassName == 'ReportPost') {
+      return deserialize<_i27.ReportPost>(data['data']);
+    }
+    if (dataClassName == 'ReportUser') {
+      return deserialize<_i28.ReportUser>(data['data']);
+    }
     if (dataClassName == 'Space') {
-      return deserialize<_i27.Space>(data['data']);
+      return deserialize<_i29.Space>(data['data']);
     }
     if (dataClassName == 'SpaceInvite') {
-      return deserialize<_i28.SpaceInvite>(data['data']);
+      return deserialize<_i30.SpaceInvite>(data['data']);
     }
     if (dataClassName == 'Task') {
-      return deserialize<_i29.Task>(data['data']);
+      return deserialize<_i31.Task>(data['data']);
     }
     if (dataClassName == 'TaskAssigned') {
-      return deserialize<_i30.TaskAssigned>(data['data']);
+      return deserialize<_i32.TaskAssigned>(data['data']);
     }
     if (dataClassName == 'TeamMember') {
-      return deserialize<_i31.TeamMember>(data['data']);
+      return deserialize<_i33.TeamMember>(data['data']);
     }
     if (dataClassName == 'Teams') {
-      return deserialize<_i32.Teams>(data['data']);
+      return deserialize<_i34.Teams>(data['data']);
     }
     if (dataClassName == 'User') {
-      return deserialize<_i33.User>(data['data']);
+      return deserialize<_i35.User>(data['data']);
     }
     if (dataClassName == 'UserView') {
-      return deserialize<_i34.UserView>(data['data']);
+      return deserialize<_i36.UserView>(data['data']);
     }
     if (dataClassName.startsWith('serverpod.')) {
       data['className'] = dataClassName.substring(10);
@@ -2910,22 +3080,26 @@ class Protocol extends _i1.SerializationManagerServer {
         return _i25.Reaction.t;
       case _i26.Reply:
         return _i26.Reply.t;
-      case _i27.Space:
-        return _i27.Space.t;
-      case _i28.SpaceInvite:
-        return _i28.SpaceInvite.t;
-      case _i29.Task:
-        return _i29.Task.t;
-      case _i30.TaskAssigned:
-        return _i30.TaskAssigned.t;
-      case _i31.TeamMember:
-        return _i31.TeamMember.t;
-      case _i32.Teams:
-        return _i32.Teams.t;
-      case _i33.User:
-        return _i33.User.t;
-      case _i34.UserView:
-        return _i34.UserView.t;
+      case _i27.ReportPost:
+        return _i27.ReportPost.t;
+      case _i28.ReportUser:
+        return _i28.ReportUser.t;
+      case _i29.Space:
+        return _i29.Space.t;
+      case _i30.SpaceInvite:
+        return _i30.SpaceInvite.t;
+      case _i31.Task:
+        return _i31.Task.t;
+      case _i32.TaskAssigned:
+        return _i32.TaskAssigned.t;
+      case _i33.TeamMember:
+        return _i33.TeamMember.t;
+      case _i34.Teams:
+        return _i34.Teams.t;
+      case _i35.User:
+        return _i35.User.t;
+      case _i36.UserView:
+        return _i36.UserView.t;
     }
     return null;
   }

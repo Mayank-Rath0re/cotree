@@ -16,16 +16,17 @@ void run(List<String> args) async {
 
   auth.AuthConfig.set(auth.AuthConfig(
     sendValidationEmail: (session, emailID, validationCode) async {
-      //print(validationCode);
-      //return true;
+      print(validationCode);
+      return true;
 
-      return sendEmail(
+      /*return sendEmail(
         session: session,
         toEmail: emailID,
         subject: 'Verify your email',
         htmlBody: verificationEmailHtml(validationCode),
         textBody: verificationEmailText(validationCode),
       );
+      */
     },
     sendPasswordResetEmail: (session, userInfo, validationCode) async {
       return sendEmail(

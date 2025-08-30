@@ -1,7 +1,7 @@
 BEGIN;
 
 --
--- Class Applications as table applications
+-- ACTION CREATE TABLE
 --
 CREATE TABLE "applications" (
     "id" bigserial PRIMARY KEY,
@@ -13,7 +13,7 @@ CREATE TABLE "applications" (
 );
 
 --
--- Class Chat as table chat
+-- ACTION CREATE TABLE
 --
 CREATE TABLE "chat" (
     "id" bigserial PRIMARY KEY,
@@ -22,7 +22,7 @@ CREATE TABLE "chat" (
 );
 
 --
--- Class ChatParticipant as table chat_participant
+-- ACTION CREATE TABLE
 --
 CREATE TABLE "chat_participant" (
     "id" bigserial PRIMARY KEY,
@@ -32,7 +32,7 @@ CREATE TABLE "chat_participant" (
 );
 
 --
--- Class Comment as table comment
+-- ACTION CREATE TABLE
 --
 CREATE TABLE "comment" (
     "id" bigserial PRIMARY KEY,
@@ -43,18 +43,16 @@ CREATE TABLE "comment" (
 );
 
 --
--- Class Connect as table connect
+-- ACTION CREATE TABLE
 --
 CREATE TABLE "connect" (
     "id" bigserial PRIMARY KEY,
     "accountId" bigint,
-    "activeConnections" json NOT NULL,
-    "receivedPending" json,
-    "sentPending" json
+    "activeConnections" json NOT NULL
 );
 
 --
--- Class CustomDetails as table customdetails
+-- ACTION CREATE TABLE
 --
 CREATE TABLE "customdetails" (
     "id" bigserial PRIMARY KEY,
@@ -64,7 +62,7 @@ CREATE TABLE "customdetails" (
 );
 
 --
--- Class Documents as table documents
+-- ACTION CREATE TABLE
 --
 CREATE TABLE "documents" (
     "id" bigserial PRIMARY KEY,
@@ -76,7 +74,7 @@ CREATE TABLE "documents" (
 );
 
 --
--- Class Follow as table follow
+-- ACTION CREATE TABLE
 --
 CREATE TABLE "follow" (
     "id" bigserial PRIMARY KEY,
@@ -85,7 +83,7 @@ CREATE TABLE "follow" (
 );
 
 --
--- Class Individual as table individual
+-- ACTION CREATE TABLE
 --
 CREATE TABLE "individual" (
     "id" bigserial PRIMARY KEY,
@@ -98,17 +96,18 @@ CREATE TABLE "individual" (
 );
 
 --
--- Class Invitation as table invitation
+-- ACTION CREATE TABLE
 --
 CREATE TABLE "invitation" (
     "id" bigserial PRIMARY KEY,
-    "user" bigint NOT NULL,
-    "personalText" text,
-    "type" text NOT NULL
+    "sender" bigint NOT NULL,
+    "receiver" bigint NOT NULL,
+    "isRejected" boolean NOT NULL DEFAULT false,
+    "personalText" text
 );
 
 --
--- Class Meetings as table meetings
+-- ACTION CREATE TABLE
 --
 CREATE TABLE "meetings" (
     "id" bigserial PRIMARY KEY,
@@ -123,7 +122,7 @@ CREATE TABLE "meetings" (
 );
 
 --
--- Class Member as table member
+-- ACTION CREATE TABLE
 --
 CREATE TABLE "member" (
     "id" bigserial PRIMARY KEY,
@@ -137,7 +136,7 @@ CREATE TABLE "member" (
 );
 
 --
--- Class Message as table message
+-- ACTION CREATE TABLE
 --
 CREATE TABLE "message" (
     "id" bigserial PRIMARY KEY,
@@ -148,7 +147,7 @@ CREATE TABLE "message" (
 );
 
 --
--- Class Notification as table notification
+-- ACTION CREATE TABLE
 --
 CREATE TABLE "notification" (
     "id" bigserial PRIMARY KEY,
@@ -162,7 +161,7 @@ CREATE TABLE "notification" (
 );
 
 --
--- Class Offers as table offers
+-- ACTION CREATE TABLE
 --
 CREATE TABLE "offers" (
     "id" bigserial PRIMARY KEY,
@@ -180,7 +179,7 @@ CREATE TABLE "offers" (
 );
 
 --
--- Class Organization as table organization
+-- ACTION CREATE TABLE
 --
 CREATE TABLE "organization" (
     "id" bigserial PRIMARY KEY,
@@ -193,7 +192,7 @@ CREATE TABLE "organization" (
 );
 
 --
--- Class Post as table post
+-- ACTION CREATE TABLE
 --
 CREATE TABLE "post" (
     "id" bigserial PRIMARY KEY,
@@ -204,7 +203,7 @@ CREATE TABLE "post" (
 );
 
 --
--- Class ProfessionalData as table professional_data
+-- ACTION CREATE TABLE
 --
 CREATE TABLE "professional_data" (
     "id" bigserial PRIMARY KEY,
@@ -219,7 +218,7 @@ CREATE TABLE "professional_data" (
 );
 
 --
--- Class Project as table project
+-- ACTION CREATE TABLE
 --
 CREATE TABLE "project" (
     "id" bigserial PRIMARY KEY,
@@ -230,7 +229,7 @@ CREATE TABLE "project" (
 );
 
 --
--- Class ProjectAssigned as table project_assigned
+-- ACTION CREATE TABLE
 --
 CREATE TABLE "project_assigned" (
     "id" bigserial PRIMARY KEY,
@@ -239,7 +238,7 @@ CREATE TABLE "project_assigned" (
 );
 
 --
--- Class Reaction as table reaction
+-- ACTION CREATE TABLE
 --
 CREATE TABLE "reaction" (
     "id" bigserial PRIMARY KEY,
@@ -250,7 +249,7 @@ CREATE TABLE "reaction" (
 );
 
 --
--- Class Reply as table reply
+-- ACTION CREATE TABLE
 --
 CREATE TABLE "reply" (
     "id" bigserial PRIMARY KEY,
@@ -261,7 +260,27 @@ CREATE TABLE "reply" (
 );
 
 --
--- Class Space as table space
+-- ACTION CREATE TABLE
+--
+CREATE TABLE "report_post" (
+    "id" bigserial PRIMARY KEY,
+    "reporterId" bigint NOT NULL,
+    "postId" bigint NOT NULL,
+    "reason" text NOT NULL
+);
+
+--
+-- ACTION CREATE TABLE
+--
+CREATE TABLE "report_user" (
+    "id" bigserial PRIMARY KEY,
+    "reporterId" bigint NOT NULL,
+    "reportedId" bigint NOT NULL,
+    "reason" text NOT NULL
+);
+
+--
+-- ACTION CREATE TABLE
 --
 CREATE TABLE "space" (
     "id" bigserial PRIMARY KEY,
@@ -274,7 +293,7 @@ CREATE TABLE "space" (
 );
 
 --
--- Class SpaceInvite as table space_invite
+-- ACTION CREATE TABLE
 --
 CREATE TABLE "space_invite" (
     "id" bigserial PRIMARY KEY,
@@ -290,7 +309,7 @@ CREATE TABLE "space_invite" (
 );
 
 --
--- Class Task as table task
+-- ACTION CREATE TABLE
 --
 CREATE TABLE "task" (
     "id" bigserial PRIMARY KEY,
@@ -301,7 +320,7 @@ CREATE TABLE "task" (
 );
 
 --
--- Class TaskAssigned as table task_assigned
+-- ACTION CREATE TABLE
 --
 CREATE TABLE "task_assigned" (
     "id" bigserial PRIMARY KEY,
@@ -310,7 +329,7 @@ CREATE TABLE "task_assigned" (
 );
 
 --
--- Class TeamMember as table team_member
+-- ACTION CREATE TABLE
 --
 CREATE TABLE "team_member" (
     "id" bigserial PRIMARY KEY,
@@ -320,7 +339,7 @@ CREATE TABLE "team_member" (
 );
 
 --
--- Class Teams as table teams
+-- ACTION CREATE TABLE
 --
 CREATE TABLE "teams" (
     "id" bigserial PRIMARY KEY,
@@ -330,7 +349,7 @@ CREATE TABLE "teams" (
 );
 
 --
--- Class User as table user
+-- ACTION CREATE TABLE
 --
 CREATE TABLE "user" (
     "id" bigserial PRIMARY KEY,
@@ -346,7 +365,7 @@ CREATE TABLE "user" (
 CREATE UNIQUE INDEX "user_idx" ON "user" USING btree ("email");
 
 --
--- Class UserView as table userview
+-- ACTION CREATE TABLE
 --
 CREATE TABLE "userview" (
     "id" bigserial PRIMARY KEY,
@@ -358,7 +377,7 @@ CREATE TABLE "userview" (
 );
 
 --
--- Class CloudStorageEntry as table serverpod_cloud_storage
+-- ACTION CREATE TABLE
 --
 CREATE TABLE "serverpod_cloud_storage" (
     "id" bigserial PRIMARY KEY,
@@ -375,7 +394,7 @@ CREATE UNIQUE INDEX "serverpod_cloud_storage_path_idx" ON "serverpod_cloud_stora
 CREATE INDEX "serverpod_cloud_storage_expiration" ON "serverpod_cloud_storage" USING btree ("expiration");
 
 --
--- Class CloudStorageDirectUploadEntry as table serverpod_cloud_storage_direct_upload
+-- ACTION CREATE TABLE
 --
 CREATE TABLE "serverpod_cloud_storage_direct_upload" (
     "id" bigserial PRIMARY KEY,
@@ -389,7 +408,7 @@ CREATE TABLE "serverpod_cloud_storage_direct_upload" (
 CREATE UNIQUE INDEX "serverpod_cloud_storage_direct_upload_storage_path" ON "serverpod_cloud_storage_direct_upload" USING btree ("storageId", "path");
 
 --
--- Class FutureCallEntry as table serverpod_future_call
+-- ACTION CREATE TABLE
 --
 CREATE TABLE "serverpod_future_call" (
     "id" bigserial PRIMARY KEY,
@@ -406,7 +425,7 @@ CREATE INDEX "serverpod_future_call_serverId_idx" ON "serverpod_future_call" USI
 CREATE INDEX "serverpod_future_call_identifier_idx" ON "serverpod_future_call" USING btree ("identifier");
 
 --
--- Class ServerHealthConnectionInfo as table serverpod_health_connection_info
+-- ACTION CREATE TABLE
 --
 CREATE TABLE "serverpod_health_connection_info" (
     "id" bigserial PRIMARY KEY,
@@ -422,7 +441,7 @@ CREATE TABLE "serverpod_health_connection_info" (
 CREATE UNIQUE INDEX "serverpod_health_connection_info_timestamp_idx" ON "serverpod_health_connection_info" USING btree ("timestamp", "serverId", "granularity");
 
 --
--- Class ServerHealthMetric as table serverpod_health_metric
+-- ACTION CREATE TABLE
 --
 CREATE TABLE "serverpod_health_metric" (
     "id" bigserial PRIMARY KEY,
@@ -438,7 +457,7 @@ CREATE TABLE "serverpod_health_metric" (
 CREATE UNIQUE INDEX "serverpod_health_metric_timestamp_idx" ON "serverpod_health_metric" USING btree ("timestamp", "serverId", "name", "granularity");
 
 --
--- Class LogEntry as table serverpod_log
+-- ACTION CREATE TABLE
 --
 CREATE TABLE "serverpod_log" (
     "id" bigserial PRIMARY KEY,
@@ -458,7 +477,7 @@ CREATE TABLE "serverpod_log" (
 CREATE INDEX "serverpod_log_sessionLogId_idx" ON "serverpod_log" USING btree ("sessionLogId");
 
 --
--- Class MessageLogEntry as table serverpod_message_log
+-- ACTION CREATE TABLE
 --
 CREATE TABLE "serverpod_message_log" (
     "id" bigserial PRIMARY KEY,
@@ -475,7 +494,7 @@ CREATE TABLE "serverpod_message_log" (
 );
 
 --
--- Class MethodInfo as table serverpod_method
+-- ACTION CREATE TABLE
 --
 CREATE TABLE "serverpod_method" (
     "id" bigserial PRIMARY KEY,
@@ -487,7 +506,7 @@ CREATE TABLE "serverpod_method" (
 CREATE UNIQUE INDEX "serverpod_method_endpoint_method_idx" ON "serverpod_method" USING btree ("endpoint", "method");
 
 --
--- Class DatabaseMigrationVersion as table serverpod_migrations
+-- ACTION CREATE TABLE
 --
 CREATE TABLE "serverpod_migrations" (
     "id" bigserial PRIMARY KEY,
@@ -500,7 +519,7 @@ CREATE TABLE "serverpod_migrations" (
 CREATE UNIQUE INDEX "serverpod_migrations_ids" ON "serverpod_migrations" USING btree ("module");
 
 --
--- Class QueryLogEntry as table serverpod_query_log
+-- ACTION CREATE TABLE
 --
 CREATE TABLE "serverpod_query_log" (
     "id" bigserial PRIMARY KEY,
@@ -520,7 +539,7 @@ CREATE TABLE "serverpod_query_log" (
 CREATE INDEX "serverpod_query_log_sessionLogId_idx" ON "serverpod_query_log" USING btree ("sessionLogId");
 
 --
--- Class ReadWriteTestEntry as table serverpod_readwrite_test
+-- ACTION CREATE TABLE
 --
 CREATE TABLE "serverpod_readwrite_test" (
     "id" bigserial PRIMARY KEY,
@@ -528,7 +547,7 @@ CREATE TABLE "serverpod_readwrite_test" (
 );
 
 --
--- Class RuntimeSettings as table serverpod_runtime_settings
+-- ACTION CREATE TABLE
 --
 CREATE TABLE "serverpod_runtime_settings" (
     "id" bigserial PRIMARY KEY,
@@ -539,7 +558,7 @@ CREATE TABLE "serverpod_runtime_settings" (
 );
 
 --
--- Class SessionLogEntry as table serverpod_session_log
+-- ACTION CREATE TABLE
 --
 CREATE TABLE "serverpod_session_log" (
     "id" bigserial PRIMARY KEY,
@@ -564,7 +583,7 @@ CREATE INDEX "serverpod_session_log_touched_idx" ON "serverpod_session_log" USIN
 CREATE INDEX "serverpod_session_log_isopen_idx" ON "serverpod_session_log" USING btree ("isOpen");
 
 --
--- Class AuthKey as table serverpod_auth_key
+-- ACTION CREATE TABLE
 --
 CREATE TABLE "serverpod_auth_key" (
     "id" bigserial PRIMARY KEY,
@@ -578,7 +597,7 @@ CREATE TABLE "serverpod_auth_key" (
 CREATE INDEX "serverpod_auth_key_userId_idx" ON "serverpod_auth_key" USING btree ("userId");
 
 --
--- Class EmailAuth as table serverpod_email_auth
+-- ACTION CREATE TABLE
 --
 CREATE TABLE "serverpod_email_auth" (
     "id" bigserial PRIMARY KEY,
@@ -591,7 +610,7 @@ CREATE TABLE "serverpod_email_auth" (
 CREATE UNIQUE INDEX "serverpod_email_auth_email" ON "serverpod_email_auth" USING btree ("email");
 
 --
--- Class EmailCreateAccountRequest as table serverpod_email_create_request
+-- ACTION CREATE TABLE
 --
 CREATE TABLE "serverpod_email_create_request" (
     "id" bigserial PRIMARY KEY,
@@ -605,7 +624,7 @@ CREATE TABLE "serverpod_email_create_request" (
 CREATE UNIQUE INDEX "serverpod_email_auth_create_account_request_idx" ON "serverpod_email_create_request" USING btree ("email");
 
 --
--- Class EmailFailedSignIn as table serverpod_email_failed_sign_in
+-- ACTION CREATE TABLE
 --
 CREATE TABLE "serverpod_email_failed_sign_in" (
     "id" bigserial PRIMARY KEY,
@@ -619,7 +638,7 @@ CREATE INDEX "serverpod_email_failed_sign_in_email_idx" ON "serverpod_email_fail
 CREATE INDEX "serverpod_email_failed_sign_in_time_idx" ON "serverpod_email_failed_sign_in" USING btree ("time");
 
 --
--- Class EmailReset as table serverpod_email_reset
+-- ACTION CREATE TABLE
 --
 CREATE TABLE "serverpod_email_reset" (
     "id" bigserial PRIMARY KEY,
@@ -632,7 +651,7 @@ CREATE TABLE "serverpod_email_reset" (
 CREATE UNIQUE INDEX "serverpod_email_reset_verification_idx" ON "serverpod_email_reset" USING btree ("verificationCode");
 
 --
--- Class GoogleRefreshToken as table serverpod_google_refresh_token
+-- ACTION CREATE TABLE
 --
 CREATE TABLE "serverpod_google_refresh_token" (
     "id" bigserial PRIMARY KEY,
@@ -644,7 +663,7 @@ CREATE TABLE "serverpod_google_refresh_token" (
 CREATE UNIQUE INDEX "serverpod_google_refresh_token_userId_idx" ON "serverpod_google_refresh_token" USING btree ("userId");
 
 --
--- Class UserImage as table serverpod_user_image
+-- ACTION CREATE TABLE
 --
 CREATE TABLE "serverpod_user_image" (
     "id" bigserial PRIMARY KEY,
@@ -657,7 +676,7 @@ CREATE TABLE "serverpod_user_image" (
 CREATE INDEX "serverpod_user_image_user_id" ON "serverpod_user_image" USING btree ("userId", "version");
 
 --
--- Class UserInfo as table serverpod_user_info
+-- ACTION CREATE TABLE
 --
 CREATE TABLE "serverpod_user_info" (
     "id" bigserial PRIMARY KEY,
@@ -676,7 +695,7 @@ CREATE UNIQUE INDEX "serverpod_user_info_user_identifier" ON "serverpod_user_inf
 CREATE INDEX "serverpod_user_info_email" ON "serverpod_user_info" USING btree ("email");
 
 --
--- Foreign relations for "applications" table
+-- ACTION CREATE FOREIGN KEY
 --
 ALTER TABLE ONLY "applications"
     ADD CONSTRAINT "applications_fk_0"
@@ -686,7 +705,7 @@ ALTER TABLE ONLY "applications"
     ON UPDATE NO ACTION;
 
 --
--- Foreign relations for "chat_participant" table
+-- ACTION CREATE FOREIGN KEY
 --
 ALTER TABLE ONLY "chat_participant"
     ADD CONSTRAINT "chat_participant_fk_0"
@@ -696,7 +715,7 @@ ALTER TABLE ONLY "chat_participant"
     ON UPDATE NO ACTION;
 
 --
--- Foreign relations for "comment" table
+-- ACTION CREATE FOREIGN KEY
 --
 ALTER TABLE ONLY "comment"
     ADD CONSTRAINT "comment_fk_0"
@@ -712,7 +731,7 @@ ALTER TABLE ONLY "comment"
     ON UPDATE NO ACTION;
 
 --
--- Foreign relations for "connect" table
+-- ACTION CREATE FOREIGN KEY
 --
 ALTER TABLE ONLY "connect"
     ADD CONSTRAINT "connect_fk_0"
@@ -722,7 +741,7 @@ ALTER TABLE ONLY "connect"
     ON UPDATE NO ACTION;
 
 --
--- Foreign relations for "documents" table
+-- ACTION CREATE FOREIGN KEY
 --
 ALTER TABLE ONLY "documents"
     ADD CONSTRAINT "documents_fk_0"
@@ -738,7 +757,7 @@ ALTER TABLE ONLY "documents"
     ON UPDATE NO ACTION;
 
 --
--- Foreign relations for "follow" table
+-- ACTION CREATE FOREIGN KEY
 --
 ALTER TABLE ONLY "follow"
     ADD CONSTRAINT "follow_fk_0"
@@ -754,17 +773,23 @@ ALTER TABLE ONLY "follow"
     ON UPDATE NO ACTION;
 
 --
--- Foreign relations for "invitation" table
+-- ACTION CREATE FOREIGN KEY
 --
 ALTER TABLE ONLY "invitation"
     ADD CONSTRAINT "invitation_fk_0"
-    FOREIGN KEY("user")
+    FOREIGN KEY("sender")
+    REFERENCES "user"("id")
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION;
+ALTER TABLE ONLY "invitation"
+    ADD CONSTRAINT "invitation_fk_1"
+    FOREIGN KEY("receiver")
     REFERENCES "user"("id")
     ON DELETE NO ACTION
     ON UPDATE NO ACTION;
 
 --
--- Foreign relations for "meetings" table
+-- ACTION CREATE FOREIGN KEY
 --
 ALTER TABLE ONLY "meetings"
     ADD CONSTRAINT "meetings_fk_0"
@@ -774,7 +799,7 @@ ALTER TABLE ONLY "meetings"
     ON UPDATE NO ACTION;
 
 --
--- Foreign relations for "member" table
+-- ACTION CREATE FOREIGN KEY
 --
 ALTER TABLE ONLY "member"
     ADD CONSTRAINT "member_fk_0"
@@ -790,7 +815,7 @@ ALTER TABLE ONLY "member"
     ON UPDATE NO ACTION;
 
 --
--- Foreign relations for "message" table
+-- ACTION CREATE FOREIGN KEY
 --
 ALTER TABLE ONLY "message"
     ADD CONSTRAINT "message_fk_0"
@@ -806,7 +831,7 @@ ALTER TABLE ONLY "message"
     ON UPDATE NO ACTION;
 
 --
--- Foreign relations for "notification" table
+-- ACTION CREATE FOREIGN KEY
 --
 ALTER TABLE ONLY "notification"
     ADD CONSTRAINT "notification_fk_0"
@@ -822,7 +847,7 @@ ALTER TABLE ONLY "notification"
     ON UPDATE NO ACTION;
 
 --
--- Foreign relations for "offers" table
+-- ACTION CREATE FOREIGN KEY
 --
 ALTER TABLE ONLY "offers"
     ADD CONSTRAINT "offers_fk_0"
@@ -832,7 +857,7 @@ ALTER TABLE ONLY "offers"
     ON UPDATE NO ACTION;
 
 --
--- Foreign relations for "organization" table
+-- ACTION CREATE FOREIGN KEY
 --
 ALTER TABLE ONLY "organization"
     ADD CONSTRAINT "organization_fk_0"
@@ -842,7 +867,7 @@ ALTER TABLE ONLY "organization"
     ON UPDATE NO ACTION;
 
 --
--- Foreign relations for "post" table
+-- ACTION CREATE FOREIGN KEY
 --
 ALTER TABLE ONLY "post"
     ADD CONSTRAINT "post_fk_0"
@@ -852,7 +877,7 @@ ALTER TABLE ONLY "post"
     ON UPDATE NO ACTION;
 
 --
--- Foreign relations for "professional_data" table
+-- ACTION CREATE FOREIGN KEY
 --
 ALTER TABLE ONLY "professional_data"
     ADD CONSTRAINT "professional_data_fk_0"
@@ -862,7 +887,7 @@ ALTER TABLE ONLY "professional_data"
     ON UPDATE NO ACTION;
 
 --
--- Foreign relations for "project" table
+-- ACTION CREATE FOREIGN KEY
 --
 ALTER TABLE ONLY "project"
     ADD CONSTRAINT "project_fk_0"
@@ -872,7 +897,7 @@ ALTER TABLE ONLY "project"
     ON UPDATE NO ACTION;
 
 --
--- Foreign relations for "reaction" table
+-- ACTION CREATE FOREIGN KEY
 --
 ALTER TABLE ONLY "reaction"
     ADD CONSTRAINT "reaction_fk_0"
@@ -882,7 +907,7 @@ ALTER TABLE ONLY "reaction"
     ON UPDATE NO ACTION;
 
 --
--- Foreign relations for "reply" table
+-- ACTION CREATE FOREIGN KEY
 --
 ALTER TABLE ONLY "reply"
     ADD CONSTRAINT "reply_fk_0"
@@ -898,7 +923,39 @@ ALTER TABLE ONLY "reply"
     ON UPDATE NO ACTION;
 
 --
--- Foreign relations for "space" table
+-- ACTION CREATE FOREIGN KEY
+--
+ALTER TABLE ONLY "report_post"
+    ADD CONSTRAINT "report_post_fk_0"
+    FOREIGN KEY("reporterId")
+    REFERENCES "user"("id")
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION;
+ALTER TABLE ONLY "report_post"
+    ADD CONSTRAINT "report_post_fk_1"
+    FOREIGN KEY("postId")
+    REFERENCES "post"("id")
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION;
+
+--
+-- ACTION CREATE FOREIGN KEY
+--
+ALTER TABLE ONLY "report_user"
+    ADD CONSTRAINT "report_user_fk_0"
+    FOREIGN KEY("reporterId")
+    REFERENCES "user"("id")
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION;
+ALTER TABLE ONLY "report_user"
+    ADD CONSTRAINT "report_user_fk_1"
+    FOREIGN KEY("reportedId")
+    REFERENCES "user"("id")
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION;
+
+--
+-- ACTION CREATE FOREIGN KEY
 --
 ALTER TABLE ONLY "space"
     ADD CONSTRAINT "space_fk_0"
@@ -908,7 +965,7 @@ ALTER TABLE ONLY "space"
     ON UPDATE NO ACTION;
 
 --
--- Foreign relations for "space_invite" table
+-- ACTION CREATE FOREIGN KEY
 --
 ALTER TABLE ONLY "space_invite"
     ADD CONSTRAINT "space_invite_fk_0"
@@ -930,7 +987,7 @@ ALTER TABLE ONLY "space_invite"
     ON UPDATE NO ACTION;
 
 --
--- Foreign relations for "task" table
+-- ACTION CREATE FOREIGN KEY
 --
 ALTER TABLE ONLY "task"
     ADD CONSTRAINT "task_fk_0"
@@ -940,7 +997,7 @@ ALTER TABLE ONLY "task"
     ON UPDATE NO ACTION;
 
 --
--- Foreign relations for "task_assigned" table
+-- ACTION CREATE FOREIGN KEY
 --
 ALTER TABLE ONLY "task_assigned"
     ADD CONSTRAINT "task_assigned_fk_0"
@@ -950,7 +1007,7 @@ ALTER TABLE ONLY "task_assigned"
     ON UPDATE NO ACTION;
 
 --
--- Foreign relations for "teams" table
+-- ACTION CREATE FOREIGN KEY
 --
 ALTER TABLE ONLY "teams"
     ADD CONSTRAINT "teams_fk_0"
@@ -966,7 +1023,7 @@ ALTER TABLE ONLY "teams"
     ON UPDATE NO ACTION;
 
 --
--- Foreign relations for "serverpod_log" table
+-- ACTION CREATE FOREIGN KEY
 --
 ALTER TABLE ONLY "serverpod_log"
     ADD CONSTRAINT "serverpod_log_fk_0"
@@ -976,7 +1033,7 @@ ALTER TABLE ONLY "serverpod_log"
     ON UPDATE NO ACTION;
 
 --
--- Foreign relations for "serverpod_message_log" table
+-- ACTION CREATE FOREIGN KEY
 --
 ALTER TABLE ONLY "serverpod_message_log"
     ADD CONSTRAINT "serverpod_message_log_fk_0"
@@ -986,7 +1043,7 @@ ALTER TABLE ONLY "serverpod_message_log"
     ON UPDATE NO ACTION;
 
 --
--- Foreign relations for "serverpod_query_log" table
+-- ACTION CREATE FOREIGN KEY
 --
 ALTER TABLE ONLY "serverpod_query_log"
     ADD CONSTRAINT "serverpod_query_log_fk_0"
@@ -1000,9 +1057,9 @@ ALTER TABLE ONLY "serverpod_query_log"
 -- MIGRATION VERSION FOR cotree
 --
 INSERT INTO "serverpod_migrations" ("module", "version", "timestamp")
-    VALUES ('cotree', '20250824111301056', now())
+    VALUES ('cotree', '20250830032035920', now())
     ON CONFLICT ("module")
-    DO UPDATE SET "version" = '20250824111301056', "timestamp" = now();
+    DO UPDATE SET "version" = '20250830032035920', "timestamp" = now();
 
 --
 -- MIGRATION VERSION FOR serverpod

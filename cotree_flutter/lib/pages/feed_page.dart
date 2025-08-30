@@ -76,7 +76,7 @@ class _FeedPageState extends State<FeedPage> {
                   });
                 },
               ),
-              const SizedBox(height: 2),
+              const SizedBox(height: 5),
             ],
           );
         },

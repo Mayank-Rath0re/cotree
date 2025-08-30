@@ -15,24 +15,27 @@ abstract class Invitation
     implements _i1.TableRow<int?>, _i1.ProtocolSerialization {
   Invitation._({
     this.id,
-    required this.user,
+    required this.sender,
+    required this.receiver,
+    bool? isRejected,
     this.personalText,
-    required this.type,
-  });
+  }) : isRejected = isRejected ?? false;
 
   factory Invitation({
     int? id,
-    required int user,
+    required int sender,
+    required int receiver,
+    bool? isRejected,
     String? personalText,
-    required String type,
   }) = _InvitationImpl;
 
   factory Invitation.fromJson(Map<String, dynamic> jsonSerialization) {
     return Invitation(
       id: jsonSerialization['id'] as int?,
-      user: jsonSerialization['user'] as int,
+      sender: jsonSerialization['sender'] as int,
+      receiver: jsonSerialization['receiver'] as int,
+      isRejected: jsonSerialization['isRejected'] as bool,
       personalText: jsonSerialization['personalText'] as String?,
-      type: jsonSerialization['type'] as String,
     );
   }
 
@@ -43,11 +46,13 @@ abstract class Invitation
   @override
   int? id;
 
-  int user;
+  int sender;
+
+  int receiver;
+
+  bool isRejected;
 
   String? personalText;
-
-  String type;
 
   @override
   _i1.Table<int?> get table => t;
@@ -57,17 +62,19 @@ abstract class Invitation
   @_i1.useResult
   Invitation copyWith({
     int? id,
-    int? user,
+    int? sender,
+    int? receiver,
+    bool? isRejected,
     String? personalText,
-    String? type,
   });
   @override
   Map<String, dynamic> toJson() {
     return {
       if (id != null) 'id': id,
-      'user': user,
+      'sender': sender,
+      'receiver': receiver,
+      'isRejected': isRejected,
       if (personalText != null) 'personalText': personalText,
-      'type': type,
     };
   }
 
@@ -75,9 +82,10 @@ abstract class Invitation
   Map<String, dynamic> toJsonForProtocol() {
     return {
       if (id != null) 'id': id,
-      'user': user,
+      'sender': sender,
+      'receiver': receiver,
+      'isRejected': isRejected,
       if (personalText != null) 'personalText': personalText,
-      'type': type,
     };
   }
 
@@ -116,14 +124,16 @@ class _Undefined {}
 class _InvitationImpl extends Invitation {
   _InvitationImpl({
     int? id,
-    required int user,
+    required int sender,
+    required int receiver,
+    bool? isRejected,
     String? personalText,
-    required String type,
   }) : super._(
           id: id,
-          user: user,
+          sender: sender,
+          receiver: receiver,
+          isRejected: isRejected,
           personalText: personalText,
-          type: type,
         );
 
   /// Returns a shallow copy of this [Invitation]
@@ -132,47 +142,57 @@ class _InvitationImpl extends Invitation {
   @override
   Invitation copyWith({
     Object? id = _Undefined,
-    int? user,
+    int? sender,
+    int? receiver,
+    bool? isRejected,
     Object? personalText = _Undefined,
-    String? type,
   }) {
     return Invitation(
       id: id is int? ? id : this.id,
-      user: user ?? this.user,
+      sender: sender ?? this.sender,
+      receiver: receiver ?? this.receiver,
+      isRejected: isRejected ?? this.isRejected,
       personalText: personalText is String? ? personalText : this.personalText,
-      type: type ?? this.type,
     );
   }
 }
 
 class InvitationTable extends _i1.Table<int?> {
   InvitationTable({super.tableRelation}) : super(tableName: 'invitation') {
-    user = _i1.ColumnInt(
-      'user',
+    sender = _i1.ColumnInt(
+      'sender',
       this,
+    );
+    receiver = _i1.ColumnInt(
+      'receiver',
+      this,
+    );
+    isRejected = _i1.ColumnBool(
+      'isRejected',
+      this,
+      hasDefault: true,
     );
     personalText = _i1.ColumnString(
       'personalText',
       this,
     );
-    type = _i1.ColumnString(
-      'type',
-      this,
-    );
   }
 
-  late final _i1.ColumnInt user;
+  late final _i1.ColumnInt sender;
+
+  late final _i1.ColumnInt receiver;
+
+  late final _i1.ColumnBool isRejected;
 
   late final _i1.ColumnString personalText;
-
-  late final _i1.ColumnString type;
 
   @override
   List<_i1.Column> get columns => [
         id,
-        user,
+        sender,
+        receiver,
+        isRejected,
         personalText,
-        type,
       ];
 }
 

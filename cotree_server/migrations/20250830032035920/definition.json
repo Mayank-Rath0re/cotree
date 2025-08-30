@@ -288,18 +288,6 @@
           "columnType": 8,
           "isNullable": false,
           "dartType": "List<int>"
-        },
-        {
-          "name": "receivedPending",
-          "columnType": 8,
-          "isNullable": true,
-          "dartType": "List<protocol:Invitation>?"
-        },
-        {
-          "name": "sentPending",
-          "columnType": 8,
-          "isNullable": true,
-          "dartType": "List<protocol:Invitation>?"
         }
       ],
       "foreignKeys": [
@@ -621,29 +609,49 @@
           "dartType": "int?"
         },
         {
-          "name": "user",
+          "name": "sender",
           "columnType": 6,
           "isNullable": false,
           "dartType": "int"
+        },
+        {
+          "name": "receiver",
+          "columnType": 6,
+          "isNullable": false,
+          "dartType": "int"
+        },
+        {
+          "name": "isRejected",
+          "columnType": 1,
+          "isNullable": false,
+          "columnDefault": "false",
+          "dartType": "bool"
         },
         {
           "name": "personalText",
           "columnType": 0,
           "isNullable": true,
           "dartType": "String?"
-        },
-        {
-          "name": "type",
-          "columnType": 0,
-          "isNullable": false,
-          "dartType": "String"
         }
       ],
       "foreignKeys": [
         {
           "constraintName": "invitation_fk_0",
           "columns": [
-            "user"
+            "sender"
+          ],
+          "referenceTable": "user",
+          "referenceTableSchema": "public",
+          "referenceColumns": [
+            "id"
+          ],
+          "onUpdate": 3,
+          "onDelete": 3
+        },
+        {
+          "constraintName": "invitation_fk_1",
+          "columns": [
+            "receiver"
           ],
           "referenceTable": "user",
           "referenceTableSchema": "public",
@@ -1649,6 +1657,158 @@
       "indexes": [
         {
           "indexName": "reply_pkey",
+          "elements": [
+            {
+              "type": 0,
+              "definition": "id"
+            }
+          ],
+          "type": "btree",
+          "isUnique": true,
+          "isPrimary": true
+        }
+      ],
+      "managed": true
+    },
+    {
+      "name": "report_post",
+      "dartName": "ReportPost",
+      "module": "cotree",
+      "schema": "public",
+      "columns": [
+        {
+          "name": "id",
+          "columnType": 6,
+          "isNullable": false,
+          "columnDefault": "nextval('report_post_id_seq'::regclass)",
+          "dartType": "int?"
+        },
+        {
+          "name": "reporterId",
+          "columnType": 6,
+          "isNullable": false,
+          "dartType": "int"
+        },
+        {
+          "name": "postId",
+          "columnType": 6,
+          "isNullable": false,
+          "dartType": "int"
+        },
+        {
+          "name": "reason",
+          "columnType": 0,
+          "isNullable": false,
+          "dartType": "String"
+        }
+      ],
+      "foreignKeys": [
+        {
+          "constraintName": "report_post_fk_0",
+          "columns": [
+            "reporterId"
+          ],
+          "referenceTable": "user",
+          "referenceTableSchema": "public",
+          "referenceColumns": [
+            "id"
+          ],
+          "onUpdate": 3,
+          "onDelete": 3
+        },
+        {
+          "constraintName": "report_post_fk_1",
+          "columns": [
+            "postId"
+          ],
+          "referenceTable": "post",
+          "referenceTableSchema": "public",
+          "referenceColumns": [
+            "id"
+          ],
+          "onUpdate": 3,
+          "onDelete": 3
+        }
+      ],
+      "indexes": [
+        {
+          "indexName": "report_post_pkey",
+          "elements": [
+            {
+              "type": 0,
+              "definition": "id"
+            }
+          ],
+          "type": "btree",
+          "isUnique": true,
+          "isPrimary": true
+        }
+      ],
+      "managed": true
+    },
+    {
+      "name": "report_user",
+      "dartName": "ReportUser",
+      "module": "cotree",
+      "schema": "public",
+      "columns": [
+        {
+          "name": "id",
+          "columnType": 6,
+          "isNullable": false,
+          "columnDefault": "nextval('report_user_id_seq'::regclass)",
+          "dartType": "int?"
+        },
+        {
+          "name": "reporterId",
+          "columnType": 6,
+          "isNullable": false,
+          "dartType": "int"
+        },
+        {
+          "name": "reportedId",
+          "columnType": 6,
+          "isNullable": false,
+          "dartType": "int"
+        },
+        {
+          "name": "reason",
+          "columnType": 0,
+          "isNullable": false,
+          "dartType": "String"
+        }
+      ],
+      "foreignKeys": [
+        {
+          "constraintName": "report_user_fk_0",
+          "columns": [
+            "reporterId"
+          ],
+          "referenceTable": "user",
+          "referenceTableSchema": "public",
+          "referenceColumns": [
+            "id"
+          ],
+          "onUpdate": 3,
+          "onDelete": 3
+        },
+        {
+          "constraintName": "report_user_fk_1",
+          "columns": [
+            "reportedId"
+          ],
+          "referenceTable": "user",
+          "referenceTableSchema": "public",
+          "referenceColumns": [
+            "id"
+          ],
+          "onUpdate": 3,
+          "onDelete": 3
+        }
+      ],
+      "indexes": [
+        {
+          "indexName": "report_user_pkey",
           "elements": [
             {
               "type": 0,
@@ -3952,7 +4112,7 @@
   "installedModules": [
     {
       "module": "cotree",
-      "version": "20250824111301056"
+      "version": "20250830032035920"
     },
     {
       "module": "serverpod",

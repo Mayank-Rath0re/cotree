@@ -66,7 +66,8 @@ class _AbsFeedpostState extends State<AbsFeedpost> {
 
   @override
   Widget build(BuildContext context) {
-    return Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+    return IntrinsicHeight(
+        child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
       if (isLoading) ...[
         Container(
             constraints: const BoxConstraints(minHeight: 120),
@@ -165,7 +166,7 @@ class _AbsFeedpostState extends State<AbsFeedpost> {
                             ]
                           ],
                         ),
-                        const Divider(),
+                        const Divider(thickness: 0.5),
                         const SizedBox(height: 5),
                         AbsRichtext(
                             displayString: widget.postData.text, fontSize: 13),
@@ -193,8 +194,8 @@ class _AbsFeedpostState extends State<AbsFeedpost> {
                   ))),
         ),
         if (widget.showInteractionOptions) ...[
-          Expanded(
-              child: Column(
+          Column(
+            mainAxisAlignment: MainAxisAlignment.end,
             children: [
               IconButton(
                   onPressed: () {
@@ -260,9 +261,9 @@ class _AbsFeedpostState extends State<AbsFeedpost> {
                           color: Provider.of<ThemeProvider>(context).mainColor),
                       child: const Icon(Icons.send_rounded, size: 18)))
             ],
-          ))
+          ),
         ],
       ],
-    ]);
+    ]));
   }
 }

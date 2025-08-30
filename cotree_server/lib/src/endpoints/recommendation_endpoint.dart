@@ -65,11 +65,18 @@ class RecommendationEndpoint extends Endpoint {
     var excludeIds = <int>{};
     if (connect != null) {
       excludeIds.addAll(connect.activeConnections);
-      if (connect.sentPending != null) {
-        excludeIds.addAll(connect.sentPending!.map((inv) => inv.user));
-      }
-      if (connect.receivedPending != null) {
-        excludeIds.addAll(connect.receivedPending!.map((inv) => inv.user));
+      var invites = await Invitation.db.find(session,
+          where: (t) =>
+              t.sender.equals(userId) |
+              (t.receiver.equals(userId) & t.isRejected.equals(false)));
+      for (var invite in invites) {
+        if (invite.sender == userId) {
+          excludeIds.add(invite.receiver);
+          continue;
+        } else {
+          excludeIds.add(invite.sender);
+          continue;
+        }
       }
     }
 

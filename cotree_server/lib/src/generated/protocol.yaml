@@ -35,8 +35,11 @@ chat:
   - deleteChat:
 connection:
   - fetchConnectData:
+  - fetchInvitations:
+  - fetchInvitationByUsers:
   - isConnection:
   - sendConnectionRequest:
+  - removeInvite:
   - getInviteData:
   - confirmConnection:
   - withdrawConnection:
@@ -57,6 +60,7 @@ file:
   - getPublicUrl:
 notification:
   - createNotification:
+  - deleteNotification:
   - notifyMyConnections:
   - anyUnreadNotifications:
   - markRead:

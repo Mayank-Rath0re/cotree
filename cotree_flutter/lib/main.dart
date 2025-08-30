@@ -10,7 +10,7 @@ import 'package:provider/provider.dart';
 
 late SessionManager sessionManager;
 late Client client;
-const ipAddress = '20.196.136.90';
+const ipAddress = '192.168.0.123';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
